@@ -1,0 +1,158 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>Terms & Conditions</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "section_T7YYey": {
+      "type": "section",
+      "blocks": {
+        "text_kG8hy7": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>Terms & Conditions</h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_TzCCTy": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Fresh Food Café Pty Ltd</p><p><strong>1. Introduction</strong></p><p>These Terms & Conditions (“Terms”) govern the use of this website and the catering services provided by Fresh Food Café Pty Ltd </p><p>By accessing our website or placing an order, you agree to be bound by these Terms and our Privacy Policy</p><p><strong>2. Orders</strong></p><p>All orders placed through our website are subject to acceptance and availability. Once an order has been confirmed and payment processed, it constitutes a binding agreement.</p><p>Prices are displayed in Australian Dollars (AUD) and does not include GST unless otherwise stated.</p><p><strong>3. Cancellation & Refund Policy</strong></p><p>To be eligible for a refund, cancellations must be made within the following notice periods prior to the scheduled delivery time:</p><ul><li>Orders up to AUD $500: minimum 24 hours’ notice</li><li>Orders over AUD $500: minimum 48 hours’ notice</li><li>Orders over AUD $1,000: minimum 5 business days’ notice</li></ul><p>Cancellations made outside these notice periods are not eligible for any refund, either full or partial.</p><p><strong>4. Cancellation Fees</strong></p><p>Where a cancellation is made within the permitted notice period, Fresh Food Café Pty Ltd reserves the right to deduct any costs already incurred, including but not limited to:</p><ul><li>Ingredient purchases</li><li>Food preparation</li><li>Staffing or logistics arrangements</li></ul><p><strong>5. Delivery Policy</strong></p><p>We make every reasonable effort to deliver orders at the agreed time. However, delivery times are estimates only and may be affected by factors beyond our control, including but not limited to traffic conditions, weather, accidents, or operational delays.</p><ul><li>A delivery is considered on time if it arrives within 30 minutes before or after the agreed delivery time.</li><li>Deliveries made within this timeframe do not qualify for refunds or compensation.</li></ul><p><strong>6. Payment Terms</strong></p><p>Full payment is required at the time of placing an order. We reserve the right to cancel or refuse orders where payment has not been successfully processed.</p><p><strong>7. Food & Allergens Disclaimer</strong></p><p>While we take reasonable steps to accommodate dietary requirements and allergens, we cannot guarantee a completely allergen-free environment. Customers are responsible for informing us of any allergies or dietary restrictions at the time of ordering.</p><p><strong>8. Use of Website</strong></p><p>You agree not to misuse the website, including but not limited to:</p><ul><li>Engaging in unlawful activity</li><li>Interfering with site functionality</li><li>Attempting unauthorised access</li><li>Uploading harmful software or content</li></ul><p><strong>9. Intellectual Property</strong></p><p>All content on this website, including text, images, logos, and branding, is the property of Fresh Food Café Pty Ltd and may not be reproduced or used without written permission.</p><p><strong>10. Limitation of Liability</strong></p><p>To the maximum extent permitted by law, Fresh Food Café Pty Ltd shall not be liable for any indirect, incidental, or consequential loss arising from the use of our website or services.</p><p><strong>11. Australian Consumer Law (ACL)</strong></p><p>Nothing in these Terms excludes, restricts or modifies any consumer guarantees, rights or remedies available to you under the Australian Consumer Law (ACL).</p><p>Where services supplied by Fresh Food Café Pty Ltd fail to meet a consumer guarantee under the ACL, you may be entitled to a repair, replacement, refund or other remedy as provided by law.</p><p><strong>12. Indemnity</strong></p><p>You agree to indemnify and hold harmless Fresh Food Café Pty Ltd from any claims, losses, or damages arising from your breach of these Terms or misuse of the website.</p><p><strong>13. Force Majeure</strong></p><p>We shall not be liable for failure or delay in performance caused by events beyond our reasonable control, including natural disasters, pandemics, supplier disruptions, government restrictions, or transport disruptions.</p><p><strong>14. Privacy</strong></p><p>Personal information collected through this website is handled in accordance with our Privacy Policy.</p><p><strong>15. Governing Law</strong></p><p>These Terms are governed by the laws of New South Wales, Australia, and any disputes shall be subject to the exclusive jurisdiction of the courts of NSW.</p><p><strong>16. Amendments</strong></p><p>We reserve the right to update or modify these Terms at any time. Continued use of the website following any changes constitutes acceptance of the updated Terms.</p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_kG8hy7",
+        "text_TzCCTy"
+      ],
+      "custom_css": [
+        "strong {color: #1c5447;}",
+        "h2 {color: #1c5447;}"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    }
+  },
+  "order": [
+    "main",
+    "section_T7YYey"
+  ]
+}

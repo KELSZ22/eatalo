@@ -1,0 +1,158 @@
+{%- doc -%}
+  Renders a carousel of predictive search results cards
+
+  @param {string} ref - The ref of the slideshow
+  @param {object} slides - An array of HTML for the slides to display in the carousel
+  @param {number} slide_count - The number of slides to display in the carousel
+  @param {object} settings - The block or sections settings from the parent block/section.
+  @param {string} [slide_width_max] - The maximum width of the slides in the carousel.
+
+  @example
+  {% render 'resource-list-carousel', slides: slides, slide_count: slide_count, settings: block.settings %}
+{%- enddoc -%}
+
+{% liquid
+  assign slideshow_ref = ref | default: 'resourceListCarousel'
+  if settings.section_width == 'page-width'
+    assign slideshow_gutters = 'start end'
+  else
+    assign slideshow_gutters = null
+  endif
+%}
+
+{% capture slides %}
+  {% for item in slides limit: slides.size %}
+    {% render 'slideshow-slide'
+      index : forloop.index0,
+      children : item,
+      class : 'resource-list__slide'
+    %}
+  {% endfor %}
+{% endcapture %}
+
+{% liquid
+  assign show_arrows = false
+  if settings.icons_style != 'none' and settings.carousel_auto_scroll != true
+    assign show_arrows = true
+  endif
+%}
+{% if show_arrows %}
+  {% capture slideshow_arrows %}
+    {% render 'slideshow-arrows', icon_style: settings.icons_style, icon_shape: settings.icons_shape %}
+  {% endcapture %}
+{% endif %}
+
+<div
+  class="resource-list__carousel"
+  style="
+    {% if settings.section_width == 'page-width' %}
+      --gutter-slide-width: var(--util-page-margin-offset);
+    {% elsif settings.section_width == 'full-width' %}
+      --gutter-slide-width: 0px;
+    {% endif %}
+    --slide-width-max: {{ slide_width_max | default: '300px' }};
+  "
+>
+  {% liquid
+    assign autoplay_enabled = false
+    assign autoplay_speed = 5
+    assign infinite_setting = false
+    
+    if settings.carousel_auto_scroll == true or settings.carousel_auto_scroll
+      assign autoplay_enabled = true
+      assign autoplay_speed = settings.carousel_auto_scroll_speed | default: 5
+      assign infinite_setting = true
+    endif
+  %}
+  {% render 'slideshow',
+    ref: slideshow_ref,
+    class: 'resource-list__carousel',
+    slides: slides,
+    slideshow_arrows: slideshow_arrows,
+    auto_hide_controls: false,
+    infinite: infinite_setting,
+    initial_slide: 0,
+    slide_count: slide_count,
+    slideshow_gutters: slideshow_gutters,
+    autoplay: autoplay_enabled,
+    autoplay_speed: autoplay_speed
+  %}
+  {% if autoplay_enabled %}
+    <script>
+      (function() {
+        const slideshowRef = '{{ slideshow_ref }}';
+        const autoplaySpeed = {{ autoplay_speed }};
+        
+        const initAutoplay = () => {
+          const slideshow = document.querySelector('slideshow-component[ref="' + slideshowRef + '"]');
+          if (!slideshow) {
+            // Retry if slideshow not found yet
+            setTimeout(initAutoplay, 100);
+            return;
+          }
+          
+          // Ensure autoplay attribute is set
+          if (!slideshow.hasAttribute('autoplay')) {
+            slideshow.setAttribute('autoplay', autoplaySpeed.toString());
+          }
+          
+          // Hide navigation arrows
+          const hideNavigation = () => {
+            const arrows = slideshow.querySelector('slideshow-arrows');
+            if (arrows) arrows.style.display = 'none';
+            const prevBtn = slideshow.querySelector('.slideshow-control--previous');
+            const nextBtn = slideshow.querySelector('.slideshow-control--next');
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+          };
+          hideNavigation();
+          
+          // Start autoplay after slideshow is ready
+          const startAutoplay = () => {
+            if (!slideshow.refs?.scroller || !slideshow.slides || slideshow.slides.length <= 1) {
+              setTimeout(startAutoplay, 100);
+              return;
+            }
+            
+            // Remove paused state
+            slideshow.removeAttribute('paused');
+            slideshow.paused = false;
+            
+            // Force start autoplay
+            if (slideshow.autoplay) {
+              slideshow.resume();
+            } else {
+              // If autoplay getter returns false, manually start it
+              const interval = autoplaySpeed * 1000;
+              if (slideshow.play) {
+                slideshow.play(interval);
+              } else {
+                // Fallback: manually trigger next() at intervals
+                setInterval(() => {
+                  if (!slideshow.matches(':hover') && !document.hidden && slideshow.next) {
+                    slideshow.next();
+                  }
+                }, interval);
+              }
+            }
+          };
+          
+          // Wait for slideshow to be fully initialized
+          if (slideshow.isConnected && slideshow.refs) {
+            setTimeout(startAutoplay, 500);
+          } else {
+            slideshow.addEventListener('connected', () => setTimeout(startAutoplay, 500), { once: true });
+            setTimeout(startAutoplay, 1000);
+          }
+        };
+        
+        // Start initialization
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initAutoplay);
+        } else {
+          initAutoplay();
+        }
+      })();
+    </script>
+  {% endif %}
+</div>

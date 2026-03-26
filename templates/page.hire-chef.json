@@ -1,0 +1,517 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "hero_n3QzAm": {
+      "type": "hero",
+      "blocks": {
+        "text_QhE68X": {
+          "type": "text",
+          "settings": {
+            "text": "<h1>Hire A Chef &<br/>Service Team</h1>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h1",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_HqDiip": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Corner of Philip and Bent Street, Eatalo is your local Italian cafe in the Sydney CBD, <br/>serving fresh panini, homemade pasta, seasonal dishes and great coffee... Buon Appetito! </p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 32,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "button_jAQcfc": {
+          "type": "button",
+          "name": "t:names.button",
+          "settings": {
+            "label": "Enquire Now",
+            "link": "shopify://pages/contact-us",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_QhE68X",
+        "text_HqDiip",
+        "button_jAQcfc"
+      ],
+      "custom_css": [
+        "@media screen and (max-width: 768px) {h1 {font-size: 35px !important; }}",
+        ".button:not(.button-secondary, .button-unstyled) {background: #c8d98a;}"
+      ],
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "image_1": "shopify://shop_images/Hero_image.png",
+        "media_type_2": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "full-screen",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-5",
+        "toggle_overlay": true,
+        "overlay_color": "#00000080",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "custom_why_this_service_VBUJLW": {
+      "type": "custom-why-this-service",
+      "blocks": {
+        "feature_Bt39fN": {
+          "type": "feature",
+          "settings": {
+            "icon": "custom",
+            "custom_icon": "shopify://shop_images/Untitled_design.svg",
+            "title": "On-Site Cooking Experience",
+            "description": "Our chefs prepare and finish dishes in real time - no trays dropped off and left behind."
+          }
+        },
+        "feature_CegEpE": {
+          "type": "feature",
+          "settings": {
+            "icon": "custom",
+            "custom_icon": "shopify://shop_images/Untitled_design_1.svg",
+            "title": "Plated or Shared Service",
+            "description": "Choose elegant plated meals or beautifully presented shared dishes."
+          }
+        },
+        "feature_YmCiqJ": {
+          "type": "feature",
+          "settings": {
+            "icon": "custom",
+            "custom_icon": "shopify://shop_images/Untitled_design_2.svg",
+            "title": "Full Service Team",
+            "description": "Chefs & experienced waitstaff to manage service from start to finish."
+          }
+        },
+        "feature_UayGgn": {
+          "type": "feature",
+          "settings": {
+            "icon": "custom",
+            "custom_icon": "shopify://shop_images/Untitled_design_3.svg",
+            "title": "A True Dining Experience",
+            "description": "It's more than catering, it's a private restaurant experience in your space."
+          }
+        }
+      },
+      "block_order": [
+        "feature_Bt39fN",
+        "feature_CegEpE",
+        "feature_YmCiqJ",
+        "feature_UayGgn"
+      ],
+      "name": "What This Service Is",
+      "settings": {
+        "heading": "What This Service Is",
+        "heading_size": 42,
+        "heading_color": "#1a4d38",
+        "heading_margin_bottom": 50,
+        "background_color": "#edeae4",
+        "padding_top": 68,
+        "padding_bottom": 80,
+        "padding_horizontal": 60,
+        "max_width": 1200,
+        "columns": 4,
+        "column_gap": 40,
+        "icon_color": "#666666",
+        "icon_size": 54,
+        "title_size": 17,
+        "title_color": "#1a5c3a",
+        "desc_size": 15,
+        "desc_color": "#444444"
+      }
+    },
+    "custom_perfect_for_dx8KcC": {
+      "type": "Custom-perfect-for",
+      "blocks": {
+        "item_BgRNgY": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/Corporate_Dinners_Client_Entertaining.png",
+            "label": "Corporate Dinners & Client Entertaining"
+          }
+        },
+        "item_Jexpcj": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/Private_Parties_Milestone_Celebrations.png",
+            "label": "Executive Meetings & Boardroom Dining"
+          }
+        },
+        "item_meYRzc": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/Product_Launches_Brand_Events.png",
+            "label": "Product Launches & Brand Events"
+          }
+        },
+        "item_h9CPm4": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/Intimate_Weddings_Engagement_Parties.png",
+            "label": "Private Events & Special Occasions"
+          }
+        }
+      },
+      "block_order": [
+        "item_BgRNgY",
+        "item_Jexpcj",
+        "item_meYRzc",
+        "item_h9CPm4"
+      ],
+      "name": "Perfect For",
+      "settings": {
+        "heading": "Perfect For...",
+        "heading_size": 48,
+        "heading_color": "#1a5c3a",
+        "heading_margin_bottom": 60,
+        "background_color": "#ffffff",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "padding_horizontal": 60,
+        "max_width": 1200,
+        "grid_gap": 40,
+        "image_ratio": "3/2",
+        "image_border_radius": 0,
+        "label_font": "assistant_n4",
+        "label_size": 22,
+        "label_color": "#1a5c3a"
+      }
+    },
+    "custom_marquee_tTx4qG": {
+      "type": "Custom-marquee",
+      "blocks": {
+        "logo_69Nq4D": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/1_3b096423-f819-4626-9b65-0d54df9a0f82.svg",
+            "alt_text": "Brand Six"
+          }
+        },
+        "logo_AWh4rx": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/11_ec8a8091-b9e9-46fa-8420-c71ac0735ddf.svg",
+            "alt_text": "Brand One"
+          }
+        },
+        "logo_wMF8eg": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/6_03243e78-bc99-42de-b2c4-b6b5559c2a53.svg",
+            "alt_text": "Brand Two"
+          }
+        },
+        "logo_fT3CA8": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/2_e2e438ce-4af4-465f-9751-1fc5f1eba4ac.svg",
+            "alt_text": "Brand Three"
+          }
+        },
+        "logo_nMcht9": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/8_921cff21-6cba-41e5-8cfb-02b726f5d902.svg",
+            "alt_text": "Brand Four"
+          }
+        },
+        "logo_UT6qtT": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/5_e35a1925-cb63-4838-b262-b8f65a23e74c.svg",
+            "alt_text": "Brand Five"
+          }
+        },
+        "logo_Qp7nXb": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/4_2a277256-4641-4d76-9b6b-f8b05278a107.svg",
+            "alt_text": "Brand Five"
+          }
+        },
+        "logo_8i88VH": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/3_f1dc0648-f933-49cb-8bf8-c3798d239c59.svg",
+            "alt_text": "Brand Five"
+          }
+        },
+        "logo_gJeKnU": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/7_4e363e04-ef8d-45fb-b645-777f46fb3d43.svg",
+            "alt_text": "Brand Five"
+          }
+        },
+        "logo_a6CeXk": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/9_50393160-534d-468b-b0d9-26ccba8a9ef3.svg",
+            "alt_text": "Brand Five"
+          }
+        },
+        "logo_X6Jniy": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/10_0f8f7c6b-619d-465e-99f0-dc351165925e.svg",
+            "alt_text": "Brand Five"
+          }
+        }
+      },
+      "block_order": [
+        "logo_69Nq4D",
+        "logo_AWh4rx",
+        "logo_wMF8eg",
+        "logo_fT3CA8",
+        "logo_nMcht9",
+        "logo_UT6qtT",
+        "logo_Qp7nXb",
+        "logo_8i88VH",
+        "logo_gJeKnU",
+        "logo_a6CeXk",
+        "logo_X6Jniy"
+      ],
+      "name": "Trusted By Logos",
+      "settings": {
+        "heading": "Trusted By...",
+        "heading_size": 48,
+        "heading_color": "#1a5c3a",
+        "heading_margin_bottom": 40,
+        "background_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_horizontal": 60,
+        "max_width": 1500,
+        "logo_height": 100,
+        "logo_gap": 50,
+        "logo_opacity": 45,
+        "scroll_speed": 20,
+        "pause_on_hover": true
+      }
+    },
+    "custom_why_client_love_Pe8Qmq": {
+      "type": "Custom-why-client-love",
+      "blocks": {
+        "item_ErLXTQ": {
+          "type": "item",
+          "settings": {
+            "text": "Feels premium without the venue price"
+          }
+        },
+        "item_KhU3gy": {
+          "type": "item",
+          "settings": {
+            "text": "Creates a \"wow\" factor"
+          }
+        },
+        "item_n3qGVp": {
+          "type": "item",
+          "settings": {
+            "text": "Restaurant quality service, anywhere"
+          }
+        },
+        "item_PAkA3w": {
+          "type": "item",
+          "settings": {
+            "text": "Completely customisable"
+          }
+        },
+        "item_r6QGnL": {
+          "type": "item",
+          "settings": {
+            "text": "Zero stress for hosts"
+          }
+        },
+        "item_d8fnhQ": {
+          "type": "item",
+          "settings": {
+            "text": "Memorable for all the right reasons"
+          }
+        }
+      },
+      "block_order": [
+        "item_ErLXTQ",
+        "item_KhU3gy",
+        "item_n3qGVp",
+        "item_PAkA3w",
+        "item_r6QGnL",
+        "item_d8fnhQ"
+      ],
+      "name": "Why Clients Love This",
+      "settings": {
+        "heading": "Why Clients Love This Catering Option",
+        "heading_size": 46,
+        "heading_color": "#1a4d38",
+        "heading_margin_bottom": 50,
+        "background_color": "#d9e8c4",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "padding_horizontal": 60,
+        "max_width": 1100,
+        "row_gap": 30,
+        "column_gap": 60,
+        "icon_color": "#1a4d38",
+        "icon_size": 36,
+        "item_font": "assistant_n4",
+        "item_size": 20,
+        "item_color": "#1a4d38"
+      }
+    },
+    "custom_banner_3f9833": {
+      "type": "Custom-banner",
+      "name": "Hero Banner",
+      "settings": {
+        "background_image": "shopify://shop_images/Hero_image.png",
+        "image_position": "center center",
+        "overlay_color": "#000000",
+        "overlay_opacity": 40,
+        "section_height": 480,
+        "content_vertical_align": "center",
+        "max_width": 1200,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_horizontal": 48,
+        "heading": "Create a Restaurant Experience At Your Next Event",
+        "heading_font": "assistant_n7",
+        "heading_size": 52,
+        "heading_color": "#ffffff",
+        "subheading": "Let us bring the food, the service and the atmosphere to you.",
+        "body_font": "assistant_n4",
+        "subheading_size": 18,
+        "subheading_color": "#ffffff",
+        "button_label": "Enquire Now",
+        "button_url": "shopify://pages/contact-us",
+        "button_bg_color": "#c8d98a",
+        "button_text_color": "#1a4d38",
+        "button_hover_bg": "#b5c878",
+        "button_hover_text": "#1a4d38",
+        "button_border_color": "#c8d98a",
+        "button_border_width": 0,
+        "button_border_radius": 6,
+        "button_font_size": 15,
+        "button_padding_v": 12,
+        "button_padding_h": 24
+      }
+    }
+  },
+  "order": [
+    "main",
+    "hero_n3QzAm",
+    "custom_why_this_service_VBUJLW",
+    "custom_perfect_for_dx8KcC",
+    "custom_marquee_tTx4qG",
+    "custom_why_client_love_Pe8Qmq",
+    "custom_banner_3f9833"
+  ]
+}

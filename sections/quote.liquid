@@ -1,0 +1,182 @@
+{% comment %}
+  Catering CTA Section
+{% endcomment %}
+
+<style>
+  .catering-cta-container {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    border: none;
+  }
+
+  .catering-cta-column {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Archivo Medium', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+  }
+
+  .catering-cta-left {
+    background-color: #1e5649;
+    border: none;
+  }
+
+  .catering-cta-left:hover {
+    background-color: #163f35;
+  }
+
+  .catering-cta-right {
+    background-color: #ed4d31;
+  }
+
+  .catering-cta-right:hover {
+    background-color: #d43920;
+  }
+
+  @media (max-width: 768px) {
+    .catering-cta-container {
+      flex-direction: column;
+      height: auto;
+    }
+
+    .catering-cta-column {
+      height: 60px;
+      min-height: 60px;
+      font-size: 14px;
+      padding: 0 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .catering-cta-column {
+      height: 50px;
+      min-height: 50px;
+      font-size: 12px;
+      padding: 0 15px;
+      letter-spacing: 0.3px;
+    }
+  }
+</style>
+
+{% liquid
+  assign left_is_js = false
+  assign right_is_js = false
+  assign right_is_call = false
+  assign right_phone_href = section.settings.right_phone_number | strip
+  
+  if section.settings.left_link contains 'openQuoteModal' or section.settings.left_link contains 'javascript:'
+    assign left_is_js = true
+  endif
+  
+  if section.settings.right_action == 'call' and right_phone_href != blank
+    assign right_is_call = true
+  endif
+
+  if section.settings.right_link contains 'openQuoteModal' or section.settings.right_link contains 'javascript:'
+    assign right_is_js = true
+  endif
+%}
+
+<div class="catering-cta-container">
+  {% if left_is_js %}
+    <button
+      type="button"
+      class="catering-cta-column catering-cta-left"
+      onclick="{% if section.settings.left_link contains 'openQuoteModal' %}window.openQuoteModal();{% else %}{{ section.settings.left_link | remove_first: 'javascript:' }}{% endif %}"
+    >
+      {{ section.settings.left_text }}
+    </button>
+  {% else %}
+    <a href="{{ section.settings.left_link }}" class="catering-cta-column catering-cta-left">
+      {{ section.settings.left_text }}
+    </a>
+  {% endif %}
+  
+  {% if right_is_call %}
+    <a href="tel:{{ right_phone_href }}" class="catering-cta-column catering-cta-right">
+      {{ section.settings.right_text }}
+    </a>
+  {% elsif right_is_js %}
+    <button
+      type="button"
+      class="catering-cta-column catering-cta-right"
+      onclick="{% if section.settings.right_link contains 'openQuoteModal' %}window.openQuoteModal();{% else %}{{ section.settings.right_link | remove_first: 'javascript:' }}{% endif %}"
+    >
+      {{ section.settings.right_text }}
+    </button>
+  {% else %}
+    <a href="{{ section.settings.right_link }}" class="catering-cta-column catering-cta-right">
+      {{ section.settings.right_text }}
+    </a>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Catering CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "left_text",
+      "label": "Left Button Text",
+      "default": "GET A QUOTE"
+    },
+    {
+      "type": "url",
+      "id": "left_link",
+      "label": "Left Button Link"
+    },
+    {
+      "type": "text",
+      "id": "right_text",
+      "label": "Right Button Text",
+      "default": "LAST MINUTE CATERING"
+    },
+    {
+      "type": "select",
+      "id": "right_action",
+      "label": "Right Button Action",
+      "options": [
+        {
+          "value": "link",
+          "label": "Open link"
+        },
+        {
+          "value": "call",
+          "label": "Call phone number"
+        }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "url",
+      "id": "right_link",
+      "label": "Right Button Link"
+    },
+    {
+      "type": "text",
+      "id": "right_phone_number",
+      "label": "Right Button Phone Number",
+      "info": "Used when Right Button Action is set to Call phone number. Example: +63292412127"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Catering CTA"
+    }
+  ]
+}
+{% endschema %}

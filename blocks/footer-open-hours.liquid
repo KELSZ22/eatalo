@@ -1,0 +1,200 @@
+{% liquid
+  assign block_settings = block.settings
+  assign heading = block_settings.heading | default: 'Open Hours'
+  assign hours = block_settings.hours | default: 'Monday - Friday: 5:30 AM - 3:00 PM'
+%}
+
+<div
+  class="
+    footer-open-hours-block
+    spacing-style
+  "
+  style="
+    --heading-size: {{ block_settings.heading_size }}px;
+    --text-size: {{ block_settings.text_size }}px;
+    --heading-size-mobile: {{ block_settings.heading_size_mobile }}px;
+    --text-size-mobile: {{ block_settings.text_size_mobile }}px;
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="footer-open-hours-block__content">
+    {% if heading != blank %}
+      <h3 class="footer-open-hours-block__heading">{{ heading }}</h3>
+    {% endif %}
+    {% if hours != blank %}
+      <div class="footer-open-hours-block__hours">{{ hours }}</div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .footer-open-hours-block {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .footer-open-hours-block__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .footer-open-hours-block__heading {
+    font-family: var(--font-body-family);
+    font-weight: 500;
+    font-size: var(--heading-size);
+    line-height: 1.2;
+    color: inherit;
+    margin: 0 0 12px 0;
+  }
+
+  .footer-open-hours-block__hours {
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-size: var(--text-size);
+    line-height: 1.4;
+    color: inherit;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 750px) {
+    .footer-open-hours-block__heading {
+      font-size: var(--heading-size-mobile);
+    }
+
+    .footer-open-hours-block__hours {
+      font-size: var(--text-size-mobile);
+    }
+  }
+  @media screen and (max-width: 425px){
+    .footer-open-hours-block__heading{
+      font-weight: 900;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer Open Hours",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Open Hours"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Hours",
+      "default": "Monday - Friday: 5:30 AM - 3:00 PM"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size (Desktop)",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading Size (Mobile)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Text Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Open Hours",
+      "category": "Footer",
+      "settings": {
+        "heading": "Open Hours",
+        "hours": "Monday - Friday: 5:30 AM - 3:00 PM",
+        "heading_size": 18,
+        "text_size": 14,
+        "heading_size_mobile": 16,
+        "text_size_mobile": 12
+      }
+    }
+  ]
+}
+{% endschema %}
+

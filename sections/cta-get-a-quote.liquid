@@ -1,0 +1,105 @@
+<style>
+  .two-column-cta {
+    display: flex;
+    width: 100%;
+    height: 250px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 32px;
+  }
+
+  .cta-column {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+  }
+
+  .cta-quote {
+    background-color: #1e5649;
+    color: white;
+  }
+
+  .cta-reserve {
+    background-color: #c8de84;
+    color: #1e5649;
+  }
+
+  .cta-column:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    .two-column-cta {
+      flex-direction: column;
+      height: auto;
+      font-size: 24px;
+    }
+
+    .cta-column {
+      height: 120px;
+      min-height: 120px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .two-column-cta {
+      font-size: 20px;
+    }
+
+    .cta-column {
+      height: 100px;
+      min-height: 100px;
+      padding: 15px;
+    }
+  }
+</style>
+
+<section class="two-column-cta">
+  <a href="{{ section.settings.quote_link | default: '#' }}" class="cta-column cta-quote">
+    {{ section.settings.quote_text | default: 'Get a Quote' }}
+  </a>
+
+  <a href="{{ section.settings.reserve_link | default: '#' }}" class="cta-column cta-reserve">
+    {{ section.settings.reserve_text | default: 'Reserve a Table' }}
+  </a>
+</section>
+
+{% schema %}
+{
+  "name": "Two Column CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "quote_text",
+      "label": "Quote Button Text",
+      "default": "Get a Quote"
+    },
+    {
+      "type": "url",
+      "id": "quote_link",
+      "label": "Quote Button Link"
+    },
+    {
+      "type": "text",
+      "id": "reserve_text",
+      "label": "Reserve Button Text",
+      "default": "Reserve a Table"
+    },
+    {
+      "type": "url",
+      "id": "reserve_link",
+      "label": "Reserve Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two Column CTA"
+    }
+  ]
+}
+{% endschema %}

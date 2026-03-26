@@ -1,0 +1,385 @@
+{% assign section_id = 'hero-banner-' | append: section.id %}
+
+<section id="{{ section_id }}">
+  {% if section.settings.background_image != blank %}
+    <div class="hb-bg">
+      {{ section.settings.background_image | image_url: width: 1800 | image_tag: class: 'hb-bg-img', alt: '', loading: 'eager', fetchpriority: 'high' }}
+    </div>
+  {% endif %}
+  <div class="hb-overlay"></div>
+  <div class="hb-content">
+    <h2 class="hb-heading">{{ section.settings.heading }}</h2>
+    <p class="hb-subheading">{{ section.settings.subheading }}</p>
+    {% if section.settings.button_label != blank %}
+      <a href="{{ section.settings.button_url }}" class="hb-btn">{{ section.settings.button_label }}</a>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    position: relative;
+    width: 100%;
+    min-height: {{ section.settings.section_height }}px;
+    display: flex;
+    align-items: {{ section.settings.content_vertical_align }};
+    overflow: hidden;
+  }
+
+  #{{ section_id }} .hb-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  #{{ section_id }} .hb-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ section.settings.image_position }};
+    display: block;
+  }
+
+  #{{ section_id }} .hb-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: {{ section.settings.overlay_color }};
+    opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+
+  #{{ section_id }} .hb-content {
+    position: relative;
+    z-index: 2;
+    max-width: {{ section.settings.max_width }}px;
+    width: 100%;
+    margin: 0 auto;
+    padding: {{ section.settings.padding_top }}px {{ section.settings.padding_horizontal }}px {{ section.settings.padding_bottom }}px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  #{{ section_id }} .hb-heading {
+    font-family: {{ section.settings.heading_font.family }}, sans-serif;
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    line-height: 1.15;
+    margin: 0;
+    max-width: 640px;
+  }
+
+  #{{ section_id }} .hb-subheading {
+    font-family: {{ section.settings.body_font.family }}, sans-serif;
+    font-size: {{ section.settings.subheading_size }}px;
+    font-weight: 400;
+    color: {{ section.settings.subheading_color }};
+    line-height: 1.5;
+    margin: 0;
+    max-width: 560px;
+  }
+
+  #{{ section_id }} .hb-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: {{ section.settings.button_padding_v }}px {{ section.settings.button_padding_h }}px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    font-family: {{ section.settings.body_font.family }}, sans-serif;
+    font-size: {{ section.settings.button_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ section.settings.button_border_radius }}px;
+    border: {{ section.settings.button_border_width }}px solid {{ section.settings.button_border_color }};
+    transition: background-color 0.25s ease, color 0.25s ease;
+    cursor: pointer;
+  }
+
+  #{{ section_id }} .hb-btn:hover {
+    background-color: {{ section.settings.button_hover_bg }};
+    color: {{ section.settings.button_hover_text }};
+  }
+
+  @media screen and (max-width: 768px) {
+    #{{ section_id }} {
+      min-height: {{ section.settings.section_height | times: 0.7 | round }}px;
+    }
+
+    #{{ section_id }} .hb-heading {
+      font-size: {{ section.settings.heading_size | times: 0.65 | round }}px;
+    }
+
+    #{{ section_id }} .hb-subheading {
+      font-size: {{ section.settings.subheading_size | minus: 2 }}px;
+    }
+
+    #{{ section_id }} .hb-content {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    #{{ section_id }} .hb-heading {
+      font-size: {{ section.settings.heading_size | times: 0.55 | round }}px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "hero-banner-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image Position",
+      "options": [
+        { "value": "center center", "label": "Center" },
+        { "value": "top center", "label": "Top" },
+        { "value": "bottom center", "label": "Bottom" },
+        { "value": "left center", "label": "Left" },
+        { "value": "right center", "label": "Right" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay Opacity (%)",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Section Height",
+      "min": 200,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "select",
+      "id": "content_vertical_align",
+      "label": "Content Vertical Align",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Middle" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content Max Width",
+      "min": 600,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Content Padding Top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Content Padding Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Content Padding Horizontal",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Create a Restaurant Experience At Your Next Event"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading Font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Font Size",
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 52
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Let us bring the food, the service and the atmosphere to you."
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body / Button Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Enquire Now"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#c8d98a"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#1a4d38"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Button Hover Background",
+      "default": "#b5c878"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Button Hover Text Color",
+      "default": "#1a4d38"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#c8d98a"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Button Border Width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_padding_v",
+      "label": "Button Padding Vertical",
+      "min": 6,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_h",
+      "label": "Button Padding Horizontal",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}

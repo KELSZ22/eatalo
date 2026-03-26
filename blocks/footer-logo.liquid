@@ -1,0 +1,233 @@
+{% liquid
+  assign block_settings = block.settings
+  assign logo_text = block_settings.logo_text | default: shop.name | upcase
+  assign logo_image = block_settings.logo_image
+%}
+
+<div
+  class="
+    footer-logo-block
+    spacing-style
+  "
+  style="
+    --logo-font-size: {{ block_settings.font_size }}px;
+    --logo-font-size-mobile: {{ block_settings.font_size_mobile }}px;
+    --logo-width: {{ block_settings.logo_width }}px;
+    --logo-width-mobile: {{ block_settings.logo_width_mobile }}px;
+    --logo-height: {{ block_settings.logo_height }}px;
+    --logo-height-mobile: {{ block_settings.logo_height_mobile }}px;
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if logo_image %}
+    <div class="footer-logo-block__image-wrapper">
+      {{-
+        logo_image
+        | image_url: width: 3840
+        | image_tag:
+          width: logo_image.width,
+          widths: '240, 352, 832, 1200, 1600, 1920, 2560, 3840',
+          height: logo_image.height,
+          class: 'footer-logo-block__image',
+          alt: logo_text,
+          sizes: '(min-width: 750px) var(--logo-width), var(--logo-width-mobile)'
+      -}}
+    </div>
+  {% else %}
+    <div class="footer-logo-block__text">
+      {{ logo_text }}
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .footer-logo-block {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-logo-block__image-wrapper {
+    display: flex;
+    width: var(--logo-width);
+    height: var(--logo-height);
+  }
+
+  .footer-logo-block__image {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+
+  .footer-logo-block__text {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: var(--logo-font-size);
+    line-height: 1.1;
+    color: inherit;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 750px) {
+    .footer-logo-block__image-wrapper {
+      width: var(--logo-width-mobile);
+      height: var(--logo-height-mobile);
+    }
+
+    .footer-logo-block__text {
+      font-size: var(--logo-font-size-mobile);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer Logo",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image",
+      "info": "Upload a logo image. If no image is provided, text will be used instead."
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text (Fallback)",
+      "default": "EATALO",
+      "info": "This text will be used if no image is provided, or as alt text for the image"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo Width (Desktop)",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 300,
+      "info": "Width of the logo image on desktop"
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo Width (Mobile)",
+      "min": 40,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 240,
+      "info": "Width of the logo image on mobile"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo Height (Desktop)",
+      "min": 30,
+      "max": 250,
+      "step": 5,
+      "unit": "px",
+      "default": 150,
+      "info": "Height of the logo image on desktop"
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "label": "Logo Height (Mobile)",
+      "min": 25,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 120,
+      "info": "Height of the logo image on mobile"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font Size (Desktop)",
+      "min": 24,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 48,
+      "info": "Font size when using text instead of image"
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Font Size (Mobile)",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36,
+      "info": "Font size when using text instead of image"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Logo",
+      "category": "Footer",
+      "settings": {
+        "logo_text": "EATALO",
+        "logo_width": 300,
+        "logo_width_mobile": 240,
+        "logo_height": 150,
+        "logo_height_mobile": 120,
+        "font_size": 48,
+        "font_size_mobile": 36
+      }
+    }
+  ]
+}
+{% endschema %}

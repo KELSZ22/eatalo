@@ -1,0 +1,159 @@
+{% liquid
+  assign block_settings = block.settings
+  assign divider_type = block_settings.divider_type | default: 'space'
+%}
+
+<div
+  class="
+    footer-divider-block
+    spacing-style
+  "
+  style="
+    --divider-height: {{ block_settings.divider_height }}px;
+    --divider-width: {{ block_settings.divider_width }}px;
+    --divider-color: {{ block_settings.divider_color }};
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if divider_type == 'line' %}
+    <div class="footer-divider-block__line"></div>
+  {% elsif divider_type == 'space' %}
+    <div class="footer-divider-block__space"></div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .footer-divider-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-divider-block__space {
+    width: 100%;
+    height: var(--divider-height);
+  }
+
+  .footer-divider-block__line {
+    width: var(--divider-width);
+    height: 1px;
+    background-color: var(--divider-color);
+  }
+
+  @media screen and (max-width: 750px) {
+    .footer-divider-block__space {
+      height: calc(var(--divider-height) * 0.5);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer Divider",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "divider_type",
+      "label": "Divider Type",
+      "options": [
+        {
+          "value": "space",
+          "label": "Empty Space"
+        },
+        {
+          "value": "line",
+          "label": "Line"
+        }
+      ],
+      "default": "space"
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "label": "Height",
+      "min": 10,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 50,
+      "info": "Height of the divider space"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Line Width",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 200,
+      "info": "Width of the line (only applies to line type)",
+      "visible_if": "{{ block.settings.divider_type == 'line' }}"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Line Color",
+      "default": "#ffffff",
+      "info": "Color of the line (only applies to line type)",
+      "visible_if": "{{ block.settings.divider_type == 'line' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Divider",
+      "category": "Footer",
+      "settings": {
+        "divider_type": "space",
+        "divider_height": 50
+      }
+    }
+  ]
+}
+{% endschema %}

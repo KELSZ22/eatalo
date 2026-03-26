@@ -1,0 +1,403 @@
+
+
+{%- assign block_settings = block.settings -%}
+{%- assign plain_text = block_settings.text | strip_newlines | strip_html | strip -%}
+{%- assign block_index = section.blocks | find_index: 'id', block.id -%}
+
+{%- unless plain_text == '' -%}
+  <slideshow-slide
+    ref="slides[]"
+    class="
+      announcement-bar__slide
+      text-block
+      text-block--{{ block.id }}
+      text-block--align-center
+      text-block--full-width
+      custom-typography
+      {% if block_settings.font_size != "" %}custom-font-size{% endif %}
+      {% if block_settings.weight != "" %}custom-font-weight{% endif %}
+    "
+    style="
+      {% render 'typography-style', settings: block_settings, preset: 'custom' %}
+      --width: 100%;
+      --text-align: center;
+      --line-height: 1;
+    "
+    {{ block.shopify_attributes }}
+    aria-hidden="{% if block_index == 0 %}false{% else %}true{% endif %}"
+  >
+    <p class="announcement-bar__text">
+      {{ block.settings.text }}
+      {% if block_settings.phone_number != blank %}
+        <span class="announcement-bar__phone-wrapper">
+          {% if block_settings.phone_logo != blank %}
+            <img 
+              src="{{ block_settings.phone_logo | image_url: width: 24 }}"
+              alt="Phone"
+              class="announcement-bar__phone-logo"
+              width="24"
+              height="24"
+              loading="lazy"
+            >
+          {% else %}
+            <span class="announcement-bar__phone-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.3333 9.73333L9.86667 9.33333C9.6 9.26667 9.33333 9.33333 9.13333 9.46667L8.13333 10.4667C6.6 9.6 5.4 8.4 4.53333 6.86667L5.53333 5.86667C5.66667 5.66667 5.73333 5.4 5.66667 5.13333L5.26667 3.66667C5.13333 3.26667 4.8 3 4.4 3H2.66667C2.26667 3 1.86667 3.26667 1.86667 3.66667C1.86667 9.13333 6.86667 14.1333 12.3333 14.1333C12.7333 14.1333 13 13.7333 13 13.3333V11.6C13 11.2 12.7333 10.8667 12.3333 10.7333L11.3333 9.73333Z" fill="white"/>
+              </svg>
+            </span>
+          {% endif %}
+          <a href="tel:{{ block_settings.phone_number | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', '' }}" class="announcement-bar__phone">
+            {{ block_settings.phone_number }}
+          </a>
+        </span>
+      {% endif %}
+    </p>
+
+    {% if block_settings.link != blank %}
+      <a
+        class="announcement-bar__link"
+        href="{{ block_settings.link }}"
+      >
+        <span class="visually-hidden">
+          {{ block_settings.text | strip_html }}
+        </span>
+      </a>
+    {% endif %}
+  </slideshow-slide>
+{%- endunless -%}
+
+{% stylesheet %}
+  .text-block {
+    width: var(--width);
+    max-width: 100%;
+  }
+
+  .text-block > * {
+    width: var(--width);
+    max-width: var(--max-width, 100%);
+    text-align: var(--text-align);
+  }
+
+  .text-block:not(.text-block--full-width).rte,
+  .text-block:not(.text-block--full-width).paragraph {
+    /* Safari doesn't support pretty, so fallback to balance */
+    text-wrap: balance;
+    text-wrap: pretty;
+  }
+
+  .text-block:not(.text-block--full-width).h1,
+  .text-block:not(.text-block--full-width).h2,
+  .text-block:not(.text-block--full-width).h3,
+  .text-block:not(.text-block--full-width).h4,
+  .text-block:not(.text-block--full-width).h5,
+  .text-block:not(.text-block--full-width).h6 {
+    text-wrap: balance;
+  }
+
+  /* Hide underline unless text is using paragraph styles. */
+  .text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) a {
+    text-decoration-color: transparent;
+  }
+
+  .text-block h1,
+  .text-block.h1 > * {
+    margin-block: var(--font-h1--spacing);
+  }
+
+  .text-block h2,
+  .text-block.h2 > * {
+    margin-block: var(--font-h2--spacing);
+  }
+
+  .text-block h3,
+  .text-block.h3 > * {
+    margin-block: var(--font-h3--spacing);
+  }
+
+  .text-block h4,
+  .text-block.h4 > * {
+    margin-block: var(--font-h4--spacing);
+  }
+
+  .text-block h5,
+  .text-block.h5 > * {
+    margin-block: var(--font-h5--spacing);
+  }
+
+  .text-block h6,
+  .text-block.h6 > * {
+    margin-block: var(--font-h6--spacing);
+  }
+
+  .text-block > *:first-child {
+    margin-block-start: 0;
+  }
+
+  .text-block > *:last-child {
+    margin-block-end: 0;
+  }
+
+  .text-block--align-center,
+  .text-block--align-center > * {
+    margin-inline: auto;
+  }
+
+  .text-block--align-right,
+  .text-block--align-right > * {
+    margin-inline-start: auto;
+  }
+
+  .announcement-bar__phone-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-left: 0.5em;
+  }
+
+  .announcement-bar__phone-logo {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .announcement-bar__phone-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: #1E5649;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+
+  .announcement-bar__phone-icon svg {
+    display: block;
+  }
+
+  .announcement-bar__phone {
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .announcement-bar__phone:hover {
+    opacity: 0.8;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.announcement",
+  "tag": null,
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "text",
+      "label": "t:settings.text",
+      "default": "t:text_defaults.shop_our_latest_arrivals"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "Phone Number",
+      "info": "Enter phone number to display next to the text (clickable to call)"
+    },
+    {
+      "type": "image_picker",
+      "id": "phone_logo",
+      "label": "Phone Logo",
+      "info": "Upload a logo/icon to display on the left side of the phone number"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "t:options.body"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "t:options.subheading"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "t:options.heading"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "t:options.accent"
+        }
+      ],
+      "default": "var(--font-body--family)"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "0.625rem",
+          "label": "10px"
+        },
+        {
+          "value": "0.75rem",
+          "label": "12px"
+        },
+        {
+          "value": "0.875rem",
+          "label": "14px"
+        },
+        {
+          "value": "1rem",
+          "label": "16px"
+        },
+        {
+          "value": "1.125rem",
+          "label": "18px"
+        },
+        {
+          "value": "1.25rem",
+          "label": "20px"
+        },
+        {
+          "value": "1.5rem",
+          "label": "24px"
+        },
+        {
+          "value": "2rem",
+          "label": "32px"
+        },
+        {
+          "value": "2.5rem",
+          "label": "40px"
+        },
+        {
+          "value": "3rem",
+          "label": "48px"
+        },
+        {
+          "value": "3.5rem",
+          "label": "56px"
+        },
+        {
+          "value": "4.5rem",
+          "label": "72px"
+        },
+        {
+          "value": "5.5rem",
+          "label": "88px"
+        },
+        {
+          "value": "7.5rem",
+          "label": "120px"
+        },
+        {
+          "value": "9.5rem",
+          "label": "152px"
+        },
+        {
+          "value": "11.5rem",
+          "label": "184px"
+        }
+      ],
+      "default": "1rem"
+    },
+    {
+      "type": "select",
+      "id": "weight",
+      "label": "t:settings.weight",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "100",
+          "label": "t:options.thin"
+        },
+        {
+          "value": "300",
+          "label": "t:options.light"
+        },
+        {
+          "value": "400",
+          "label": "t:options.regular"
+        },
+        {
+          "value": "500",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "600",
+          "label": "t:options.semibold"
+        },
+        {
+          "value": "700",
+          "label": "t:options.bold"
+        },
+        {
+          "value": "900",
+          "label": "t:options.black"
+        }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        {
+          "value": "tight",
+          "label": "t:options.tight"
+        },
+        {
+          "value": "normal",
+          "label": "t:options.normal"
+        },
+        {
+          "value": "loose",
+          "label": "t:options.loose"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.default"
+        },
+        {
+          "value": "uppercase",
+          "label": "t:options.uppercase"
+        }
+      ],
+      "default": "none"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.announcement"
+    }
+  ]
+}
+{% endschema %}

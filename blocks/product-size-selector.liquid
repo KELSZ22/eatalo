@@ -1,0 +1,414 @@
+
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+  
+  # Find the Size option from product options
+  assign size_option = null
+  assign size_option_index = 0
+  for option in product.options_with_values
+    assign option_name_lower = option.name | downcase
+    if option_name_lower == 'size'
+      assign size_option = option
+      assign size_option_index = forloop.index0
+      break
+    endif
+  endfor
+-%}
+
+{% if size_option != null %}
+{%- liquid
+  assign has_selected = false
+  assign selected_value = ''
+  for option_value in size_option.values
+    if option_value.selected
+      assign has_selected = true
+      assign selected_value = option_value
+      break
+    endif
+  endfor
+-%}
+<div class="product-size-selector-block spacing-style" style="{% render 'spacing-style', settings: block.settings %}" {{ block.shopify_attributes }}>
+  <div class="product-size-selector-wrapper">
+    <button 
+      type="button"
+      id="product-size-button-{{ block.id }}" 
+      class="product-size-selector-button" 
+      aria-haspopup="true"
+      aria-expanded="false"
+      data-block-id="{{ block.id }}"
+      data-product-id="{{ product.id }}"
+      data-option-index="{{ size_option_index }}"
+    >
+      <span class="product-size-selector-button-text">
+        {% if has_selected %}
+          {{ selected_value | escape }}{% if selected_value.available == false %} - {{ 'content.unavailable' | t }}{% endif %}
+        {% else %}
+          Choose a size
+        {% endif %}
+      </span>
+      <svg
+        class="product-size-selector-icon"
+        aria-hidden="true"
+        focusable="false"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M4 6L8 10L12 6" stroke="#1E5649" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="product-size-selector-menu" id="product-size-menu-{{ block.id }}" role="menu" aria-hidden="true">
+      {%- for option_value in size_option.values -%}
+        <button
+          type="button"
+          class="product-size-selector-menu-item{% if option_value.selected %} product-size-selector-menu-item--selected{% endif %}{% if option_value.available == false %} product-size-selector-menu-item--unavailable{% endif %}"
+          role="menuitem"
+          data-option-value-id="{{ option_value.id }}"
+          data-variant-id="{{ option_value.variant.id }}"
+          data-option-available="{{ option_value.available }}"
+          data-value="{{ option_value | escape }}"
+          {% if option_value.available == false %}disabled{% endif %}
+        >
+          {{ option_value | escape }}{% if option_value.available == false %} - {{ 'content.unavailable' | t }}{% endif %}
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% stylesheet %}
+  .product-size-selector-block {
+    width: 100%;
+  }
+
+  .product-size-selector-label {
+    display: block;
+    color: #1E5649;
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .product-size-selector-wrapper {
+    position: relative;
+    width: 350px;
+  }
+
+  .product-size-selector-button {
+    width: 350px;
+    height: 30px;
+    padding: 0 40px 0 16px;
+    border: 1px solid #1E5649;
+    border-radius: 80px;
+    background-color: #ffffff;
+    color: #1E5649;
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.3s ease;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .product-size-selector-button:focus {
+    outline: none;
+    border-color: #1E5649;
+  }
+
+  .product-size-selector-button:hover {
+    border-color: #164a3f;
+  }
+
+  .product-size-selector-button[aria-expanded="true"] .product-size-selector-icon {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .product-size-selector-button-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-size-selector-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .product-size-selector-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1.5px solid #1E5649;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    max-height: 300px;
+    overflow-y: auto;
+    flex-direction: column;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+
+  .product-size-selector-menu[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .product-size-selector-menu-item {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    color: #1E5649;
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .product-size-selector-menu-item:hover:not(:disabled) {
+    background-color: #f5f5f5;
+  }
+
+  .product-size-selector-menu-item--selected {
+    background-color: #e8f5e9;
+    font-weight: 600;
+  }
+
+  .product-size-selector-menu-item--unavailable {
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .product-size-selector-menu-item:focus {
+    outline: 2px solid #1E5649;
+    outline-offset: -2px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .product-size-selector-wrapper {
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .product-size-selector-button {
+      width: 100%;
+      max-width: 350px;
+      padding: 0 36px 0 14px;
+      font-size: 13px;
+    }
+
+    .product-size-selector-menu-item {
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .product-size-selector-label {
+      font-size: 13px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function() {
+    const sizeButton = document.querySelector('#product-size-button-{{ block.id }}');
+    const sizeMenu = document.querySelector('#product-size-menu-{{ block.id }}');
+    if (!sizeButton || !sizeMenu) return;
+
+    const productId = sizeButton.dataset.productId;
+
+    // Toggle menu on button click
+    sizeButton.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+      sizeMenu.setAttribute('aria-hidden', isExpanded);
+    });
+
+    // Handle menu item selection
+    const menuItems = sizeMenu.querySelectorAll('.product-size-selector-menu-item');
+    menuItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        if (this.disabled) return;
+
+        const variantId = this.dataset.variantId;
+        const optionValueId = this.dataset.optionValueId;
+        const value = this.dataset.value;
+        
+        if (!productId || !optionValueId) return;
+
+        // Update button text
+        const buttonText = sizeButton.querySelector('.product-size-selector-button-text');
+        if (buttonText) {
+          buttonText.textContent = this.textContent.trim();
+        }
+
+        // Remove selected class from all items and add to clicked item
+        menuItems.forEach(function(menuItem) {
+          menuItem.classList.remove('product-size-selector-menu-item--selected');
+        });
+        this.classList.add('product-size-selector-menu-item--selected');
+
+        // Close menu
+        sizeButton.setAttribute('aria-expanded', 'false');
+        sizeMenu.setAttribute('aria-hidden', 'true');
+        
+        // Find the variant picker and trigger the corresponding option change
+        // This is the preferred method as it handles multi-option products correctly
+        const variantPicker = document.querySelector(`variant-picker[data-product-id="${productId}"]`);
+        if (variantPicker) {
+          // Find the corresponding option input/select in the variant picker
+          const optionInput = variantPicker.querySelector(`[data-option-value-id="${optionValueId}"]`);
+          if (optionInput) {
+            // Trigger change event on the variant picker's option
+            if (optionInput instanceof HTMLInputElement) {
+              optionInput.checked = true;
+              optionInput.dispatchEvent(new Event('change', { bubbles: true }));
+            } else if (optionInput instanceof HTMLOptionElement) {
+              const select = optionInput.closest('select');
+              if (select) {
+                select.value = optionInput.value;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            }
+            return; // Variant picker will handle the rest including variant ID update
+          }
+        }
+        
+        // Fallback: Update variant ID directly if variant picker not found and we have a variant ID
+        if (variantId) {
+          const productForm = document.querySelector(`product-form-component[data-product-id="${productId}"]`);
+          if (productForm) {
+            const variantIdInput = productForm.querySelector('input[ref="variantId"], input[name="id"]');
+            if (variantIdInput) {
+              variantIdInput.value = variantId;
+              
+              // Dispatch custom event to trigger UI updates
+              const variantSelectedEvent = new CustomEvent('variant:selected', {
+                bubbles: true,
+                detail: { resource: { id: optionValueId || variantId } }
+              });
+              productForm.dispatchEvent(variantSelectedEvent);
+            }
+          }
+          
+          // Update URL if on product page
+          if (window.location.pathname.includes('/products/')) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('variant', variantId);
+            history.replaceState({}, '', url.toString());
+          }
+        }
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!sizeButton.contains(e.target) && !sizeMenu.contains(e.target)) {
+        sizeButton.setAttribute('aria-expanded', 'false');
+        sizeMenu.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    // Close menu on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sizeButton.getAttribute('aria-expanded') === 'true') {
+        sizeButton.setAttribute('aria-expanded', 'false');
+        sizeMenu.setAttribute('aria-hidden', 'true');
+        sizeButton.focus();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Size Selector",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Displays a dropdown selector for product size variants. Options are dynamically generated from the product's Size option. Selecting a size will update the variant selection."
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Size Selector",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,594 @@
+{% liquid
+  assign bestseller_collection = collections['bestsellers'] | default: collections['best-selling'] | default: collections['bestseller']
+  
+  if bestseller_collection != blank
+    assign selected_collection = bestseller_collection
+  else
+    assign selected_collection = collections.all
+  endif
+  
+  assign max_items = section.settings.max_products
+%}
+
+<div class="bestseller-carousel-section" style="background-color: {{ section.settings.background_color }}; padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;">
+  <div class="bestseller-carousel-container" style="max-width: {{ section.settings.container_width }}px; margin: 0 auto;">
+    
+    {% if section.settings.show_title %}
+      <div class="bestseller-carousel-header" style="margin-bottom: 30px; padding: 0 20px;">
+        <h2 style="font-family: 'Poppins', sans-serif; font-size: {{ section.settings.title_size }}px; color: {{ section.settings.title_color }}; margin: 0;">
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {% endif %}
+
+    <div class="bestseller-carousel-outer">
+      <button class="bestseller-nav-btn bestseller-nav-prev desktop-only" id="bestseller-prev-{{ section.id }}" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="bestseller-carousel-viewport" id="bestseller-carousel-{{ section.id }}">
+        <div class="bestseller-carousel-track" id="bestseller-track-{{ section.id }}">
+          {% if selected_collection != blank and selected_collection.products.size > 0 %}
+            {% for product in selected_collection.products limit: max_items %}
+              <div class="bestseller-carousel-item">
+                <div class="bestseller-product-card">
+                  <div class="bestseller-product-image">
+                    {% if product.featured_image %}
+                      <a href="{{ product.url }}">
+                        <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title | escape }}" loading="lazy">
+                      </a>
+                    {% else %}
+                      <div class="bestseller-placeholder-image">
+                        <span class="bestseller-placeholder-title">{{ product.title }}</span>
+                      </div>
+                    {% endif %}
+                    {%- liquid
+                      assign has_available_variant = false
+                      for variant in product.variants
+                        if variant.available
+                          assign has_available_variant = true
+                          break
+                        endif
+                      endfor
+                    -%}
+                    {% if has_available_variant == false %}
+                      <span class="bestseller-sold-out-badge">Sold out</span>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="bestseller-product-info">
+                    <h3 class="bestseller-product-title">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </h3>
+                    
+                    <div class="bestseller-product-price">
+                      {% if product.compare_at_price > product.price %}
+                        <span class="bestseller-price-sale">{{ product.price | money }}</span>
+                        <span class="bestseller-price-compare">{{ product.compare_at_price | money }}</span>
+                      {% else %}
+                        <span class="bestseller-price-regular">{{ product.price | money }}</span>
+                      {% endif %}
+                    </div>
+                    
+                    {% if product.tags.size > 0 %}
+                      <div class="bestseller-product-tags">
+                        {% for tag in product.tags limit: 3 %}
+                          <span class="bestseller-tag-pill">{{ tag }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            {% for i in (1..6) %}
+              <div class="bestseller-carousel-item">
+                <div class="bestseller-product-card">
+                  <div class="bestseller-product-image">
+                    <div class="bestseller-placeholder-image">
+                      <span class="bestseller-placeholder-title">Product Title</span>
+                    </div>
+                  </div>
+                  <div class="bestseller-product-info">
+                    <h3 class="bestseller-product-title">Product Title</h3>
+                    <div class="bestseller-product-price">
+                      <span class="bestseller-price-regular">$0.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <button class="bestseller-nav-btn bestseller-nav-next desktop-only" id="bestseller-next-{{ section.id }}" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="bestseller-mobile-controls">
+      <button class="bestseller-nav-btn bestseller-nav-prev" id="bestseller-prev-mobile-{{ section.id }}" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="bestseller-nav-btn bestseller-nav-next" id="bestseller-next-mobile-{{ section.id }}" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    {% if section.settings.show_view_all %}
+      <div class="bestseller-view-all" style="text-align: right; margin-top: 20px; padding: 0 20px;">
+        <a href="{{ selected_collection.url }}" style="font-family: 'Poppins', sans-serif; font-size: 15px; color: #1e5649; text-decoration: none;">
+          View all
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .bestseller-carousel-section {
+    width: 100%;
+  }
+
+  .bestseller-carousel-container {
+    position: relative;
+  }
+
+  .bestseller-carousel-outer {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .bestseller-carousel-viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .bestseller-carousel-track {
+    display: flex;
+    gap: 16px;
+    transition: transform 0.5s ease;
+  }
+
+  .bestseller-carousel-item {
+    flex: 0 0 calc(25% - 12px);
+  }
+
+  .bestseller-product-card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .bestseller-product-image {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    background-color: #f5f5f5;
+  }
+
+  .bestseller-product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .bestseller-product-card:hover .bestseller-product-image img {
+    transform: scale(1.05);
+  }
+
+  .bestseller-placeholder-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 15px;
+  }
+
+  .bestseller-placeholder-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  .bestseller-sold-out-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgb(238 241 234 / 1.0);
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .bestseller-product-info {
+    padding: 16px 0;
+  }
+
+  .bestseller-product-title {
+    margin: 0 0 8px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #1e5649;
+  }
+
+  .bestseller-product-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .bestseller-product-title a:hover {
+    color: #2d7a63;
+  }
+
+  .bestseller-product-price {
+    margin-bottom: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1e5649;
+  }
+
+  .bestseller-price-sale {
+    color: #d32f2f;
+    margin-right: 8px;
+  }
+
+  .bestseller-price-compare {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+  }
+
+  .bestseller-product-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .bestseller-tag-pill {
+    border: 1.5px solid #1e5649;
+    border-radius: 20px;
+    padding: 4px 12px;
+    color: #1e5649;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .bestseller-nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid #1e5649;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, opacity 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .bestseller-nav-btn:hover {
+    background: #1e5649;
+  }
+
+  .bestseller-nav-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: #1e5649;
+    stroke-width: 2;
+    transition: stroke 0.2s ease;
+  }
+
+  .bestseller-nav-btn:hover svg {
+    stroke: #ffffff;
+  }
+
+  /* Mobile controls hidden on desktop */
+  .bestseller-mobile-controls {
+    display: none;
+  }
+
+  /* ── Tablet ── */
+  @media screen and (max-width: 1024px) {
+    .bestseller-carousel-item {
+      flex: 0 0 calc(33.333% - 11px);
+    }
+  }
+
+
+  @media screen and (max-width: 768px) {
+
+    .desktop-only {
+      display: none !important;
+    }
+
+    .bestseller-carousel-outer {
+      display: block;
+      padding: 0 20px;
+    }
+
+    .bestseller-carousel-viewport {
+      overflow: hidden;
+      margin-right: -50px;
+      padding-right: 50px;
+    }
+
+    .bestseller-carousel-item {
+      flex: 0 0 calc(21% - 8px);
+    }
+
+
+    .bestseller-mobile-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 0 20px;
+      margin-left: 180px;
+    }
+
+    .bestseller-nav-btn {
+      width: 36px;
+      height: 36px;
+    }
+
+    .bestseller-nav-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .bestseller-product-title {
+      font-size: 14px;
+    }
+
+    .bestseller-product-price {
+      font-size: 13px;
+    }
+
+    .bestseller-product-info {
+      padding: 10px 0;
+    }
+
+    .bestseller-tag-pill {
+      font-size: 10px;
+      padding: 3px 10px;
+    }
+
+    .bestseller-placeholder-title {
+      font-size: 13px;
+    }
+
+    .bestseller-placeholder-image {
+      padding: 10px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .bestseller-carousel-item {
+      flex: 0 0 calc(21% - 8px);
+    }
+
+    .bestseller-nav-btn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .bestseller-nav-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('bestseller-track-{{ section.id }}');
+    if (!track) return;
+
+    const prevBtnDesktop = document.getElementById('bestseller-prev-{{ section.id }}');
+    const nextBtnDesktop = document.getElementById('bestseller-next-{{ section.id }}');
+    const prevBtnMobile  = document.getElementById('bestseller-prev-mobile-{{ section.id }}');
+    const nextBtnMobile  = document.getElementById('bestseller-next-mobile-{{ section.id }}');
+    const viewport = document.getElementById('bestseller-carousel-{{ section.id }}');
+
+    const items = Array.from(track.querySelectorAll('.bestseller-carousel-item'));
+    if (items.length === 0) return;
+
+    let currentIndex = 0;
+    let isTransitioning = false;
+
+    function getItemWidth() {
+      return items[0].offsetWidth + 16;
+    }
+
+    function getVisibleCount() {
+      // Use clientWidth (excludes the peek padding) for visible count
+      const vw = viewport.clientWidth - 50; // subtract peek padding
+      return Math.max(1, Math.floor(vw / getItemWidth()));
+    }
+
+    function maxIndex() {
+      return Math.max(0, items.length - getVisibleCount());
+    }
+
+    function updateButtons() {
+      const atStart = currentIndex <= 0;
+      const atEnd   = currentIndex >= maxIndex();
+
+      [prevBtnDesktop, prevBtnMobile].forEach(btn => {
+        if (!btn) return;
+        btn.style.opacity = atStart ? '0.3' : '1';
+        btn.style.pointerEvents = atStart ? 'none' : 'auto';
+      });
+
+      [nextBtnDesktop, nextBtnMobile].forEach(btn => {
+        if (!btn) return;
+        btn.style.opacity = atEnd ? '0.3' : '1';
+        btn.style.pointerEvents = atEnd ? 'none' : 'auto';
+      });
+    }
+
+    function goTo(index) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      currentIndex = Math.max(0, Math.min(index, maxIndex()));
+      track.style.transform = `translateX(-${currentIndex * getItemWidth()}px)`;
+      updateButtons();
+      setTimeout(() => { isTransitioning = false; }, 520);
+    }
+
+    [nextBtnDesktop, nextBtnMobile].forEach(btn => {
+      if (!btn) return;
+      btn.addEventListener('click', () => goTo(currentIndex + 1));
+    });
+
+    [prevBtnDesktop, prevBtnMobile].forEach(btn => {
+      if (!btn) return;
+      btn.addEventListener('click', () => goTo(currentIndex - 1));
+    });
+
+    // Swipe support
+    let touchStartX = 0;
+    track.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 40) diff > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
+    }, { passive: true });
+
+    window.addEventListener('resize', () => goTo(Math.min(currentIndex, maxIndex())));
+
+    updateButtons();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Best Seller Carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Popular Menu Items"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show Title",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title Font Size",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#1e5649"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum Products",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show View All Link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Seller Carousel",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}

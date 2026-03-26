@@ -1,0 +1,595 @@
+{% doc %}
+  @prompt
+    Create a custom Shopify section for collection navigation tabs.
+    
+    I do NOT want cards, tiles, squares, images, or boxed category blocks.
+    
+    I want a premium horizontal text-based navigation bar that sits above the product grid and spans the full width of the page.
+    
+    Design requirements:
+    - Full-width horizontal navigation
+    - Text-only menu items on a single line
+    - No images
+    - No square cards
+    - No background image blocks
+    - Minimal, elegant, high-end style in line with a premium fashion/lifestyle ecommerce website
+    - Each item should look like a navigation tab, with clean spacing and refined typography
+    - Active/selected item should have a subtle underline or line indicator
+    - On hover, text should animate subtly and feel premium
+    - The navigation should feel editorial and sophisticated, not playful or bulky
+    
+    Functionality:
+    - Each navigation item must be editable in the section settings
+    - For each item, allow:
+      1. Custom text label
+      2. Assigned collection or link
+    - When clicked, each item should link to the assigned collection page
+    - The current collection should appear visually active if it matches the assigned link
+    - If there are too many items to fit on screen, the menu should scroll horizontally
+    - Add optional left/right arrow controls for desktop
+    - On mobile, allow horizontal swipe/scroll
+    - Keep everything on one row only
+    
+    Section settings:
+    - Add a section heading option (optional)
+    - Add a toggle to show/hide arrows
+    - Add spacing controls for top and bottom padding
+    - Add font size controls for desktop and mobile
+    - Add color controls for text, active text, and underline
+    - Add option to align menu left or center
+    - Add option to enable full width or page width container
+    
+    Important:
+    - This is NOT a product filter app
+    - This is a visual collection navigation menu made of custom text links
+    - It should be built as a reusable Shopify section with blocks
+    - Each block = one navigation item
+    - Do not generate cards, image boxes, category tiles, or button-style pills
+    - Keep the layout refined, minimal, and luxurious. Same Stille as nav menu in eatalo.com.au/dine-in
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-nav-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-top: {{ block.settings.spacing_top }}px;
+    padding-bottom: {{ block.settings.spacing_bottom }}px;
+  }
+
+  .ai-collection-nav__container-{{ ai_gen_id }} {
+    {% if block.settings.container_width == 'full' %}
+      width: 100%;
+      max-width: 100%;
+      padding-left: 20px;
+      padding-right: 20px;
+    {% else %}
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    {% endif %}
+  }
+
+  .ai-collection-nav__heading-{{ ai_gen_id }} {
+    margin: 0 0 24px 0;
+    color: {{ block.settings.text_color }};
+    text-align: {{ block.settings.menu_alignment }};
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .ai-collection-nav__wrapper-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-collection-nav__arrow-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid {{ block.settings.text_color }};
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-collection-nav__arrow-{{ ai_gen_id }}:hover {
+    opacity: 1;
+    border-color: {{ block.settings.active_text_color }};
+  }
+
+  .ai-collection-nav__arrow-{{ ai_gen_id }}:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+
+  .ai-collection-nav__arrow-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ai-collection-nav__scroll-container-{{ ai_gen_id }} {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ai-collection-nav__scroll-container-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-collection-nav__menu-{{ ai_gen_id }} {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    {% if block.settings.menu_alignment == 'center' %}
+      justify-content: center;
+    {% else %}
+      justify-content: flex-start;
+    {% endif %}
+  }
+
+  .ai-collection-nav__item-{{ ai_gen_id }} {
+    flex-shrink: 0;
+  }
+
+  .ai-collection-nav__link-{{ ai_gen_id }} {
+    position: relative;
+    display: inline-block;
+    padding: 12px 0;
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.font_size_desktop }}px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.3s ease;
+  }
+
+  .ai-collection-nav__link-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: {{ block.settings.underline_color }};
+    transition: width 0.3s ease;
+  }
+
+  .ai-collection-nav__link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.active_text_color }};
+  }
+
+  .ai-collection-nav__link-{{ ai_gen_id }}:hover::after {
+    width: 100%;
+  }
+
+  .ai-collection-nav__link-{{ ai_gen_id }}.active {
+    color: {{ block.settings.active_text_color }};
+  }
+
+  .ai-collection-nav__link-{{ ai_gen_id }}.active::after {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-nav__heading-{{ ai_gen_id }} {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .ai-collection-nav__link-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size_mobile }}px;
+    }
+
+    .ai-collection-nav__menu-{{ ai_gen_id }} {
+      gap: 32px;
+    }
+
+    .ai-collection-nav__arrow-{{ ai_gen_id }} {
+      {% if block.settings.show_arrows %}
+        display: none;
+      {% endif %}
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-collection-nav__arrow-{{ ai_gen_id }} {
+      {% if block.settings.show_arrows == false %}
+        display: none;
+      {% endif %}
+    }
+  }
+{% endstyle %}
+
+<collection-nav-{{ ai_gen_id }} class="ai-collection-nav-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-collection-nav__container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-collection-nav__heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="ai-collection-nav__wrapper-{{ ai_gen_id }}">
+      <button
+        class="ai-collection-nav__arrow-{{ ai_gen_id }} ai-collection-nav__arrow-left-{{ ai_gen_id }}"
+        aria-label="Scroll left"
+        data-direction="left"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="ai-collection-nav__scroll-container-{{ ai_gen_id }}">
+        <ul class="ai-collection-nav__menu-{{ ai_gen_id }}">
+          {% for i in (1..8) %}
+            {% liquid
+              assign label_key = 'item_' | append: i | append: '_label'
+              assign link_key = 'item_' | append: i | append: '_link'
+              assign label = block.settings[label_key]
+              assign link = block.settings[link_key]
+            %}
+
+            {% if label != blank %}
+              <li class="ai-collection-nav__item-{{ ai_gen_id }}">
+                {% if link != blank %}
+                  {% assign is_active = false %}
+                  {% if collection and link == collection.url %}
+                    {% assign is_active = true %}
+                  {% endif %}
+                  <a
+                    href="{{ link }}"
+                    class="ai-collection-nav__link-{{ ai_gen_id }} {% if is_active %}active{% endif %}"
+                  >
+                    {{ label }}
+                  </a>
+                {% else %}
+                  <span class="ai-collection-nav__link-{{ ai_gen_id }}">
+                    {{ label }}
+                  </span>
+                {% endif %}
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      <button
+        class="ai-collection-nav__arrow-{{ ai_gen_id }} ai-collection-nav__arrow-right-{{ ai_gen_id }}"
+        aria-label="Scroll right"
+        data-direction="right"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+</collection-nav-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CollectionNav{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.scrollContainer = this.querySelector('.ai-collection-nav__scroll-container-{{ ai_gen_id }}');
+        this.leftArrow = this.querySelector('.ai-collection-nav__arrow-left-{{ ai_gen_id }}');
+        this.rightArrow = this.querySelector('.ai-collection-nav__arrow-right-{{ ai_gen_id }}');
+
+        if (this.leftArrow && this.rightArrow) {
+          this.setupArrows();
+        }
+      }
+
+      setupArrows() {
+        this.leftArrow.addEventListener('click', () => this.scroll('left'));
+        this.rightArrow.addEventListener('click', () => this.scroll('right'));
+
+        this.scrollContainer.addEventListener('scroll', () => this.updateArrowStates());
+        this.updateArrowStates();
+      }
+
+      scroll(direction) {
+        const scrollAmount = 300;
+        const currentScroll = this.scrollContainer.scrollLeft;
+
+        if (direction === 'left') {
+          this.scrollContainer.scrollTo({
+            left: currentScroll - scrollAmount,
+            behavior: 'smooth'
+          });
+        } else {
+          this.scrollContainer.scrollTo({
+            left: currentScroll + scrollAmount,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      updateArrowStates() {
+        const maxScroll = this.scrollContainer.scrollWidth - this.scrollContainer.clientWidth;
+        const currentScroll = this.scrollContainer.scrollLeft;
+
+        if (currentScroll <= 0) {
+          this.leftArrow.disabled = true;
+        } else {
+          this.leftArrow.disabled = false;
+        }
+
+        if (currentScroll >= maxScroll - 1) {
+          this.rightArrow.disabled = true;
+        } else {
+          this.rightArrow.disabled = false;
+        }
+      }
+    }
+
+    customElements.define('collection-nav-{{ ai_gen_id }}', CollectionNav{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection navigation",
+  "tag": null,
+  "class": "collection-navigation-block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 1"
+    },
+    {
+      "type": "text",
+      "id": "item_1_label",
+      "label": "Label",
+      "default": "All Products"
+    },
+    {
+      "type": "url",
+      "id": "item_1_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 2"
+    },
+    {
+      "type": "text",
+      "id": "item_2_label",
+      "label": "Label",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "url",
+      "id": "item_2_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 3"
+    },
+    {
+      "type": "text",
+      "id": "item_3_label",
+      "label": "Label",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "url",
+      "id": "item_3_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 4"
+    },
+    {
+      "type": "text",
+      "id": "item_4_label",
+      "label": "Label",
+      "default": "Sale"
+    },
+    {
+      "type": "url",
+      "id": "item_4_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 5"
+    },
+    {
+      "type": "text",
+      "id": "item_5_label",
+      "label": "Label"
+    },
+    {
+      "type": "url",
+      "id": "item_5_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 6"
+    },
+    {
+      "type": "text",
+      "id": "item_6_label",
+      "label": "Label"
+    },
+    {
+      "type": "url",
+      "id": "item_6_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 7"
+    },
+    {
+      "type": "text",
+      "id": "item_7_label",
+      "label": "Label"
+    },
+    {
+      "type": "url",
+      "id": "item_7_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation item 8"
+    },
+    {
+      "type": "text",
+      "id": "item_8_label",
+      "label": "Label"
+    },
+    {
+      "type": "url",
+      "id": "item_8_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "container_width",
+      "label": "Container width",
+      "options": [
+        {
+          "value": "page",
+          "label": "Page width"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "select",
+      "id": "menu_alignment",
+      "label": "Menu alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "label": "Desktop font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Mobile font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "underline_color",
+      "label": "Underline",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection navigation"
+    }
+  ]
+}
+{% endschema %}

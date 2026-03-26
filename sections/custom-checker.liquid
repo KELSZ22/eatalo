@@ -1,0 +1,430 @@
+<style>
+  .delivery-checker {
+    background-color: #cde6c5;
+    padding: 30px 20px;
+    border-bottom: 2px solid #1f493a;
+    border-top: 2px solid #1f493a;
+  }
+
+  .delivery-checker__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .delivery-checker__title {
+    font-size: 40px;
+    font-weight: 500;
+    color: #1f493a;
+    margin: 0;
+    font-family: inherit;
+  }
+
+  .delivery-checker__icon {
+    width: 50px;
+    height: 50px;
+    background-color: #d94444;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .delivery-checker__icon svg {
+    width: 28px;
+    height: 28px;
+    fill: white;
+  }
+
+  .delivery-checker__input-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 600px;
+    min-width: 280px;
+  }
+
+  .delivery-checker__input {
+    width: 100%;
+    padding: 18px 60px 18px 20px;
+    border: 2px solid #1f493a;
+    border-radius: 50px;
+    font-size: 18px;
+    font-family: inherit;
+    background-color: #cde6c5;
+    color: #1f493a;
+    outline: none;
+  }
+
+  .delivery-checker__input::placeholder {
+    color: #1f493a;
+    opacity: 0.7;
+  }
+
+  .delivery-checker__submit {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+  }
+
+  .delivery-checker__submit:hover {
+    background-color: #f0f0f0;
+  }
+
+  .delivery-checker__submit svg {
+    width: 24px;
+    height: 24px;
+    fill: #1f493a;
+  }
+
+  .delivery-checker__result {
+    display: none;
+    background-color: white;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    animation: slideDown 0.3s ease-out;
+    z-index: 100;
+    left: 600px;
+  }
+
+  .delivery-checker__result.active {
+    display: block;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .delivery-checker__result-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border: 2px solid #d0d0d0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s;
+  }
+
+  .delivery-checker__result-close:hover {
+    border-color: #1f493a;
+  }
+
+  .delivery-checker__result-close svg {
+    width: 16px;
+    height: 16px;
+    fill: #666;
+  }
+
+  .delivery-checker__result-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-right: 40px;
+  }
+
+  .delivery-checker__result-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .delivery-checker__result-icon.success {
+    background-color: #4caf50;
+  }
+
+  .delivery-checker__result-icon.error {
+    background-color: #f44336;
+  }
+
+  .delivery-checker__result-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: white;
+  }
+
+  .delivery-checker__result-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: #4caf50;
+  }
+
+  .delivery-checker__result-title.error {
+    color: #f44336;
+  }
+
+  .delivery-checker__result-body {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .delivery-checker__result-body strong {
+    font-weight: 700;
+  }
+
+  .delivery-checker__result-body a {
+    color: #1f493a;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .delivery-checker {
+      padding: 20px 15px;
+    }
+
+    .delivery-checker__container {
+      gap: 15px;
+    }
+
+    .delivery-checker__title {
+      font-size: 30px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .delivery-checker__icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .delivery-checker__icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .delivery-checker__input-wrapper {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .delivery-checker__input {
+      font-size: 16px;
+      padding: 16px 55px 16px 18px;
+    }
+
+    .delivery-checker__submit {
+      width: 42px;
+      height: 42px;
+    }
+
+    .delivery-checker__result {
+      padding: 30px 20px;
+      margin: 15px;
+    }
+
+    .delivery-checker__result-title {
+      font-size: 24px;
+    }
+
+    .delivery-checker__result-body {
+      font-size: 16px;
+    }
+
+    .delivery-checker__result-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .delivery-checker__result-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .delivery-checker__result-close {
+      width: 32px;
+      height: 32px;
+      top: 15px;
+      right: 15px;
+    }
+
+    .delivery-checker__result-close svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .delivery-checker__result {
+      left: 0px;
+    }
+  }
+</style>
+
+<div class="delivery-checker">
+  <div class="delivery-checker__container">
+    <h2 class="delivery-checker__title">Check if we deliver to you?</h2>
+    <div class="delivery-checker__input-wrapper">
+      <input
+        type="text"
+        class="delivery-checker__input"
+        placeholder="Enter your postcode"
+        id="deliveryInput"
+      >
+      <button type="button" class="delivery-checker__submit" id="deliverySubmit">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="delivery-checker__result" id="deliveryResult">
+  <button type="button" class="delivery-checker__result-close" id="resultClose">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+    </svg>
+  </button>
+  <div class="delivery-checker__result-header">
+    <div class="delivery-checker__result-icon" id="resultIcon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="resultIconSvg">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+      </svg>
+    </div>
+    <h3 class="delivery-checker__result-title" id="resultTitle">We deliver to you!</h3>
+  </div>
+  <div class="delivery-checker__result-body" id="resultBody"></div>
+</div>
+
+<script>
+  (function() {
+    var deliveryFeeByPostcode = {};
+    var feeTiers = [
+      { fee: 15, postcodes: ['2000', '2009', '2007', '2010', '2008', '2016', '2017', '2021', '2011'] },
+      { fee: 25, postcodes: ['2015', '2043', '2042', '2204', '2018', '2020', '2033', '2031', '2021', '2022', '2061', '2060', '2089', '2065'] },
+      { fee: 40, postcodes: ['2067', '2066', '2064', '2068', '2131', '2134', '2135', '2140', '2127', '2026', '2034', '2035'] }
+    ];
+
+    feeTiers.forEach(function(tier) {
+      tier.postcodes.forEach(function(postcode) {
+        if (!deliveryFeeByPostcode[postcode]) {
+          deliveryFeeByPostcode[postcode] = tier.fee;
+        }
+      });
+    });
+
+    var input = document.getElementById('deliveryInput');
+    var submit = document.getElementById('deliverySubmit');
+    var result = document.getElementById('deliveryResult');
+    var resultClose = document.getElementById('resultClose');
+    var resultIcon = document.getElementById('resultIcon');
+    var resultIconSvg = document.getElementById('resultIconSvg');
+    var resultTitle = document.getElementById('resultTitle');
+    var resultBody = document.getElementById('resultBody');
+
+    function checkDelivery() {
+      var value = input.value.trim().toLowerCase();
+      if (!value) return;
+
+      var postcodeMatch = value.match(/\d{4}/);
+      if (postcodeMatch) {
+        var postcode = postcodeMatch[0];
+        if (typeof deliveryFeeByPostcode[postcode] === 'number') {
+          var deliveryFee = deliveryFeeByPostcode[postcode];
+          showSuccessResult();
+          resultBody.innerHTML = 'Postcode: <strong>' + postcode + '</strong><br>Delivery fee: <strong>$' + deliveryFee + '</strong><br>Delivery days: Monday-Friday<br>Order cutoff: 4:00 PM the business day before<br><br>For weekend deliveries please email your order and delivery details to <a href="mailto:info@eatalo.com.au">info@eatalo.com.au</a> and we will confirm availability as soon as possible.';
+        } else {
+          showErrorResult();
+        }
+      } else {
+        showErrorResult();
+      }
+    }
+
+    function showSuccessResult() {
+      resultIcon.classList.remove('error');
+      resultIcon.classList.add('success');
+      resultTitle.classList.remove('error');
+      resultTitle.textContent = 'Yes, we deliver to your area!';
+      resultIconSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>';
+      result.classList.add('active');
+    }
+
+    function showErrorResult() {
+      resultIcon.classList.remove('success');
+      resultIcon.classList.add('error');
+      resultTitle.classList.add('error');
+      resultTitle.textContent = "Sorry. We don't currently deliver to this area at the moment";
+      resultIconSvg.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>';
+      resultBody.innerHTML = "This suburb is outside our delivery zone.<br><br>If you'd like to check alternative options or request a special delivery, please email <a href=\"mailto:info@eatalo.com.au\">info@eatalo.com.au</a> and we'll see what we can do.";
+      result.classList.add('active');
+    }
+
+    function closeResult() {
+      result.classList.remove('active');
+    }
+
+    submit.addEventListener('click', checkDelivery);
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkDelivery();
+    });
+    resultClose.addEventListener('click', closeResult);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Delivery Checker",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Check if we deliver to you?"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary Color",
+      "default": "#1f493a"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#cde6c5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Delivery Checker"
+    }
+  ]
+}
+{% endschema %}

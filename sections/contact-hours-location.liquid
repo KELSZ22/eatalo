@@ -1,0 +1,294 @@
+<style>
+  .eatalo-contact-section {
+    background-color: #f8f2ec;
+    width: 100%;
+    height: 658px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .eatalo-contact-container {
+    display: flex;
+    max-width: 1400px;
+    width: 100%;
+    gap: 60px;
+    align-items: stretch;
+    box-sizing: border-box;
+  }
+
+  .eatalo-contact-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .eatalo-contact-column.eatalo-map-column {
+    flex: 2.5;
+  }
+
+  .eatalo-contact-heading {
+    color: #2c5f4f;
+    font-family: 'Archivo Medium', sans-serif;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .eatalo-contact-text {
+    color: #2c5f4f;
+    font-family: 'Archivo Medium', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .eatalo-contact-email {
+    color: #2c5f4f;
+    font-family: 'Archivo Medium', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0px 0;
+  }
+
+  .eatalo-contact-address {
+    margin-top: 15px;
+  }
+
+  .eatalo-hours-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .eatalo-hours-item {
+    color: #2c5f4f;
+    font-family: 'Archivo Medium', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .eatalo-map-container {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+  }
+
+  .eatalo-map-container iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    max-height: 578px;
+    border: none;
+  }
+
+  @media (max-width: 1024px) {
+    .eatalo-contact-container {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .eatalo-contact-section {
+      height: auto;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .eatalo-map-container {
+      min-height: 400px;
+      max-height: 600px;
+      flex: 1;
+    }
+    
+    .eatalo-map-container iframe {
+      min-height: 400px;
+      max-height: 600px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .eatalo-contact-heading {
+      font-size: 24px;
+    }
+
+    .eatalo-contact-text,
+    .eatalo-contact-email,
+    .eatalo-hours-item {
+      font-size: 16px;
+    }
+  }
+</style>
+
+<section class="eatalo-contact-section">
+  <div class="eatalo-contact-container">
+    <!-- Contact Column -->
+    <div class="eatalo-contact-column">
+      <h2 class="eatalo-contact-heading">{{ section.settings.contact_heading }}</h2>
+      <p class="eatalo-contact-text">{{ section.settings.phone_number }}</p>
+      <p class="eatalo-contact-email">{{ section.settings.email }}</p>
+      <p class="eatalo-contact-text eatalo-contact-address">
+        {{ section.settings.address_line1 -}}
+        <br>
+        {{ section.settings.address_line2 }}
+      </p>
+    </div>
+
+    <!-- Open Hours Column -->
+    <div class="eatalo-contact-column">
+      <h2 class="eatalo-contact-heading">{{ section.settings.hours_heading }}</h2>
+      <ul class="eatalo-hours-list">
+        <li class="eatalo-hours-item">{{ section.settings.monday_hours }}</li>
+        <li class="eatalo-hours-item">{{ section.settings.tuesday_hours }}</li>
+        <li class="eatalo-hours-item">{{ section.settings.wednesday_hours }}</li>
+        <li class="eatalo-hours-item">{{ section.settings.thursday_hours }}</li>
+        <li class="eatalo-hours-item">{{ section.settings.friday_hours }}</li>
+        <li class="eatalo-hours-item">{{ section.settings.saturday_hours }}</li>
+        <li class="eatalo-hours-item">{{ section.settings.sunday_hours }}</li>
+      </ul>
+    </div>
+
+    <!-- Map Column -->
+    <div class="eatalo-contact-column eatalo-map-column">
+      <div class="eatalo-map-container">
+        {% if section.settings.google_maps_url != blank %}
+          <iframe
+            src="{{ section.settings.google_maps_url }}"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          >
+          </iframe>
+        {% else %}
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.5!2d151.2!3d-33.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDUxJzM5LjYiUyAxNTHCsDEyJzAwLjAiRQ!5e0!3m2!1sen!2sau!4v1234567890"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          >
+          </iframe>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact Info Section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Contact Heading",
+      "default": "CONTACT"
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "Phone Number",
+      "default": "02 9241 2127"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@eatalo.com.au"
+    },
+    {
+      "type": "text",
+      "id": "address_line1",
+      "label": "Address Line 1",
+      "default": "Eatalo Cafe, Shop 2,"
+    },
+    {
+      "type": "text",
+      "id": "address_line2",
+      "label": "Address Line 2",
+      "default": "8-18 Bent Street, Sydney"
+    },
+    {
+      "type": "header",
+      "content": "Opening Hours"
+    },
+    {
+      "type": "text",
+      "id": "hours_heading",
+      "label": "Hours Heading",
+      "default": "OPEN HOURS"
+    },
+    {
+      "type": "text",
+      "id": "monday_hours",
+      "label": "Monday Hours",
+      "default": "MON: 5:30am - 15:00pm"
+    },
+    {
+      "type": "text",
+      "id": "tuesday_hours",
+      "label": "Tuesday Hours",
+      "default": "TUES: 5:30am - 15:00pm"
+    },
+    {
+      "type": "text",
+      "id": "wednesday_hours",
+      "label": "Wednesday Hours",
+      "default": "WED: 5:30am - 15:00pm"
+    },
+    {
+      "type": "text",
+      "id": "thursday_hours",
+      "label": "Thursday Hours",
+      "default": "THURS: 5:30am - 15:00pm"
+    },
+    {
+      "type": "text",
+      "id": "friday_hours",
+      "label": "Friday Hours",
+      "default": "FRI: 5:30am - 15:00pm"
+    },
+    {
+      "type": "text",
+      "id": "saturday_hours",
+      "label": "Saturday Hours",
+      "default": "SAT: CLOSED"
+    },
+    {
+      "type": "text",
+      "id": "sunday_hours",
+      "label": "Sunday Hours",
+      "default": "SUN: CLOSED"
+    },
+    {
+      "type": "header",
+      "content": "Google Maps"
+    },
+    {
+      "type": "textarea",
+      "id": "google_maps_url",
+      "label": "Google Maps Embed URL",
+      "info": "Go to Google Maps, search your location, click 'Share' > 'Embed a map', copy the URL from the iframe src attribute",
+      "default": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.5!2d151.2!3d-33.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDUxJzM5LjYiUyAxNTHCsDEyJzAwLjAiRQ!5e0!3m2!1sen!2sau!4v1234567890"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Info Section"
+    }
+  ]
+}
+{% endschema %}

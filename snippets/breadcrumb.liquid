@@ -1,0 +1,118 @@
+{% liquid
+  assign show_breadcrumbs = true
+  if template.name == 'product'
+    # Use passed product parameter if available, otherwise use global product
+    if product_param != blank
+      assign current_product = product_param
+    else
+      assign current_product = product
+    endif
+  elsif template.name == 'collection'
+    assign current_collection = collection
+  endif
+%}
+
+{% if show_breadcrumbs %}
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol class="breadcrumb__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+      {% comment %} Home {% endcomment %}
+      <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ routes.root_url }}" class="breadcrumb__link" itemprop="item">
+          <span itemprop="name">Home</span>
+        </a>
+        <meta itemprop="position" content="1" />
+      </li>
+
+      {% comment %} Collection (if product page and product has collections) {% endcomment %}
+      {% if template.name == 'product' and current_product.collections.size > 0 %}
+        {% assign product_collection = current_product.collections.first %}
+        <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb__separator" aria-hidden="true">/</span>
+          <a href="{{ product_collection.url }}" class="breadcrumb__link" itemprop="item">
+            <span itemprop="name">{{ product_collection.title }}</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+      {% elsif template.name == 'collection' and current_collection %}
+        <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb__separator" aria-hidden="true">/</span>
+          <span class="breadcrumb__current" itemprop="name">{{ current_collection.title }}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      {% endif %}
+
+      {% comment %} Product Name (if product page) {% endcomment %}
+      {% if template.name == 'product' and current_product %}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb__separator" aria-hidden="true">/</span>
+          <span class="breadcrumb__current" itemprop="name">{{ current_product.title }}</span>
+          <meta itemprop="position" content="{% if current_product.collections.size > 0 %}3{% else %}2{% endif %}" />
+        </li>
+      {% endif %}
+    </ol>
+  </nav>
+{% endif %}
+
+{% stylesheet %}
+  .breadcrumb {
+    margin-bottom: 24px;
+  }
+
+  .breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 8px;
+  }
+
+  .breadcrumb__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breadcrumb__separator {
+    color: #1E5649;
+    opacity: 0.5;
+    font-size: 14px;
+  }
+
+  .breadcrumb__link {
+    color: #1E5649;
+    text-decoration: none;
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    transition: opacity 0.3s ease;
+  }
+
+  .breadcrumb__link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  .breadcrumb__current {
+    color: #1E5649;
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .breadcrumb__item--current .breadcrumb__current {
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 749px) {
+    .breadcrumb {
+      margin-bottom: 16px;
+    }
+
+    .breadcrumb__link,
+    .breadcrumb__current {
+      font-size: 13px;
+    }
+  }
+{% endstylesheet %}

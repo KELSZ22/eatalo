@@ -1,0 +1,443 @@
+{% liquid
+  assign block_settings = block.settings
+  assign cafe_name = block_settings.cafe_name
+  assign address_line_1 = block_settings.address_line_1 | default: 'Corner Phillip Street and 2/8-18 Bent St,'
+  assign address_line_2 = block_settings.address_line_2 | default: 'Sydney, NSW, 2000'
+  
+  # Extract Google Maps URL from iframe code or use URL directly
+  assign google_maps_input = block_settings.google_maps_url | strip
+  assign google_maps_src = ''
+  
+  if google_maps_input != blank
+    # Check if it's a full iframe tag
+    if google_maps_input contains '<iframe' or google_maps_input contains 'src='
+      # Try to extract src from iframe - handle both src=" and src= formats
+      if google_maps_input contains 'src="'
+        assign src_parts = google_maps_input | split: 'src="'
+        if src_parts.size > 1
+          assign src_after = src_parts[1] | split: '"' | first
+          assign google_maps_src = src_after
+        endif
+      elsif google_maps_input contains "src='"
+        assign src_parts = google_maps_input | split: "src='"
+        if src_parts.size > 1
+          assign src_after = src_parts[1] | split: "'" | first
+          assign google_maps_src = src_after
+        endif
+      elsif google_maps_input contains 'src='
+        assign src_parts = google_maps_input | split: 'src='
+        if src_parts.size > 1
+          assign src_after = src_parts[1] | split: ' ' | first | remove: '"' | remove: "'"
+          assign google_maps_src = src_after
+        endif
+      endif
+    else
+      # It's just a URL, use it directly
+      assign google_maps_src = google_maps_input
+    endif
+  endif
+%}
+
+<div
+  class="
+    footer-cafe-info-block
+    spacing-style
+  "
+  style="
+    --cafe-name-size: {{ block_settings.cafe_name_size }}px;
+    --address-size: {{ block_settings.address_size }}px;
+    --cafe-name-size-mobile: {{ block_settings.cafe_name_size_mobile }}px;
+    --address-size-mobile: {{ block_settings.address_size_mobile }}px;
+    --logo-width: {{ block_settings.logo_width }}px;
+    --logo-width-mobile: {{ block_settings.logo_width_mobile }}px;
+    --map-width: {{ block_settings.map_width | default: 400 }}px;
+    --map-width-mobile: {{ block_settings.map_width_mobile | default: 300 }}px;
+    --map-height: {{ block_settings.map_height | default: 250 }}px;
+    --map-height-mobile: {{ block_settings.map_height_mobile | default: 200 }}px;
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="footer-cafe-info-block__content">
+    {% if block_settings.logo != blank %}
+      <div class="footer-cafe-info-block__logo">
+        {% if block_settings.logo_link != blank %}
+          <a href="{{ block_settings.logo_link }}" class="footer-cafe-info-block__logo-link">
+            <img
+              src="{{ block_settings.logo | image_url: width: block_settings.logo_width }}"
+              alt="{{ block_settings.logo.alt | default: cafe_name }}"
+              width="{{ block_settings.logo_width }}"
+              height="{{ block_settings.logo_width | divided_by: block_settings.logo.aspect_ratio | round }}"
+              loading="lazy"
+              class="footer-cafe-info-block__logo-image"
+            >
+          </a>
+        {% else %}
+          <img
+            src="{{ block_settings.logo | image_url: width: block_settings.logo_width }}"
+            alt="{{ block_settings.logo.alt | default: cafe_name }}"
+            width="{{ block_settings.logo_width }}"
+            height="{{ block_settings.logo_width | divided_by: block_settings.logo.aspect_ratio | round }}"
+            loading="lazy"
+            class="footer-cafe-info-block__logo-image"
+          >
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if cafe_name != blank %}
+      <div class="footer-cafe-info-block__cafe-name">
+        {{ cafe_name }}
+      </div>
+    {% endif %}
+    <div class="footer-cafe-info-block__address">
+      <div class="footer-cafe-info-block__address-line">{{ address_line_1 }}</div>
+      <div class="footer-cafe-info-block__address-line">{{ address_line_2 }}</div>
+    </div>
+    {% if block_settings.show_google_map and google_maps_src != blank %}
+      <div class="footer-cafe-info-block__map">
+        <iframe
+          src="{{ google_maps_src }}"
+          width="100%"
+          height="{{ block_settings.map_height | default: 250 }}"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          class="footer-cafe-info-block__map-iframe"
+        ></iframe>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .footer-cafe-info-block {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .footer-cafe-info-block__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    min-height: fit-content;
+    text-align: left;
+  }
+
+  .footer-cafe-info-block__logo {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .footer-cafe-info-block__logo-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-cafe-info-block__logo-link:hover {
+    opacity: 0.8;
+  }
+
+  .footer-cafe-info-block__logo-image {
+    width: var(--logo-width);
+    height: auto;
+    max-width: 100%;
+    display: block;
+  }
+
+  .footer-cafe-info-block__cafe-name {
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-size: var(--cafe-name-size);
+    line-height: 1.2;
+    color: inherit;
+    margin: 0;
+  }
+
+  .footer-cafe-info-block__address {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .footer-cafe-info-block__address-line {
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-size: var(--address-size);
+    line-height: 1.3;
+    color: inherit;
+    margin: 0;
+  }
+
+  .footer-cafe-info-block__map {
+    width: 100%;
+    max-width: var(--map-width, 400px);
+    min-width: 200px;
+    height: var(--map-height, 250px);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .footer-cafe-info-block__map-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  @media screen and (max-width: 750px) {
+    .footer-cafe-info-block__cafe-name {
+      font-size: var(--cafe-name-size-mobile);
+    }
+
+    .footer-cafe-info-block__address-line {
+      font-size: var(--address-size-mobile);
+    }
+
+    .footer-cafe-info-block__logo-image {
+      width: var(--logo-width-mobile);
+    }
+
+    .footer-cafe-info-block__map {
+      max-width: var(--map-width-mobile, 300px);
+      height: var(--map-height-mobile, 200px);
+    }
+  }
+  @media screen and (max-width: 425px){
+    .footer-cafe-info-block__content{
+      align-items: flex-start;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer Cafe Info",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "url",
+      "id": "logo_link",
+      "label": "Logo Link",
+      "info": "Optional: Link the logo to a URL (e.g., homepage)"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo Width (Desktop)",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo Width (Mobile)",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Cafe Information"
+    },
+    {
+      "type": "text",
+      "id": "cafe_name",
+      "label": "Cafe Name"
+    },
+    {
+      "type": "text",
+      "id": "address_line_1",
+      "label": "Address Line 1",
+      "default": "Corner Phillip Street and 2/8-18 Bent St,"
+    },
+    {
+      "type": "text",
+      "id": "address_line_2",
+      "label": "Address Line 2",
+      "default": "Sydney, NSW, 2000"
+    },
+    {
+      "type": "header",
+      "content": "Google Maps"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_google_map",
+      "label": "Show Google Map",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "google_maps_url",
+      "label": "Google Maps Embed Code or URL",
+      "info": "Paste either the full iframe embed code from Google Maps, or just the URL from the src attribute. Go to Google Maps > Share > Embed a map to get the code.",
+      "default": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.965954444955!2d151.20891631128762!3d-33.86476827311649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12ae6a1e105bbb%3A0xea40f170e7dd8e0a!2sEATALO%20cafe%20(previously%20Bertoni)!5e0!3m2!1sen!2sph!4v1760514208073!5m2!1sen!2sph"
+    },
+    {
+      "type": "range",
+      "id": "map_width",
+      "label": "Map Width (Desktop)",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "map_width_mobile",
+      "label": "Map Width (Mobile)",
+      "min": 200,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "map_height",
+      "label": "Map Height (Desktop)",
+      "min": 150,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 250
+    },
+    {
+      "type": "range",
+      "id": "map_height_mobile",
+      "label": "Map Height (Mobile)",
+      "min": 150,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "range",
+      "id": "cafe_name_size",
+      "label": "Cafe Name Size (Desktop)",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "address_size",
+      "label": "Address Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "cafe_name_size_mobile",
+      "label": "Cafe Name Size (Mobile)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "address_size_mobile",
+      "label": "Address Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Cafe Info",
+      "category": "Footer",
+      "settings": {
+        "cafe_name": "EATALO",
+        "address_line_1": "Corner Phillip Street and 2/8-18 Bent St,",
+        "address_line_2": "Sydney, NSW, 2000",
+        "cafe_name_size": 18,
+        "address_size": 14,
+        "cafe_name_size_mobile": 16,
+        "address_size_mobile": 12,
+        "padding-inline-start": 0
+      }
+    }
+  ]
+}
+{% endschema %}

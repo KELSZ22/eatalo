@@ -1,0 +1,584 @@
+{% style %}
+  .menus-page-section {
+    width: 100%;
+    background-color: #f0efef;
+    padding: 60px 40px 80px;
+  }
+
+  .menus-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .menus-categories {
+    display: flex;
+    justify-content: center;
+    gap: 52px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    padding-bottom: 15px;
+  }
+
+  .menu-category {
+    font-family: 'Archivo', sans-serif;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    color: #1e5649;
+    cursor: pointer;
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.3s ease;
+    background: none;
+    border: none;
+    text-align: left;
+  }
+
+  .menu-category:hover {
+    color: #1e5649;
+  }
+
+  .menu-category.active {
+    color: #c4d995;
+  }
+
+  .menu-category.active::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #c4d995;
+  }
+
+  .menus-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .menu-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(30, 86, 73, 0.2);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    text-decoration: none;
+  }
+
+  .menu-item:hover {
+    cursor: default;
+  }
+
+  .menu-item:last-child {
+    border-bottom: none;
+  }
+
+  .menu-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .menu-item-name {
+    font-family: 'Archivo', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #1e5649;
+  }
+
+  .menu-item-description {
+    font-family: 'Archivo', sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.4;
+    color: rgba(30, 86, 73, 0.65);
+  }
+
+  .menu-item-price {
+    font-family: 'Archivo', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #1e5649;
+    margin-left: 20px;
+    white-space: nowrap;
+  }
+
+  /* Menu item title / group heading */
+  .menu-items-title-wrapper {
+    grid-column: 1 / -1;
+    margin-top: 30px;
+    margin-bottom: 4px;
+  }
+
+  .menu-items-title-wrapper:first-child {
+    margin-top: 0;
+  }
+
+  .menu-items-title {
+    font-family: 'Archivo', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #1e5649;
+    margin: 0 0 12px;
+  }
+
+  .menu-items-title-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #000000;
+    margin-top: 8px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .menus-page-section {
+      padding: 40px 20px 60px;
+    }
+
+    .menus-categories {
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .menu-category {
+      font-size: 20px;
+    }
+
+    .menus-content {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .menu-category-content {
+      grid-template-columns: 1fr !important;
+      gap: 0 !important;
+    }
+
+    .menu-column {
+      display: contents;
+    }
+
+    .menu-item-name,
+    .menu-item-price {
+      font-size: 14px;
+    }
+
+    .menu-item-description {
+      font-size: 12px;
+    }
+
+    .menu-items-title {
+      font-size: 18px;
+    }
+  }
+{% endstyle %}
+
+<div class="menus-page-section">
+  <div class="menus-page-container">
+    <div class="menus-categories">
+      {% for block in section.blocks %}
+        {% if block.type == 'menu_category' %}
+          {% assign category_slug = block.settings.category_slug %}
+          <button class="menu-category {% if forloop.first %}active{% endif %}"
+                  data-category="{{ block.id }}"
+                  data-slug="{{ category_slug }}"
+                  id="{{ category_slug }}">
+            {{ block.settings.category_name }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="menus-content">
+      {% for block in section.blocks %}
+        {% if block.type == 'menu_category' %}
+
+          {% assign current_slug = block.settings.category_slug %}
+          {% assign current_collection_handle = block.settings.collection %}
+
+          {% assign manual_item_count = 0 %}
+          {% for inner_block in section.blocks %}
+            {% if inner_block.type == 'manual_item' and inner_block.settings.parent_category_slug == current_slug %}
+              {% assign manual_item_count = manual_item_count | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+
+          {% assign all_items_count = 0 %}
+          {% if current_collection_handle != blank %}
+            {% assign collection = collections[current_collection_handle] %}
+            {% assign all_items_count = collection.products.size %}
+          {% endif %}
+          {% assign all_items_count = all_items_count | plus: manual_item_count %}
+          {% assign half = all_items_count | divided_by: 2.0 | ceil %}
+
+          <div class="menu-category-content" data-category="{{ block.id }}" style="display: {% if forloop.first %}grid{% else %}none{% endif %}; grid-column: 1 / -1; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+            {%- comment -%} Render menu_item_title blocks that belong to this category {%- endcomment -%}
+            {% for inner_block in section.blocks %}
+              {% if inner_block.type == 'menu_item_title' and inner_block.settings.parent_category_slug == current_slug %}
+                <div class="menu-items-title-wrapper" {{ inner_block.shopify_attributes }}>
+                  <div class="menu-items-title">{{ inner_block.settings.title }}</div>
+                  <div class="menu-items-title-divider"></div>
+                </div>
+
+                {%- comment -%} After each title, render the two columns of manual items that follow until the next title {%- endcomment -%}
+                {% assign title_slug = inner_block.settings.title | handleize %}
+                {% assign col1_items = '' %}
+                {% assign col2_items = '' %}
+                {% assign title_item_count = 0 %}
+
+                {% for count_block in section.blocks %}
+                  {% if count_block.type == 'manual_item'
+                    and count_block.settings.parent_category_slug == current_slug
+                    and count_block.settings.group_title_slug == title_slug %}
+                    {% assign title_item_count = title_item_count | plus: 1 %}
+                  {% endif %}
+                {% endfor %}
+
+                {% assign title_half = title_item_count | divided_by: 2.0 | ceil %}
+                {% assign title_item_index = 0 %}
+
+                <div class="menu-column">
+                  {% for item_block in section.blocks %}
+                    {% if item_block.type == 'manual_item'
+                      and item_block.settings.parent_category_slug == current_slug
+                      and item_block.settings.group_title_slug == title_slug %}
+                      {% assign title_item_index = title_item_index | plus: 1 %}
+                      {% if title_item_index <= title_half %}
+                        {% if item_block.settings.item_url != blank %}
+                          <a href="{{ item_block.settings.item_url }}" class="menu-item" {{ item_block.shopify_attributes }}>
+                        {% else %}
+                          <div class="menu-item" {{ item_block.shopify_attributes }}>
+                        {% endif %}
+                          <div class="menu-item-info">
+                            <div class="menu-item-name">{{ item_block.settings.item_name }}</div>
+                            {% if item_block.settings.item_description != blank %}
+                              <div class="menu-item-description">{{ item_block.settings.item_description }}</div>
+                            {% endif %}
+                          </div>
+                          {% if item_block.settings.item_price != blank %}
+                            <div class="menu-item-price">{{ item_block.settings.item_price }}</div>
+                          {% endif %}
+                        {% if item_block.settings.item_url != blank %}
+                          </a>
+                        {% else %}
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+
+                {% assign title_item_index = 0 %}
+                <div class="menu-column">
+                  {% for item_block in section.blocks %}
+                    {% if item_block.type == 'manual_item'
+                      and item_block.settings.parent_category_slug == current_slug
+                      and item_block.settings.group_title_slug == title_slug %}
+                      {% assign title_item_index = title_item_index | plus: 1 %}
+                      {% if title_item_index > title_half %}
+                        {% if item_block.settings.item_url != blank %}
+                          <a href="{{ item_block.settings.item_url }}" class="menu-item" {{ item_block.shopify_attributes }}>
+                        {% else %}
+                          <div class="menu-item" {{ item_block.shopify_attributes }}>
+                        {% endif %}
+                          <div class="menu-item-info">
+                            <div class="menu-item-name">{{ item_block.settings.item_name }}</div>
+                            {% if item_block.settings.item_description != blank %}
+                              <div class="menu-item-description">{{ item_block.settings.item_description }}</div>
+                            {% endif %}
+                          </div>
+                          {% if item_block.settings.item_price != blank %}
+                            <div class="menu-item-price">{{ item_block.settings.item_price }}</div>
+                          {% endif %}
+                        {% if item_block.settings.item_url != blank %}
+                          </a>
+                        {% else %}
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+
+              {% endif %}
+            {% endfor %}
+
+            {%- comment -%} Fallback: manual items with no group_title_slug (ungrouped) + collection products {%- endcomment -%}
+            {% assign ungrouped_count = 0 %}
+            {% if current_collection_handle != blank and collection %}
+              {% assign ungrouped_count = collection.products.size %}
+            {% endif %}
+            {% for inner_block in section.blocks %}
+              {% if inner_block.type == 'manual_item'
+                and inner_block.settings.parent_category_slug == current_slug
+                and inner_block.settings.group_title_slug == blank %}
+                {% assign ungrouped_count = ungrouped_count | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+
+            {% if ungrouped_count > 0 %}
+              {% assign ungrouped_half = ungrouped_count | divided_by: 2.0 | ceil %}
+
+              <div class="menu-column">
+                {% assign item_index = 0 %}
+                {% if current_collection_handle != blank and collection %}
+                  {% for product in collection.products %}
+                    {% assign item_index = item_index | plus: 1 %}
+                    {% if item_index <= ungrouped_half %}
+                      <a href="{{ product.url }}" class="menu-item">
+                        <div class="menu-item-info">
+                          <div class="menu-item-name">{{ product.title }}</div>
+                        </div>
+                        <div class="menu-item-price">{{ product.price | money }}</div>
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% for inner_block in section.blocks %}
+                  {% if inner_block.type == 'manual_item'
+                    and inner_block.settings.parent_category_slug == current_slug
+                    and inner_block.settings.group_title_slug == blank %}
+                    {% assign item_index = item_index | plus: 1 %}
+                    {% if item_index <= ungrouped_half %}
+                      {% if inner_block.settings.item_url != blank %}
+                        <a href="{{ inner_block.settings.item_url }}" class="menu-item" {{ inner_block.shopify_attributes }}>
+                      {% else %}
+                        <div class="menu-item" {{ inner_block.shopify_attributes }}>
+                      {% endif %}
+                        <div class="menu-item-info">
+                          <div class="menu-item-name">{{ inner_block.settings.item_name }}</div>
+                          {% if inner_block.settings.item_description != blank %}
+                            <div class="menu-item-description">{{ inner_block.settings.item_description }}</div>
+                          {% endif %}
+                        </div>
+                        {% if inner_block.settings.item_price != blank %}
+                          <div class="menu-item-price">{{ inner_block.settings.item_price }}</div>
+                        {% endif %}
+                      {% if inner_block.settings.item_url != blank %}
+                        </a>
+                      {% else %}
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+              <div class="menu-column">
+                {% assign item_index = 0 %}
+                {% if current_collection_handle != blank and collection %}
+                  {% for product in collection.products %}
+                    {% assign item_index = item_index | plus: 1 %}
+                    {% if item_index > ungrouped_half %}
+                      <a href="{{ product.url }}" class="menu-item">
+                        <div class="menu-item-info">
+                          <div class="menu-item-name">{{ product.title }}</div>
+                        </div>
+                        <div class="menu-item-price">{{ product.price | money }}</div>
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% for inner_block in section.blocks %}
+                  {% if inner_block.type == 'manual_item'
+                    and inner_block.settings.parent_category_slug == current_slug
+                    and inner_block.settings.group_title_slug == blank %}
+                    {% assign item_index = item_index | plus: 1 %}
+                    {% if item_index > ungrouped_half %}
+                      {% if inner_block.settings.item_url != blank %}
+                        <a href="{{ inner_block.settings.item_url }}" class="menu-item" {{ inner_block.shopify_attributes }}>
+                      {% else %}
+                        <div class="menu-item" {{ inner_block.shopify_attributes }}>
+                      {% endif %}
+                        <div class="menu-item-info">
+                          <div class="menu-item-name">{{ inner_block.settings.item_name }}</div>
+                          {% if inner_block.settings.item_description != blank %}
+                            <div class="menu-item-description">{{ inner_block.settings.item_description }}</div>
+                          {% endif %}
+                        </div>
+                        {% if inner_block.settings.item_price != blank %}
+                          <div class="menu-item-price">{{ inner_block.settings.item_price }}</div>
+                        {% endif %}
+                      {% if inner_block.settings.item_url != blank %}
+                        </a>
+                      {% else %}
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+          </div>
+
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const categories = document.querySelectorAll('.menu-category');
+    const categoryContents = document.querySelectorAll('.menu-category-content');
+
+    function activateCategory(categoryElement) {
+      const selectedCategory = categoryElement.getAttribute('data-category');
+      const slug = categoryElement.getAttribute('data-slug');
+
+      categories.forEach((cat) => cat.classList.remove('active'));
+      categoryElement.classList.add('active');
+
+      categoryContents.forEach((content) => {
+        if (content.getAttribute('data-category') === selectedCategory) {
+          content.style.display = 'grid';
+        } else {
+          content.style.display = 'none';
+        }
+      });
+
+      if (slug) {
+        history.replaceState(null, null, '#' + slug);
+      }
+    }
+
+    categories.forEach((category) => {
+      category.addEventListener('click', function () {
+        activateCategory(this);
+      });
+    });
+
+    function checkHashAndActivate() {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        const targetCategory = document.querySelector(`.menu-category[data-slug="${hash}"]`);
+        if (targetCategory) {
+          activateCategory(targetCategory);
+          setTimeout(() => {
+            targetCategory.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
+    }
+
+    checkHashAndActivate();
+
+    window.addEventListener('hashchange', checkHashAndActivate);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Menus Page",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "menu_category",
+      "name": "Menu Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_name",
+          "label": "Category Name",
+          "default": "Menu Category"
+        },
+        {
+          "type": "text",
+          "id": "category_slug",
+          "label": "URL Slug",
+          "default": "menu-category",
+          "info": "Use this in your menu links (e.g., breakfast-menu). Format: lowercase-with-hyphens"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    },
+    {
+      "type": "menu_item_title",
+      "name": "Menu Items Title",
+      "settings": [
+        {
+          "type": "text",
+          "id": "parent_category_slug",
+          "label": "Parent Category Slug",
+          "info": "Enter the URL Slug of the Menu Category this title belongs to (e.g., breakfast-menu)."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Group Title"
+        }
+      ]
+    },
+    {
+      "type": "manual_item",
+      "name": "Manual Menu Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "parent_category_slug",
+          "label": "Parent Category Slug",
+          "info": "Enter the URL Slug of the Menu Category this item belongs to (e.g., breakfast-menu)."
+        },
+        {
+          "type": "text",
+          "id": "group_title_slug",
+          "label": "Group Title Slug",
+          "info": "Optional. Enter the handleized version of the Menu Items Title this item belongs to (e.g., 'Group Title' becomes 'group-title'). Leave blank if ungrouped."
+        },
+        {
+          "type": "text",
+          "id": "item_name",
+          "label": "Item Name",
+          "default": "Menu Item"
+        },
+        {
+          "type": "textarea",
+          "id": "item_description",
+          "label": "Description",
+          "info": "Optional short description shown below the item name."
+        },
+        {
+          "type": "text",
+          "id": "item_price",
+          "label": "Price",
+          "default": "$0.00",
+          "info": "Enter price as text, e.g. $12.00 or $10 – $15"
+        },
+        {
+          "type": "url",
+          "id": "item_url",
+          "label": "Link (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menus Page"
+    }
+  ]
+}
+{% endschema %}

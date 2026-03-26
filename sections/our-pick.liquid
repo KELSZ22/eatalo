@@ -1,0 +1,580 @@
+<style>
+  .favourite-pick-section {
+    width: 100%;
+    min-height: 800px;
+    background-color: #ffffff;
+    padding: 60px 20px 80px;
+    overflow: hidden;
+  }
+
+  .favourite-pick-container {
+    width: 100%;
+    margin: 0;
+  }
+
+  .favourite-pick-title {
+    color: #1e5649;
+    text-align: center;
+    font-family: Archivo, sans-serif;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 117%;
+    margin-bottom: 50px;
+  }
+
+  .favourite-pick-carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .favourite-pick-cards {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.5s ease;
+    padding-bottom: 20px;
+  }
+
+  .favourite-pick-card {
+    min-width: 350px;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .favourite-pick-image-wrapper {
+    width: 350px;
+    height: 480px;
+    background-color: #e7e3da;
+    border-radius: 0;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 15px;
+  }
+
+  .favourite-pick-card:hover .favourite-pick-image-wrapper {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 16px rgba(92, 130, 120, 0.15);
+  }
+
+  .favourite-pick-image {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    overflow: hidden;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .favourite-pick-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .favourite-pick-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(92, 130, 120, 0.3);
+  }
+
+  .favourite-pick-placeholder span {
+    color: #5c8278;
+    font-family: Archivo, sans-serif;
+    font-size: 14px;
+  }
+
+  .favourite-pick-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 350px;
+  }
+
+  .favourite-pick-card-title {
+    color: #1e5649;
+    text-align: left;
+    font-family: 'Archivo', sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 160%;
+    margin: 0;
+  }
+
+  .favourite-pick-price {
+    color: #1e5649;
+    text-align: left;
+    font-family: Archivo, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    margin: -10px 0 10px 0;
+  }
+
+  .favourite-pick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+    max-width: 100%;
+  }
+
+  .favourite-pick-pill {
+    border: 1.5px solid #1e5649;
+    border-radius: 20px;
+    padding: 6px 14px;
+    color: #1e5649;
+    font-family: Archivo, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .favourite-pick-pill:hover {
+    background-color: #1e5649;
+    color: #ffffff;
+  }
+
+  .favourite-pick-pill:active {
+    transform: scale(0.95);
+  }
+
+  /* --- REFACTORED CODE STARTS HERE --- */
+  .favourite-pick-nav {
+    position: absolute;
+    top: 220px; /* Aligned to the center of the 480px image wrapper */
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: #5c8278;
+    border: none;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+  /* --- REFACTORED CODE ENDS HERE --- */
+
+  .favourite-pick-nav:hover {
+    background-color: #1e5649;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .favourite-pick-nav.prev {
+    left: 20px;
+  }
+
+  .favourite-pick-nav.next {
+    right: 20px;
+  }
+
+  .favourite-pick-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .favourite-pick-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #d1d5db;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .favourite-pick-dot.active {
+    background-color: #5c8278;
+    width: 30px;
+    border-radius: 5px;
+  }
+
+  @media screen and (max-width: 1200px) {
+    .favourite-pick-card {
+      min-width: 300px;
+    }
+
+    .favourite-pick-image-wrapper {
+      width: 300px;
+      height: 419px;
+      padding: 20px;
+    }
+
+    /* --- REFACTORED CODE STARTS HERE --- */
+    .favourite-pick-nav {
+      top: 189.5px; /* Aligned for 419px image wrapper */
+    }
+    /* --- REFACTORED CODE ENDS HERE --- */
+  }
+
+  /* Mobile-specific classes for 2-card layout */
+  .favourite-pick-card-mobile {
+    min-width: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .favourite-pick-image-wrapper-mobile {
+    width: 100%;
+    height: 300px;
+    background-color: #e7e3da;
+    border-radius: 0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 15px;
+  }
+
+  .favourite-pick-content-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .favourite-pick-card-title-mobile {
+    color: #1e5649;
+    text-align: left;
+    font-family: 'Archivo', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 160%;
+    margin: 0;
+  }
+
+  .favourite-pick-price-mobile {
+    color: #1e5649;
+    text-align: left;
+    font-family: Archivo, sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    margin: -10px 0 10px 0;
+  }
+
+  .favourite-pick-pill-mobile {
+    border: 1.5px solid #1e5649;
+    border-radius: 20px;
+    padding: 4px 10px;
+    color: #1e5649;
+    font-family: Archivo, sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .favourite-pick-pill-mobile:hover {
+    background-color: #1e5649;
+    color: #ffffff;
+  }
+
+  @media screen and (max-width: 768px) {
+    .favourite-pick-section {
+      min-height: auto;
+      padding: 40px 20px 60px;
+    }
+
+    .favourite-pick-title {
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .favourite-pick-carousel-wrapper {
+      padding: 0;
+    }
+
+    /* Apply mobile classes */
+    .favourite-pick-card {
+      min-width: calc(50% - 10px);
+      max-width: calc(50% - 10px);
+    }
+
+    .favourite-pick-image-wrapper {
+      width: 100%;
+      height: 300px;
+      padding: 20px;
+    }
+
+    .favourite-pick-content {
+      width: 100%;
+    }
+
+    .favourite-pick-card-title {
+      font-size: 16px;
+    }
+
+    .favourite-pick-price {
+      font-size: 13px;
+    }
+
+    .favourite-pick-pill {
+      padding: 4px 10px;
+      font-size: 10px;
+    }
+
+    .favourite-pick-nav {
+      width: 35px;
+      height: 35px;
+      font-size: 18px;
+      top: 150px; /* Aligned for 300px image wrapper */
+    }
+  }
+</style>
+
+<section class="favourite-pick-section">
+  <div class="favourite-pick-container">
+    <h2 class="favourite-pick-title">
+      {{ section.settings.section_title }}
+    </h2>
+
+    <div class="favourite-pick-carousel-wrapper">
+      <button class="favourite-pick-nav prev" onclick="favouritePickSlide(-1)">&#8249;</button>
+      <button class="favourite-pick-nav next" onclick="favouritePickSlide(1)">&#8250;</button>
+
+      <div class="favourite-pick-cards" id="favouritePickCards">
+        {% for block in section.blocks %}
+          <div class="favourite-pick-card">
+            <div class="favourite-pick-image-wrapper">
+              <div class="favourite-pick-image">
+                {% if block.settings.product_image %}
+                  <img
+                    src="{{ block.settings.product_image | img_url: 'master' }}"
+                    alt="{{ block.settings.product_title }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="favourite-pick-placeholder">
+                    <span>Image Placeholder</span>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="favourite-pick-content">
+              <h3 class="favourite-pick-card-title">
+                {{ block.settings.product_title }}
+              </h3>
+
+              <p class="favourite-pick-price">
+                {{ block.settings.price_range }}
+              </p>
+
+              <div class="favourite-pick-tags">
+                {% if block.settings.tag_1 != blank %}
+                  <span class="favourite-pick-pill">{{ block.settings.tag_1 }}</span>
+                {% endif %}
+                {% if block.settings.tag_2 != blank %}
+                  <span class="favourite-pick-pill">{{ block.settings.tag_2 }}</span>
+                {% endif %}
+                {% if block.settings.tag_3 != blank %}
+                  <span class="favourite-pick-pill">{{ block.settings.tag_3 }}</span>
+                {% endif %}
+                {% if block.settings.tag_4 != blank %}
+                  <span class="favourite-pick-pill">{{ block.settings.tag_4 }}</span>
+                {% endif %}
+                {% if block.settings.tag_5 != blank %}
+                  <span class="favourite-pick-pill">{{ block.settings.tag_5 }}</span>
+                {% endif %}
+                {% if block.settings.tag_6 != blank %}
+                  <span class="favourite-pick-pill">{{ block.settings.tag_6 }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="favourite-pick-dots" id="favouritePickDots"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let currentSlide = 0;
+  const cardsContainer = document.getElementById('favouritePickCards');
+  const cards = cardsContainer.querySelectorAll('.favourite-pick-card');
+  const dotsContainer = document.getElementById('favouritePickDots');
+
+  // Calculate slides based on screen size
+  function getSlidesPerView() {
+    const width = window.innerWidth;
+    if (width >= 1400) return 4;
+    if (width >= 1024) return 3;
+    if (width >= 768) return 2;
+    return 2; // Changed from 1 to 2 for mobile
+  }
+
+  const totalSlides = Math.ceil(cards.length / getSlidesPerView());
+
+  // Create dots
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'favourite-pick-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+
+  function favouritePickSlide(direction) {
+    currentSlide += direction;
+    if (currentSlide < 0) currentSlide = totalSlides - 1;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    updateCarousel();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+  }
+
+  function updateCarousel() {
+    const slidesPerView = getSlidesPerView();
+    const cardWidth = cards[0].offsetWidth;
+    const gap = 20;
+    const offset = currentSlide * (cardWidth + gap) * slidesPerView;
+
+    cardsContainer.style.transform = `translateX(-${offset}px)`;
+
+    // Update dots
+    const dots = dotsContainer.querySelectorAll('.favourite-pick-dot');
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentSlide);
+    });
+  }
+
+  // Handle window resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      currentSlide = 0;
+      updateCarousel();
+    }, 250);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Favourite Pick",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Our Favourite Pick"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product Image"
+        },
+        {
+          "type": "text",
+          "id": "product_title",
+          "label": "Product Title",
+          "default": "Sensational Salad"
+        },
+        {
+          "type": "text",
+          "id": "price_range",
+          "label": "Price Range",
+          "default": "$ 00.00 - $ 00.00"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "Tag 1",
+          "default": "Vegan"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "Tag 2",
+          "default": "Vegetarian"
+        },
+        {
+          "type": "text",
+          "id": "tag_3",
+          "label": "Tag 3",
+          "default": "Gluten-Free"
+        },
+        {
+          "type": "text",
+          "id": "tag_4",
+          "label": "Tag 4",
+          "default": "Gluten Free Option"
+        },
+        {
+          "type": "text",
+          "id": "tag_5",
+          "label": "Tag 5",
+          "default": "Nuts-Free"
+        },
+        {
+          "type": "text",
+          "id": "tag_6",
+          "label": "Tag 6",
+          "default": "Dairy-Free"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Favourite Pick",
+      "blocks": [
+        {
+          "type": "product_card"
+        },
+        {
+          "type": "product_card"
+        },
+        {
+          "type": "product_card"
+        },
+        {
+          "type": "product_card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,377 @@
+{% liquid
+  assign block_settings = block.settings
+  assign logo_text = block_settings.logo_text | default: shop.name | upcase
+  assign logo_image = block_settings.logo_image
+  assign cafe_name = block_settings.cafe_name | default: 'EATALO Cafe'
+  assign address_line_1 = block_settings.address_line_1 | default: 'Corner Phillip Street and, 2/8-18 Bent St,'
+  assign address_line_2 = block_settings.address_line_2 | default: 'Sydney NSW 2000'
+%}
+
+<div
+  class="
+    footer-logo-row-block
+    spacing-style
+  "
+  style="
+    --logo-font-size: {{ block_settings.logo_font_size }}px;
+    --logo-font-size-mobile: {{ block_settings.logo_font_size_mobile }}px;
+    --logo-width: {{ block_settings.logo_width }}px;
+    --logo-width-mobile: {{ block_settings.logo_width_mobile }}px;
+    --logo-height: {{ block_settings.logo_height }}px;
+    --logo-height-mobile: {{ block_settings.logo_height_mobile }}px;
+    --cafe-name-size: {{ block_settings.cafe_name_size }}px;
+    --address-size: {{ block_settings.address_size }}px;
+    --cafe-name-size-mobile: {{ block_settings.cafe_name_size_mobile }}px;
+    --address-size-mobile: {{ block_settings.address_size_mobile }}px;
+    --gap-between: {{ block_settings.gap_between }}px;
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="footer-logo-row-block__logo">
+    {% if logo_image %}
+      <div class="footer-logo-row-block__image-wrapper">
+        {{-
+          logo_image
+          | image_url: width: 3840
+          | image_tag:
+            width: logo_image.width,
+            widths: '240, 352, 832, 1200, 1600, 1920, 2560, 3840',
+            height: logo_image.height,
+            class: 'footer-logo-row-block__image',
+            alt: logo_text,
+            sizes: '(min-width: 750px) var(--logo-width), var(--logo-width-mobile)'
+        -}}
+      </div>
+    {% else %}
+      {{ logo_text }}
+    {% endif %}
+  </div>
+  <div class="footer-logo-row-block__cafe-info">
+    <div class="footer-logo-row-block__cafe-name">
+      {{ cafe_name }}
+    </div>
+    <div class="footer-logo-row-block__address">
+      <div class="footer-logo-row-block__address-line">{{ address_line_1 }}</div>
+      <div class="footer-logo-row-block__address-line">{{ address_line_2 }}</div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .footer-logo-row-block {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-between);
+    flex-wrap: wrap;
+  }
+
+  .footer-logo-row-block__logo {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: var(--logo-font-size);
+    line-height: 1.1;
+    color: inherit;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .footer-logo-row-block__image-wrapper {
+    display: flex;
+    width: var(--logo-width);
+    height: var(--logo-height);
+  }
+
+  .footer-logo-row-block__image {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+
+  .footer-logo-row-block__cafe-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .footer-logo-row-block__cafe-name {
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-size: var(--cafe-name-size);
+    line-height: 1.2;
+    color: inherit;
+    margin: 0;
+  }
+
+  .footer-logo-row-block__address {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .footer-logo-row-block__address-line {
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-size: var(--address-size);
+    line-height: 1.3;
+    color: inherit;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 750px) {
+    .footer-logo-row-block {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-logo-row-block__image-wrapper {
+      width: var(--logo-width-mobile);
+      height: var(--logo-height-mobile);
+    }
+
+    .footer-logo-row-block__logo {
+      font-size: var(--logo-font-size-mobile);
+    }
+
+    .footer-logo-row-block__cafe-name {
+      font-size: var(--cafe-name-size-mobile);
+    }
+
+    .footer-logo-row-block__address-line {
+      font-size: var(--address-size-mobile);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer Logo Row",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image",
+      "info": "Upload a logo image. If no image is provided, text will be used instead."
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text (Fallback)",
+      "default": "EATALO",
+      "info": "This text will be used if no image is provided, or as alt text for the image"
+    },
+    {
+      "type": "text",
+      "id": "cafe_name",
+      "label": "Cafe Name",
+      "default": "EATALO Cafe"
+    },
+    {
+      "type": "text",
+      "id": "address_line_1",
+      "label": "Address Line 1",
+      "default": "Corner Phillip Street and, 2/8-18 Bent St,"
+    },
+    {
+      "type": "text",
+      "id": "address_line_2",
+      "label": "Address Line 2",
+      "default": "Sydney NSW 2000"
+    },
+    {
+      "type": "header",
+      "content": "Logo Size"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo Width (Desktop)",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 300,
+      "info": "Width of the logo image on desktop"
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo Width (Mobile)",
+      "min": 40,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 240,
+      "info": "Width of the logo image on mobile"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo Height (Desktop)",
+      "min": 30,
+      "max": 250,
+      "step": 5,
+      "unit": "px",
+      "default": 150,
+      "info": "Height of the logo image on desktop"
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "label": "Logo Height (Mobile)",
+      "min": 25,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 120,
+      "info": "Height of the logo image on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Text Size"
+    },
+    {
+      "type": "range",
+      "id": "logo_font_size",
+      "label": "Logo Size (Desktop)",
+      "min": 24,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "logo_font_size_mobile",
+      "label": "Logo Size (Mobile)",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "cafe_name_size",
+      "label": "Cafe Name Size (Desktop)",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "address_size",
+      "label": "Address Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "cafe_name_size_mobile",
+      "label": "Cafe Name Size (Mobile)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "address_size_mobile",
+      "label": "Address Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "gap_between",
+      "label": "Gap Between Logo and Text",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Logo Row",
+      "category": "Footer",
+      "settings": {
+        "logo_text": "EATALO",
+        "cafe_name": "EATALO Cafe",
+        "address_line_1": "Corner Phillip Street and, 2/8-18 Bent St,",
+        "address_line_2": "Sydney NSW 2000",
+        "logo_width": 300,
+        "logo_width_mobile": 240,
+        "logo_height": 150,
+        "logo_height_mobile": 120,
+        "logo_font_size": 48,
+        "logo_font_size_mobile": 36,
+        "cafe_name_size": 18,
+        "address_size": 14,
+        "cafe_name_size_mobile": 16,
+        "address_size_mobile": 12,
+        "gap_between": 10
+      }
+    }
+  ]
+}
+{% endschema %}

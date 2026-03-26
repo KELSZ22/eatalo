@@ -1,0 +1,49 @@
+<script
+  type="module"
+  src="{{ 'cart-note.js' | asset_url }}"
+></script>
+
+<cart-note style="display: none;">
+  <div class="cart-note">
+    <label
+      for="cart-note"
+      class="cart-note__label cart-drawer__delivery-fee-label"
+    >
+      Delivery Instructions
+    </label>
+    <textarea
+      form="cart-form"
+      on:input="/updateCartNote"
+      id="cart-note"
+      class="cart-note__instructions"
+      name="note"
+    >{{ cart.note }}</textarea>
+  </div>
+</cart-note>
+
+<script>
+  (function () {
+    const cartNoteTextarea = document.getElementById('cart-note');
+    if (!cartNoteTextarea) return;
+
+    async function saveCartNote(note) {
+      try {
+        await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note: note })
+        });
+      } catch (err) {
+        console.warn('Failed to save cart note:', err);
+      }
+    }
+
+    let debounceTimer;
+    cartNoteTextarea.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        saveCartNote(this.value);
+      }, 600);
+    });
+  })();
+</script>

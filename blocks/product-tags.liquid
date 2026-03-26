@@ -1,0 +1,125 @@
+
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+-%}
+
+{% if product != blank and product.tags.size > 0 %}
+  <div class="product-tags-block spacing-style" style="{% render 'spacing-style', settings: block.settings %}" {{ block.shopify_attributes }}>
+    <div class="product-tags-container">
+      {% for tag in product.tags %}
+        <span class="product-tag-pill">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .product-tags-block {
+    width: 100%;
+  }
+
+  .product-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+    max-width: 100%;
+  }
+
+  .product-tag-pill {
+    border: 1.5px solid #1E5649;
+    border-radius: 20px;
+    padding: 6px 14px;
+    color: #1E5649;
+    font-family: 'Archivo', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .product-tag-pill:hover {
+    background-color: #1E5649;
+    color: #ffffff;
+  }
+
+  .product-tag-pill:active {
+    transform: scale(0.95);
+  }
+
+  @media screen and (max-width: 768px) {
+    .product-tag-pill {
+      padding: 4px 10px;
+      font-size: 10px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Tags",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Displays product tags as pill-shaped badges. Tags are automatically pulled from the product."
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Tags",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

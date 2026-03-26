@@ -1,0 +1,414 @@
+<style>
+  .why-choose-us-wrapper {
+    width: 100%;
+    padding: 80px 20px;
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+
+  .why-choose-us-wrapper.page-width {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .why-choose-us-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 60px;
+  }
+
+  .why-choose-us-heading {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-size: 42px;
+    color: #1e5649;
+    text-align: left;
+    margin: 0;
+    line-height: 1.2;
+    padding-right: 850px;
+  }
+
+  .why-choose-us-wrapper.title-align-center .why-choose-us-heading {
+    text-align: center;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .why-choose-us-wrapper.title-align-right .why-choose-us-heading {
+    text-align: right;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .why-choose-us-content {
+    display: flex;
+    width: 100%;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .why-choose-us-image {
+    flex: 1;
+    max-width: 50%;
+  }
+
+  .why-choose-us-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .why-choose-us-features {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: start;
+    gap: 40px;
+    max-width: 50%;
+  }
+
+  .why-choose-us-feature {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 15px;
+  }
+
+  .why-choose-us-wrapper.logo-align-center .why-choose-us-feature {
+    align-items: center;
+    text-align: center;
+  }
+
+  .why-choose-us-wrapper.logo-align-right .why-choose-us-feature {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .why-choose-us-wrapper.logo-align-center .why-choose-us-features,
+  .why-choose-us-wrapper.logo-align-center .why-choose-us-features-only {
+    justify-items: center;
+  }
+
+  .why-choose-us-wrapper.logo-align-right .why-choose-us-features,
+  .why-choose-us-wrapper.logo-align-right .why-choose-us-features-only {
+    justify-items: end;
+  }
+
+  .why-choose-us-feature-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e5649;
+  }
+
+  .why-choose-us-feature-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .why-choose-us-feature-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .why-choose-us-feature-text {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #1e5649;
+    line-height: 1.4;
+    margin: 0;
+    padding-right: 50px;
+  }
+
+  .why-choose-us-wrapper.logo-align-center .why-choose-us-feature-text,
+  .why-choose-us-wrapper.logo-align-right .why-choose-us-feature-text {
+    padding-right: 0;
+  }
+
+  .why-choose-us-features-only {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: start;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .why-choose-us-wrapper.logo-align-center .why-choose-us-features-only {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .why-choose-us-wrapper.logo-align-right .why-choose-us-features-only {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .why-choose-us-heading{
+      padding-right: 0px;
+    }
+    .why-choose-us-content {
+      flex-direction: column;
+    }
+
+    .why-choose-us-image,
+    .why-choose-us-features {
+      max-width: 100%;
+    }
+
+    .why-choose-us-features {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .why-choose-us-features-only {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .why-choose-us-wrapper {
+      padding: 60px 15px;
+    }
+
+    .why-choose-us-container {
+      align-items: center;
+    }
+
+    .why-choose-us-heading {
+      font-size: 32px;
+      padding-right: 0px;
+    }
+
+    .why-choose-us-features,
+    .why-choose-us-features-only {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .why-choose-us-feature-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .why-choose-us-feature-text {
+      font-size: 16px;
+      padding-right: 0;
+    }
+  }
+</style>
+
+<div class="why-choose-us-wrapper logo-align-{{ section.settings.logo_alignment }} title-align-{{ section.settings.title_alignment }} {% if section.settings.width == 'page_width' %}page-width{% endif %}" style="background-color: {{ section.settings.background_color | default: '#E8F5E9' }};">
+  <div class="why-choose-us-container">
+    {% if section.settings.heading != blank %}
+      <h2 class="why-choose-us-heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.settings.section_image %}
+      <div class="why-choose-us-content">
+        <div class="why-choose-us-image">
+          <img 
+            src="{{ section.settings.section_image | img_url: 'master' }}" 
+            alt="{{ section.settings.heading | default: 'Why Choose Us' }}"
+            loading="lazy"
+          >
+        </div>
+        <div class="why-choose-us-features">
+          {% for block in section.blocks %}
+            <div class="why-choose-us-feature" {{ block.shopify_attributes }}>
+              {% if block.settings.icon_image != blank or block.settings.icon_svg != blank %}
+                <div class="why-choose-us-feature-icon">
+                  {% if block.settings.icon_image != blank %}
+                    <img 
+                      src="{{ block.settings.icon_image | img_url: '200x200' }}" 
+                      alt="{{ block.settings.text | default: 'Feature icon' }}"
+                      loading="lazy"
+                    >
+                  {% elsif block.settings.icon_svg != blank %}
+                    {{ block.settings.icon_svg }}
+                  {% endif %}
+                </div>
+              {% endif %}
+              {% if block.settings.text != blank %}
+                <p class="why-choose-us-feature-text">{{ block.settings.text }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="why-choose-us-features-only">
+        {% for block in section.blocks %}
+          <div class="why-choose-us-feature" {{ block.shopify_attributes }}>
+            {% if block.settings.icon_image != blank or block.settings.icon_svg != blank %}
+              <div class="why-choose-us-feature-icon">
+                {% if block.settings.icon_image != blank %}
+                  <img 
+                    src="{{ block.settings.icon_image | img_url: '200x200' }}" 
+                    alt="{{ block.settings.text | default: 'Feature icon' }}"
+                    loading="lazy"
+                  >
+                {% elsif block.settings.icon_svg != blank %}
+                  {{ block.settings.icon_svg }}
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if block.settings.text != blank %}
+              <p class="why-choose-us-feature-text">{{ block.settings.text }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Why Choose Us",
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Section Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full Width"
+        },
+        {
+          "value": "page_width",
+          "label": "Page Width"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#E8F5E9"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Choose Us For Your Next Catering Event?"
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left Align"
+        },
+        {
+          "value": "center",
+          "label": "Center Align"
+        },
+        {
+          "value": "right",
+          "label": "Right Align"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_image",
+      "label": "Section Image"
+    },
+    {
+      "type": "select",
+      "id": "logo_alignment",
+      "label": "Feature Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left Align"
+        },
+        {
+          "value": "center",
+          "label": "Center Align"
+        },
+        {
+          "value": "right",
+          "label": "Right Align"
+        }
+      ],
+      "default": "left"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "why_choose_feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon Image",
+          "info": "Upload an image for the icon (alternative to SVG)"
+        },
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Icon SVG",
+          "info": "Paste your SVG icon code here (alternative to image)"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Text",
+          "default": "Feature description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Choose Us",
+      "blocks": [
+        {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/></svg>",
+            "text": "Reliable, On-Time Delivery"
+          }
+        },
+        {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>",
+            "text": "Fresh, High-Quality Food"
+          }
+        },
+        {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z'/></svg>",
+            "text": "Easy Online Ordering"
+          }
+        },
+        {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>",
+            "text": "Dietary Options for Every Team"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

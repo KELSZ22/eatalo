@@ -1,0 +1,684 @@
+<script id="product-options-modal-script-main">
+  // Prevent duplicate execution - but always define functions
+  (function() {
+    // Check if already loaded
+    if (window.productOptionsModalScriptLoaded) {
+      // Script already loaded - remove this duplicate script tag
+      const script = document.getElementById('product-options-modal-script-main');
+      if (script && !script.hasAttribute('data-loaded')) {
+        script.remove();
+      }
+      return; // Exit early, functions already defined
+    }
+    
+    // Mark as loaded
+    window.productOptionsModalScriptLoaded = true;
+    const script = document.getElementById('product-options-modal-script-main');
+    if (script) {
+      script.setAttribute('data-loaded', 'true');
+    }
+    
+    // Remove any duplicate script tags that might exist
+    setTimeout(function() {
+      const allScripts = document.querySelectorAll('script');
+      const mainScript = document.getElementById('product-options-modal-script-main');
+      allScripts.forEach(function(s) {
+        if (s !== mainScript && 
+            s.textContent && 
+            s.textContent.includes('openProductOptionsModal') && 
+            !s.hasAttribute('data-loaded')) {
+          s.remove();
+        }
+      });
+      
+      // Also remove any text nodes that contain the script code
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      while (node = walker.nextNode()) {
+        if (node.textContent && node.textContent.includes('openProductOptionsModal') && node.textContent.includes('function openProductOptionsModal')) {
+          node.parentNode.removeChild(node);
+        }
+      }
+    }, 100);
+  })();
+  
+  // Product Options Modal Functions - Always define these globally
+  window.openProductOptionsModal = function(productId, blockId) {
+    const modal = document.getElementById('product-options-modal-' + productId + '-' + blockId);
+    if (!modal) {
+      console.error('Modal not found:', 'product-options-modal-' + productId + '-' + blockId);
+      return;
+    }
+    
+    // Find the product-card that contains this product
+    const productCards = document.querySelectorAll('product-card');
+    let targetCard = null;
+    
+    productCards.forEach(card => {
+      const cardProductId = card.getAttribute('data-product-id');
+      if (cardProductId === productId.toString()) {
+        targetCard = card;
+      }
+    });
+    
+    if (!targetCard) {
+      targetCard = modal.closest('product-card');
+    }
+    
+    const gallery = targetCard ? targetCard.querySelector('.card-gallery') : null;
+    
+    // Always place modal inside card-gallery (image area only)
+    if (gallery) {
+      // Ensure gallery has position relative and overflow hidden
+      const galleryStyle = window.getComputedStyle(gallery);
+      if (galleryStyle.position === 'static') {
+        gallery.style.position = 'relative';
+      }
+      gallery.style.overflow = 'hidden';
+      
+      // Move modal into gallery if not already there
+      if (modal.parentElement !== gallery) {
+        gallery.appendChild(modal);
+      }
+    } else {
+      console.warn('Gallery not found for modal, productId:', productId);
+      // Still show modal even if gallery not found
+    }
+    
+    // Ensure modal is positioned correctly and contained within gallery
+    modal.style.position = 'absolute';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.right = '0';
+    modal.style.bottom = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.maxWidth = '100%';
+    modal.style.maxHeight = '100%';
+    modal.style.margin = '0';
+    modal.style.padding = '0';
+    modal.style.display = 'flex';
+    modal.style.zIndex = '1000';
+    
+    // Initialize form state: sync quantity display with hidden input
+    const quantityDisplay = document.getElementById('quantity-display-' + productId + '-' + blockId);
+    const quantityHidden = document.getElementById('quantity-' + productId + '-' + blockId);
+    if (quantityDisplay && quantityHidden) {
+      quantityDisplay.value = quantityHidden.value || '1';
+    }
+    
+    // Initialize variant selection (select first available variant)
+    if (typeof initializeVariantSelection === 'function') {
+      initializeVariantSelection(productId, blockId);
+    }
+  };
+
+  window.closeProductOptionsModal = function(productId, blockId) {
+    const modal = document.getElementById('product-options-modal-' + productId + '-' + blockId);
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  };
+
+  window.updateQuantityInput = function(productId, blockId) {
+    const displayInput = document.getElementById('quantity-display-' + productId + '-' + blockId);
+    const hiddenInput = document.getElementById('quantity-' + productId + '-' + blockId);
+    if (displayInput && hiddenInput) {
+      hiddenInput.value = displayInput.value;
+      // Update price display when quantity changes
+      updatePriceForQuantity(productId, blockId);
+    }
+  }
+
+  window.decreaseQuantity = function(productId, blockId) {
+    const displayInput = document.getElementById('quantity-display-' + productId + '-' + blockId);
+    const hiddenInput = document.getElementById('quantity-' + productId + '-' + blockId);
+    if (displayInput && hiddenInput && parseInt(displayInput.value) > 1) {
+      const newValue = parseInt(displayInput.value) - 1;
+      displayInput.value = newValue;
+      hiddenInput.value = newValue;
+      // Update price display when quantity changes
+      updatePriceForQuantity(productId, blockId);
+    }
+  }
+
+  window.increaseQuantity = function(productId, blockId) {
+    const displayInput = document.getElementById('quantity-display-' + productId + '-' + blockId);
+    const hiddenInput = document.getElementById('quantity-' + productId + '-' + blockId);
+    if (displayInput && hiddenInput && parseInt(displayInput.value) < 99) {
+      const newValue = parseInt(displayInput.value) + 1;
+      displayInput.value = newValue;
+      hiddenInput.value = newValue;
+      // Update price display when quantity changes
+      updatePriceForQuantity(productId, blockId);
+    }
+  }
+  
+  // Update variant ID input when variant option is selected
+  function updateVariantId(productId, blockId, variantId) {
+    const variantInput = document.querySelector('#ProductOptionsForm-' + productId + '-' + blockId + ' input[name="id"]');
+    if (variantInput) {
+      variantInput.value = variantId;
+      // Enable/disable the input based on variant availability
+      const selectedButton = document.querySelector('.variant-option[data-product-id="' + productId + '"][data-block-id="' + blockId + '"][data-variant-id="' + variantId + '"]');
+      if (selectedButton && selectedButton.disabled) {
+        variantInput.disabled = true;
+      } else {
+        variantInput.disabled = false;
+      }
+    }
+  }
+  
+  // Find and update the correct variant based on all selected options
+  function updateSelectedVariant(productId, blockId) {
+    // Get variant data from JSON script tag
+    const variantDataScript = document.getElementById('variant-data-' + productId + '-' + blockId);
+    if (!variantDataScript) {
+      console.error('Variant data not found for product', productId);
+      return;
+    }
+    
+    const variantData = JSON.parse(variantDataScript.textContent);
+    
+    // Get all active variant option buttons for this product
+    const activeButtons = document.querySelectorAll('.variant-option[data-product-id="' + productId + '"][data-block-id="' + blockId + '"].active:not([disabled])');
+    
+    if (activeButtons.length === 0) {
+      // No options selected, use default variant
+      const variantInput = document.querySelector('#ProductOptionsForm-' + productId + '-' + blockId + ' input[name="id"]');
+      if (variantInput) {
+        const defaultVariantId = variantInput.getAttribute('value');
+        updateVariantId(productId, blockId, defaultVariantId);
+      }
+      return;
+    }
+    
+    // Collect all selected option values by position
+    const selectedOptions = {};
+    activeButtons.forEach(button => {
+      const position = parseInt(button.dataset.optionPosition);
+      const value = button.dataset.optionValue;
+      selectedOptions[position] = value;
+    });
+    
+    // Find the variant that matches all selected options
+    let matchedVariant = null;
+    for (const variant of variantData.variants) {
+      let matches = true;
+      
+      // Check if variant matches all selected options
+      if (selectedOptions[1] && variant.option1 !== selectedOptions[1]) {
+        matches = false;
+      }
+      if (selectedOptions[2] && variant.option2 !== selectedOptions[2]) {
+        matches = false;
+      }
+      if (selectedOptions[3] && variant.option3 !== selectedOptions[3]) {
+        matches = false;
+      }
+      
+      if (matches) {
+        matchedVariant = variant;
+        break;
+      }
+    }
+    
+    // Update the variant ID and price
+    if (matchedVariant) {
+      updateVariantId(productId, blockId, matchedVariant.id);
+      updatePriceDisplay(productId, blockId, matchedVariant.price);
+    } else {
+      // Fallback to default variant if no match found
+      const variantInput = document.querySelector('#ProductOptionsForm-' + productId + '-' + blockId + ' input[name="id"]');
+      if (variantInput) {
+        const defaultVariantId = variantInput.getAttribute('value');
+        updateVariantId(productId, blockId, defaultVariantId);
+        // Find default variant price
+        const defaultVariant = variantData.variants.find(v => v.id === parseInt(defaultVariantId));
+        if (defaultVariant) {
+          updatePriceDisplay(productId, blockId, defaultVariant.price);
+        }
+      }
+    }
+  }
+  
+  // Update price display in the add to cart button
+  function updatePriceDisplay(productId, blockId, price) {
+    const form = document.getElementById('ProductOptionsForm-' + productId + '-' + blockId);
+    if (!form) return;
+    
+    // Find the price display element
+    const priceDisplay = form.querySelector('.add-to-cart-price-display');
+    if (priceDisplay) {
+      // Get quantity
+      const quantityInput = document.getElementById('quantity-display-' + productId + '-' + blockId);
+      const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+      
+      // Calculate total price
+      const totalPrice = price * quantity;
+      
+      // Update data attributes
+      priceDisplay.setAttribute('data-unit-price', price);
+      priceDisplay.setAttribute('data-quantity', quantity);
+      
+      // Format and update the displayed price
+      // Use Shopify's money format if available, otherwise format manually
+      const formattedPrice = formatMoney(totalPrice);
+      priceDisplay.textContent = formattedPrice;
+    }
+  }
+  
+  // Update price display based on current quantity and selected variant
+  function updatePriceForQuantity(productId, blockId) {
+    const form = document.getElementById('ProductOptionsForm-' + productId + '-' + blockId);
+    if (!form) return;
+    
+    const priceDisplay = form.querySelector('.add-to-cart-price-display');
+    if (!priceDisplay) return;
+    
+    const unitPrice = parseInt(priceDisplay.getAttribute('data-unit-price')) || 0;
+    const quantityInput = document.getElementById('quantity-display-' + productId + '-' + blockId);
+    const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+    
+    const totalPrice = unitPrice * quantity;
+    priceDisplay.setAttribute('data-quantity', quantity);
+    priceDisplay.textContent = formatMoney(totalPrice);
+  }
+  
+  // Format money - use Shopify's format if available, otherwise format manually
+  function formatMoney(cents) {
+    // Check if Shopify's money format is available
+    if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
+      return Shopify.formatMoney(cents);
+    }
+    
+    // Fallback: Convert cents to dollars and format
+    const dollars = cents / 100;
+    // Get currency format from theme settings or use default
+    const currencyFormat = window.Shopify?.currency?.active || 'USD';
+    const currencySymbol = window.Shopify?.currency?.symbol || '$';
+    
+    // Format with currency symbol
+    if (currencyFormat === 'USD' || !currencySymbol) {
+      return '$' + dollars.toFixed(2);
+    }
+    return currencySymbol + dollars.toFixed(2);
+  }
+  
+  // Initialize variant selection - select first available variant for each option
+  function initializeVariantSelection(productId, blockId) {
+    // Get all option positions
+    const optionPositions = new Set();
+    document.querySelectorAll('.variant-option[data-product-id="' + productId + '"][data-block-id="' + blockId + '"]').forEach(btn => {
+      optionPositions.add(btn.dataset.optionPosition);
+    });
+    
+    // Select first available option for each position
+    optionPositions.forEach(position => {
+      const firstAvailable = document.querySelector('.variant-option[data-product-id="' + productId + '"][data-block-id="' + blockId + '"][data-option-position="' + position + '"]:not([disabled])');
+      if (firstAvailable) {
+        firstAvailable.classList.add('active');
+      }
+    });
+    
+    // Update the variant ID based on selected options
+    updateSelectedVariant(productId, blockId);
+  }
+  
+  // Update alteration properties when alterations are selected
+  function updateAlterationProperties(productId, blockId) {
+    const container = document.getElementById('alteration-properties-' + productId + '-' + blockId);
+    if (!container) return;
+    
+    // Clear existing alteration inputs
+    container.innerHTML = '';
+    
+    // Get all active alterations
+    const activeAlterations = document.querySelectorAll('.alteration-option.active[data-product-id="' + productId + '"][data-block-id="' + blockId + '"]');
+    activeAlterations.forEach((btn, index) => {
+      const alteration = btn.dataset.alteration;
+      const alterationName = alteration.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'properties[Alteration ' + (index + 1) + ']';
+      input.value = alterationName;
+      container.appendChild(input);
+    });
+  }
+  
+  // Direct handler for alteration button clicks (fallback)
+  // Make it globally accessible
+  if (typeof window.handleAlterationClick === 'undefined') {
+    window.handleAlterationClick = function(event, productId, blockId, alteration) {
+      console.log('handleAlterationClick called', event, productId, blockId, alteration);
+      
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      
+      // Find the button
+      let button = null;
+      if (event && event.target) {
+        button = event.target.closest('.alteration-option') || event.target;
+      } else {
+        button = document.querySelector('.alteration-option[data-alteration="' + alteration + '"][data-product-id="' + productId + '"][data-block-id="' + blockId + '"]');
+      }
+      
+      if (button) {
+        button.classList.toggle('active');
+        updateAlterationProperties(productId, blockId);
+        console.log('Button toggled, active:', button.classList.contains('active'));
+      } else {
+        console.error('Button not found');
+      }
+      
+      return false;
+    };
+  }
+
+  // Handle variant and alteration selections - use event delegation for dynamically added elements
+  document.addEventListener('DOMContentLoaded', function() {
+    // Variant selection - use event delegation
+    document.addEventListener('click', function(e) {
+      const button = e.target.closest('.variant-option');
+      if (!button || button.disabled) return;
+      
+      // Stop propagation to prevent overlay from closing modal
+      e.stopPropagation();
+      
+      const productId = button.dataset.productId;
+      const blockId = button.dataset.blockId;
+      const optionPosition = button.dataset.optionPosition;
+      const variantId = button.dataset.variantId;
+      
+      // Remove active class from all variant buttons for this option position and product
+      document.querySelectorAll('.variant-option[data-product-id="' + productId + '"][data-block-id="' + blockId + '"][data-option-position="' + optionPosition + '"]').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Add active class to clicked button
+      button.classList.add('active');
+      
+      // Update the variant ID - need to find the correct variant based on all selected options
+      updateSelectedVariant(productId, blockId);
+    });
+
+    
+    // Quantity buttons - stop propagation
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.quantity-button') || e.target.closest('.product-options-quantity')) {
+        e.stopPropagation();
+      }
+    });
+
+    // Auto-close modal when cart:update event is received (like quick-add does)
+    // Close modal if cart update was successful (no error)
+    document.addEventListener('cart:update', function(e) {
+      // Check if the update was successful (no error)
+      if (e.detail && e.detail.data && !e.detail.data.didError) {
+        // Find the product-form-component that triggered this event
+        const productFormComponents = document.querySelectorAll('product-form-component');
+        productFormComponents.forEach(component => {
+          // Check if this component is inside a product-options-modal
+          const modal = component.closest('.product-options-modal');
+          if (modal && modal.style.display === 'flex') {
+            const modalId = modal.id;
+            if (modalId) {
+              // Extract productId and blockId from modal ID
+              const parts = modalId.replace('product-options-modal-', '').split('-');
+              if (parts.length >= 2) {
+                const productId = parts[0];
+                const blockId = parts.slice(1).join('-');
+                closeProductOptionsModal(productId, blockId);
+              }
+            }
+              }
+            });
+          }
+    });
+  });
+
+  // Move modal into card-gallery and position button
+  function setupProductCardButton(card) {
+    // Try to find button in different locations - with retry logic
+    let button = card.querySelector('.card-gallery .product-card-hover-add-to-cart') || 
+                 card.querySelector('.product-card__content .product-card-hover-add-to-cart') ||
+                 card.querySelector('.product-card-hover-add-to-cart');
+    const gallery = card.querySelector('.card-gallery');
+    
+    // If button not found, try again after a short delay (for dynamically loaded content)
+    if (!button && gallery) {
+      setTimeout(() => {
+        button = card.querySelector('.card-gallery .product-card-hover-add-to-cart') || 
+                 card.querySelector('.product-card__content .product-card-hover-add-to-cart') ||
+                 card.querySelector('.product-card-hover-add-to-cart');
+        if (button && gallery) {
+          setupButtonHover(card, button, gallery);
+        }
+      }, 200);
+      return;
+    }
+    
+    if (button && gallery) {
+      setupButtonHover(card, button, gallery);
+    } else {
+      console.warn('Button or gallery not found for card:', {
+        hasButton: !!button,
+        hasGallery: !!gallery,
+        cardId: card.id || card.getAttribute('data-product-id')
+      });
+    }
+  }
+  
+  function setupButtonHover(card, button, gallery) {
+    // Skip if already initialized
+    if (button.dataset.hoverInitialized === 'true') {
+      return;
+    }
+    button.dataset.hoverInitialized = 'true';
+    
+    const content = card.querySelector('.product-card__content');
+      
+      // Move modal into product-card (for desktop) or card-gallery (for mobile)
+      // First, try to find modal by product ID
+      const productId = card.getAttribute('data-product-id');
+      let modal = card.querySelector('.product-options-modal');
+      
+      // If not found in card, search for it in siblings or document
+      if (!modal && productId) {
+        const allModals = document.querySelectorAll('.product-options-modal');
+        allModals.forEach(m => {
+          const modalId = m.id;
+          if (modalId && modalId.includes(productId)) {
+            modal = m;
+          }
+        });
+      }
+      
+      if (modal && gallery) {
+        // Always place modal inside card-gallery (image area only)
+        if (modal.parentElement !== gallery) {
+          gallery.appendChild(modal);
+        }
+        
+        // Ensure gallery has position relative and overflow hidden
+        const galleryStyle = window.getComputedStyle(gallery);
+        if (galleryStyle.position === 'static') {
+          gallery.style.position = 'relative';
+        }
+        gallery.style.overflow = 'hidden';
+        
+        // Ensure modal is positioned absolutely and contained within gallery
+        modal.style.position = 'absolute';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.right = '0';
+        modal.style.bottom = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.maxWidth = '100%';
+        modal.style.maxHeight = '100%';
+        modal.style.margin = '0';
+        modal.style.padding = '0';
+        modal.style.zIndex = '1000';
+      }
+      
+    // Move button inside the gallery (image area) if not already there
+    if (button.parentElement !== gallery) {
+      gallery.appendChild(button);
+    }
+    
+    // Ensure gallery has position relative for absolute positioning
+    const galleryStyle = window.getComputedStyle(gallery);
+    if (galleryStyle.position === 'static') {
+      gallery.style.position = 'relative';
+    }
+    
+    const updatePosition = () => {
+      // Position button inside the image area with 50px bottom padding
+      if (button && button.parentElement === gallery) {
+        button.style.position = 'absolute';
+        button.style.top = 'auto';
+        button.style.bottom = '50px';
+        button.style.left = '50%';
+        button.style.right = 'auto';
+        button.style.transform = 'translateX(-50%) translateY(100px)';
+        button.style.opacity = '0';
+        button.style.pointerEvents = 'none';
+        button.style.display = 'flex';
+        button.style.zIndex = '10';
+      }
+    };
+    
+    // Initial positioning - try multiple times to ensure it works
+    updatePosition();
+    setTimeout(updatePosition, 100);
+    setTimeout(updatePosition, 500);
+    
+    // Update on resize
+    let resizeTimer;
+    const resizeHandler = function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        updatePosition();
+      }, 100);
+    };
+    window.addEventListener('resize', resizeHandler);
+    
+    // Add hover event listeners with immediate response
+    const handleMouseEnter = function(e) {
+      e.stopPropagation();
+      // Remove transition temporarily for instant appearance
+      button.style.transition = 'none';
+      button.style.transform = 'translateX(-50%) translateY(0)';
+      button.style.opacity = '1';
+      button.style.pointerEvents = 'auto';
+      // Re-enable transition after a brief moment for smooth exit
+      setTimeout(() => {
+        button.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+      }, 10);
+    };
+    
+    const handleMouseLeave = function(e) {
+      e.stopPropagation();
+      button.style.transform = 'translateX(-50%) translateY(100px)';
+      button.style.opacity = '0';
+      button.style.pointerEvents = 'none';
+    };
+    
+    gallery.addEventListener('mouseenter', handleMouseEnter, { passive: true });
+    gallery.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+    
+    // Also ensure CSS hover works as fallback
+    gallery.classList.add('has-hover-button');
+  }
+  
+  // Initialize on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', function() {
+    const productCards = document.querySelectorAll('product-card');
+    productCards.forEach(card => {
+      setupProductCardButton(card);
+      
+      const gallery = card.querySelector('.card-gallery');
+      const content = card.querySelector('.product-card__content');
+      
+      // Move modal into product-card (for desktop) or card-gallery (for mobile)
+      // First, try to find modal by product ID
+      const productId = card.getAttribute('data-product-id');
+      let modal = card.querySelector('.product-options-modal');
+      
+      // If not found in card, search for it in siblings or document
+      if (!modal && productId) {
+        const allModals = document.querySelectorAll('.product-options-modal');
+        allModals.forEach(m => {
+          const modalId = m.id;
+          if (modalId && modalId.includes(productId)) {
+            modal = m;
+          }
+        });
+      }
+      
+      if (modal && gallery) {
+        // Always place modal inside card-gallery (image area only)
+        if (modal.parentElement !== gallery) {
+          gallery.appendChild(modal);
+        }
+        
+        // Ensure gallery has position relative and overflow hidden
+        const galleryStyle = window.getComputedStyle(gallery);
+        if (galleryStyle.position === 'static') {
+          gallery.style.position = 'relative';
+        }
+        gallery.style.overflow = 'hidden';
+        
+        // Ensure modal is positioned absolutely and contained within gallery
+        modal.style.position = 'absolute';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.right = '0';
+        modal.style.bottom = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.maxWidth = '100%';
+        modal.style.maxHeight = '100%';
+        modal.style.margin = '0';
+        modal.style.padding = '0';
+        modal.style.zIndex = '1000';
+      }
+    });
+    
+    // Also try after a delay for dynamically loaded content
+    setTimeout(() => {
+      const productCards = document.querySelectorAll('product-card');
+      productCards.forEach(card => {
+        setupProductCardButton(card);
+      });
+    }, 500);
+    
+    // Watch for dynamically added product cards
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) {
+            if (node.tagName === 'PRODUCT-CARD' || node.classList?.contains('product-card')) {
+              setupProductCardButton(node);
+            }
+            const productCards = node.querySelectorAll?.('product-card');
+            if (productCards) {
+              productCards.forEach(card => {
+                setupProductCardButton(card);
+              });
+            }
+          }
+        });
+      });
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  });
+</script>

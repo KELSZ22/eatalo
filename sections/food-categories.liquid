@@ -1,0 +1,366 @@
+{% comment %}
+  Food Categories Grid Section
+  Displays 4 image categories with overlay text and CTA buttons
+{% endcomment %}
+
+<style>
+  .food-categories-section {
+    width: 100%;
+    height: 624px;
+    flex-shrink: 0;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .food-category-item {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .food-category-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .food-category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
+  }
+
+  .food-category-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+
+  .food-category-title {
+    color: #ffffff;
+    font-family: 'Archivo', sans-serif;
+    font-size: 42px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 110%;
+    letter-spacing: -1.5px;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .food-category-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 40px;
+    background: transparent;
+    border: 2px solid #ffffff;
+    border-radius: 50px;
+    color: #ffffff;
+    font-family: 'Archivo', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 300px;
+  }
+
+  .food-category-btn:hover {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  .food-category-btn svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .food-category-btn:hover svg {
+    transform: translateX(4px);
+  }
+
+  .food-category-btn:hover svg path {
+    stroke: #000000;
+  }
+
+  @media (max-width: 1024px) {
+    .food-categories-section {
+      flex-wrap: wrap;
+      height: auto;
+    }
+
+    .food-category-item {
+      flex: 0 0 50%;
+      height: 312px;
+    }
+
+    .food-category-title {
+      font-size: 36px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .food-categories-section {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0;
+      scroll-behavior: smooth;
+      flex-wrap: nowrap;
+    }
+
+    .food-categories-section::-webkit-scrollbar {
+      display: none;
+    }
+
+    .food-category-item {
+      flex: 0 0 100%;
+      height: 500px;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      margin-right: 0;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .food-category-item:last-child {
+      margin-right: 0;
+    }
+
+    .food-category-overlay {
+      padding: 40px 30px;
+      border-radius: 0;
+    }
+
+    .food-category-title {
+      font-size: 30px;
+      letter-spacing: -1px;
+    }
+
+    .food-category-btn {
+      min-width: 280px;
+      padding: 16px 36px;
+      font-size: 15px;
+    }
+  }
+
+  .carousel-indicators {
+    display: none;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 0;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+
+  .carousel-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+
+  .carousel-indicator.active {
+    background: #ffffff;
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .carousel-indicators {
+      display: flex;
+    }
+  }
+
+  .food-categories-wrapper {
+    position: relative;
+  }
+</style>
+
+<div class="food-categories-wrapper">
+  <section class="food-categories-section" id="food-categories-carousel">
+    {% for block in section.blocks %}
+      <div class="food-category-item" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        {% if block.settings.image %}
+          <img
+            src="{{ block.settings.image | image_url: width: 800 }}"
+            alt="{{ block.settings.title }}"
+            loading="lazy"
+          >
+        {% else %}
+          <img
+            src="https://via.placeholder.com/800x624/cccccc/666666?text={{ block.settings.title | url_encode }}"
+            alt="{{ block.settings.title }}"
+          >
+        {% endif %}
+
+        <div class="food-category-overlay">
+          <div class="food-category-content">
+            <h2 class="food-category-title">{{ block.settings.title }}</h2>
+          </div>
+
+          {% if block.settings.button_link != blank %}
+            <a href="{{ block.settings.button_link }}" class="food-category-btn">
+              {{ block.settings.button_text }}
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+
+  <div class="carousel-indicators">
+    {% for block in section.blocks %}
+      <button
+        class="carousel-indicator {% if forloop.first %}active{% endif %}"
+        data-slide="{{ forloop.index0 }}"
+        aria-label="Go to slide {{ forloop.index }}"
+      ></button>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  (function () {
+    const carousel = document.getElementById('food-categories-carousel');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    const items = document.querySelectorAll('.food-category-item');
+
+    if (!carousel || indicators.length === 0) return;
+
+    // Update active indicator based on scroll position
+    function updateActiveIndicator() {
+      const scrollLeft = carousel.scrollLeft;
+      const itemWidth = items[0].offsetWidth;
+      const activeIndex = Math.round(scrollLeft / itemWidth);
+
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === activeIndex);
+      });
+    }
+
+    // Scroll to specific slide when indicator is clicked
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        const itemWidth = items[0].offsetWidth;
+        carousel.scrollTo({
+          left: itemWidth * index,
+          behavior: 'smooth',
+        });
+      });
+    });
+
+    // Listen for scroll events
+    let scrollTimeout;
+    carousel.addEventListener(
+      'scroll',
+      () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveIndicator, 50);
+      },
+      { passive: true }
+    );
+
+    // Initialize
+    updateActiveIndicator();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Food Categories Grid",
+  "tag": "section",
+  "class": "section-food-categories",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Category Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Title",
+          "default": "Category Title"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "View All"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Food Categories Grid",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "title": "Breakfast & Morning Tea",
+            "button_text": "View All"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Lunch & Dinner",
+            "button_text": "View All"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Afternoon Tea",
+            "button_text": "View All"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Hire Chef & Waiters",
+            "button_text": "View All"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

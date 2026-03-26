@@ -1,0 +1,2527 @@
+{% comment %} <script
+  src="{{ 'dialog.js' | asset_url }}"
+  type="module"
+></script>
+<script
+  src="{{ 'quote-form.js' | asset_url }}"
+  type="module"
+></script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaApiLoaded&render=explicit" async defer></script>
+<script>
+  window.recaptchaApiReady = false;
+  window.onRecaptchaApiLoaded = function() {
+    window.recaptchaApiReady = true;
+    document.dispatchEvent(new Event('recaptcha:ready'));
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var quoteModal = document.getElementById('quote-modal');
+    if (!quoteModal) return;
+    var dialog = quoteModal.querySelector('dialog');
+    var backdrop = quoteModal.querySelector('.quote-modal__backdrop');
+    if (!dialog) return;
+
+    dialog.showModal = function() {
+      HTMLDialogElement.prototype.show.call(this);
+      if (backdrop) backdrop.hidden = false;
+    };
+
+    var observer = new MutationObserver(function() {
+      if (dialog.classList.contains('dialog-closing') && backdrop) {
+        backdrop.style.opacity = '0';
+      }
+    });
+    observer.observe(dialog, { attributes: true, attributeFilter: ['class'] });
+
+    dialog.addEventListener('close', function() {
+      if (backdrop) {
+        backdrop.hidden = true;
+        backdrop.style.opacity = '';
+      }
+    });
+  });
+</script>
+
+<dialog-component
+  id="quote-modal"
+  class="quote-modal"
+>
+  <div class="quote-modal__backdrop" hidden></div>
+  <dialog
+    ref="dialog"
+    on:click="/closeDialogOnClickOutside"
+    on:keydown="/closeDialogOnEscapePress"
+    class="quote-modal__content dialog-modal"
+    scroll-lock
+  >
+    <button
+      ref="closeButton"
+      on:click="/closeDialog"
+      class="button button-unstyled quote-modal__close"
+      aria-label="Close"
+    >
+      {{- 'icon-close.svg' | inline_asset_content -}}
+    </button>
+
+    <div class="quote-modal__wrapper">
+      <h2 class="quote-modal__title">GET QUOTE</h2>
+
+      <div class="quote-modal__progress">
+        <div class="quote-modal__progress-step" data-progress-step="1">
+          <span class="quote-modal__progress-step-number">1</span>
+          <span class="quote-modal__progress-step-label">Your Details</span>
+        </div>
+        <div class="quote-modal__progress-step" data-progress-step="2">
+          <span class="quote-modal__progress-step-number">2</span>
+          <span class="quote-modal__progress-step-label">Event</span>
+        </div>
+        <div class="quote-modal__progress-step" data-progress-step="3">
+          <span class="quote-modal__progress-step-number">3</span>
+          <span class="quote-modal__progress-step-label">Request Quote</span>
+        </div>
+      </div>
+
+      <quote-form-component>
+      <form class="quote-modal__form" id="quote-form" ref="form">
+        <div class="quote-modal__step" data-step="1" ref="step1">
+          <div class="quote-modal__field">
+            <label for="quote-name" class="quote-modal__label">
+              Name
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-name"
+              name="name"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="nameInput"
+            >
+            <div class="quote-modal__error" ref="nameError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-company" class="quote-modal__label">
+              Company
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-company"
+              name="company"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="companyInput"
+            >
+            <div class="quote-modal__error" ref="companyError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-phone" class="quote-modal__label">
+              Phone number
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__phone-wrapper">
+              <select
+                id="quote-phone-code"
+                name="phone_code"
+                class="quote-modal__phone-code"
+                ref="phoneCodeSelect"
+              >
+                <option value="+61" data-flag="🇦🇺">🇦🇺 +61</option>
+                <option value="+1" data-flag="🇺🇸">🇺🇸 +1</option>
+                <option value="+44" data-flag="🇬🇧">🇬🇧 +44</option>
+                <option value="+64" data-flag="🇳🇿">🇳🇿 +64</option>
+              </select>
+              <input
+                type="tel"
+                id="quote-phone"
+                name="phone"
+                class="quote-modal__input quote-modal__input--phone"
+                required
+                aria-required="true"
+                ref="phoneInput"
+              >
+            </div>
+            <div class="quote-modal__error" ref="phoneError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-email" class="quote-modal__label">
+              Email Address
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="email"
+              id="quote-email"
+              name="email"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="emailInput"
+            >
+            <div class="quote-modal__error" ref="emailError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-address" class="quote-modal__label">
+              Street address
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-address"
+              name="address"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="addressInput"
+            >
+            <div class="quote-modal__error" ref="addressError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-suburb" class="quote-modal__label">
+              Suburb
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-suburb"
+              name="suburb"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="suburbInput"
+            >
+            <div class="quote-modal__error" ref="suburbError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-postcode" class="quote-modal__label">
+              Postcode
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-postcode"
+              name="postcode"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="postcodeInput"
+            >
+            <div class="quote-modal__error" ref="postcodeError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-attendees" class="quote-modal__label">
+              How many people are attending?
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="number"
+              id="quote-attendees"
+              name="attendees"
+              class="quote-modal__input"
+              min="1"
+              required
+              aria-required="true"
+              ref="attendeesInput"
+            >
+            <div class="quote-modal__error" ref="attendeesError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-event-date" class="quote-modal__label">
+              Event Date
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="date"
+              id="quote-event-date"
+              name="event_date"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="eventDateInput"
+            >
+            <div class="quote-modal__error" ref="eventDateError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-time" class="quote-modal__label">
+              Event Time
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="time"
+              id="quote-time"
+              name="time"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="timeInput"
+            >
+            <div class="quote-modal__error" ref="timeError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__actions">
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--primary"
+              on:click="/nextStep"
+              ref="nextButton"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        <div class="quote-modal__step" data-step="2" ref="step2" hidden>
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Budget
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input
+                  type="radio"
+                  name="budget_type"
+                  value="per_person"
+                  class="quote-modal__radio"
+                  required
+                  aria-required="true"
+                  ref="budgetPerPerson"
+                >
+                <span class="quote-modal__radio-label">Per Person</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input
+                  type="radio"
+                  name="budget_type"
+                  value="total_budget"
+                  class="quote-modal__radio"
+                  required
+                  aria-required="true"
+                  ref="budgetTotal"
+                >
+                <span class="quote-modal__radio-label">Total Budget</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input
+                  type="radio"
+                  name="budget_type"
+                  value="unsure"
+                  class="quote-modal__radio"
+                  required
+                  aria-required="true"
+                  ref="budgetUnsure"
+                >
+                <span class="quote-modal__radio-label">Unsure</span>
+              </label>
+            </div>
+            <div class="quote-modal__budget-input-wrapper" ref="budgetInputWrapper" hidden>
+              <span class="quote-modal__budget-icon">$</span>
+              <input
+                type="text"
+                name="event_budget"
+                class="quote-modal__input quote-modal__input--budget"
+                placeholder="Event Budget"
+                ref="eventBudgetInput"
+              >
+            </div>
+            <div class="quote-modal__error" ref="budgetError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Type of event (select all that are applicable)
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__checkbox-grid">
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="breakfast" class="quote-modal__checkbox" ref="eventTypeBreakfast">
+                <span class="quote-modal__checkbox-label">Breakfast</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="morning_tea" class="quote-modal__checkbox" ref="eventTypeMorningTea">
+                <span class="quote-modal__checkbox-label">Morning Tea</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="lunch" class="quote-modal__checkbox" ref="eventTypeLunch">
+                <span class="quote-modal__checkbox-label">Lunch</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="afternoon_tea" class="quote-modal__checkbox" ref="eventTypeAfternoonTea">
+                <span class="quote-modal__checkbox-label">Afternoon Tea</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="dinner" class="quote-modal__checkbox" ref="eventTypeDinner">
+                <span class="quote-modal__checkbox-label">Dinner</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="other" class="quote-modal__checkbox" ref="eventTypeOther">
+                <span class="quote-modal__checkbox-label">Other</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="eventTypeError" hidden>
+              <span>Please select at least one option</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Food style (select all that are applicable)
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__checkbox-grid">
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="platters" class="quote-modal__checkbox" ref="foodStylePlatters">
+                <span class="quote-modal__checkbox-label">Platters</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="individually_packed" class="quote-modal__checkbox" ref="foodStyleIndividuallyPacked">
+                <span class="quote-modal__checkbox-label">Individually Packed</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="grazing" class="quote-modal__checkbox" ref="foodStyleGrazing">
+                <span class="quote-modal__checkbox-label">Grazing</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="finger_food" class="quote-modal__checkbox" ref="foodStyleFingerFood">
+                <span class="quote-modal__checkbox-label">Finger Food</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="other" class="quote-modal__checkbox" ref="foodStyleOther">
+                <span class="quote-modal__checkbox-label">Other</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="foodStyleError" hidden>
+              <span>Please select at least one option</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Cutlery and plates required?
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="cutlery_plates" value="yes" class="quote-modal__radio" required aria-required="true" ref="cutleryYes">
+                <span class="quote-modal__radio-label">Yes</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="cutlery_plates" value="no" class="quote-modal__radio" required aria-required="true" ref="cutleryNo">
+                <span class="quote-modal__radio-label">No</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="cutleryError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Type of event
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="event_category" value="company" class="quote-modal__radio" required aria-required="true" ref="eventCategoryCompany">
+                <span class="quote-modal__radio-label">Company</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="event_category" value="private" class="quote-modal__radio" required aria-required="true" ref="eventCategoryPrivate">
+                <span class="quote-modal__radio-label">Private</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="eventCategoryError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Drinks required?
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="drinks_required" value="yes" class="quote-modal__radio" required aria-required="true" ref="drinksYes">
+                <span class="quote-modal__radio-label">Yes</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="drinks_required" value="no" class="quote-modal__radio" required aria-required="true" ref="drinksNo">
+                <span class="quote-modal__radio-label">No</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="drinksError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__actions">
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--secondary"
+              on:click="/previousStep"
+              ref="previousButton"
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--primary"
+              on:click="/nextStep"
+              ref="nextButtonStep2"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        <div class="quote-modal__step" data-step="3" ref="step3" hidden>
+          <div class="quote-modal__field">
+            <label for="quote-dietary" class="quote-modal__label">
+              Do you have any dietary requirements?
+            </label>
+            <textarea
+              id="quote-dietary"
+              name="dietary_requirements"
+              class="quote-modal__input quote-modal__textarea"
+              rows="4"
+              placeholder="Do you have any dietary requirements?"
+              ref="dietaryInput"
+            ></textarea>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-other-details" class="quote-modal__label">
+              Any other details?
+            </label>
+            <textarea
+              id="quote-other-details"
+              name="other_details"
+              class="quote-modal__input quote-modal__textarea"
+              rows="4"
+              placeholder="Any other details?"
+              ref="otherDetailsInput"
+            ></textarea>
+          </div>
+
+          <div class="quote-modal__field">
+            <div class="quote-modal__recaptcha-wrapper">
+              <div
+                ref="recaptchaContainer"
+                data-sitekey="6LcfRn8sAAAAAHR8S14bzYY3EF9Q79me9lsO9UCO"
+              ></div>
+            </div>
+            <div class="quote-modal__error" ref="recaptchaError" hidden>
+              <span>Please complete the reCAPTCHA verification</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__actions">
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--secondary"
+              on:click="/previousStep"
+              ref="previousButtonStep3"
+            >
+              Previous
+            </button>
+            <button
+              type="submit"
+              class="quote-modal__button quote-modal__button--primary"
+              ref="submitButton"
+              disabled
+            >
+              Submit Form
+            </button>
+          </div>
+          <p class="quote-modal__recaptcha-notice">
+            This site is protected by reCAPTCHA and the Google
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+          </p>
+        </div>
+      </form>
+      </quote-form-component>
+    </div>
+  </dialog>
+</dialog-component>
+
+{% stylesheet %}
+  .quote-modal {
+    --quote-bg: #FFFFFF;
+    --quote-text: #1E5649;
+    --quote-border: #E0D9C7;
+    --quote-error-bg: #DC3545;
+    --quote-error-text: #FFFFFF;
+    --quote-input-bg: #FFFFFF;
+    --quote-input-border: #1E5649;
+  }
+
+  .quote-modal__content {
+    padding: 0;
+    border: none;
+    background: var(--quote-bg);
+    max-width: 600px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow: visible;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+    @media screen and (max-width: 749px) {
+      width: 100vw;
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+  }
+
+  .quote-modal__content[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quote-modal__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--quote-text);
+    transition: transform 0.15s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .quote-modal__wrapper {
+    padding: 40px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 749px) {
+      padding: 30px 20px;
+    }
+  }
+
+  .quote-modal__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--quote-text);
+    text-align: center;
+    margin: 0 0 30px 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: inherit;
+
+    @media screen and (max-width: 749px) {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .quote-modal__progress {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E0D9C7;
+
+    @media screen and (max-width: 749px) {
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+  }
+
+  .quote-modal__progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: #E0D9C7;
+      z-index: 0;
+    }
+
+    &:last-child::after {
+      display: none;
+    }
+  }
+
+  .quote-modal__progress-step--active {
+    .quote-modal__progress-step-label {
+      color: #1E5649;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .quote-modal__progress-step-number {
+      background: #1E5649;
+      color: #FFFFFF;
+    }
+  }
+
+  .quote-modal__progress-step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #E0D9C7;
+    color: #1E5649;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-modal__progress-step-label {
+    font-size: 14px;
+    color: #999;
+    text-align: center;
+    white-space: nowrap;
+
+    @media screen and (max-width: 749px) {
+      font-size: 12px;
+    }
+  }
+
+  .quote-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .quote-modal__step {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    &[hidden] {
+      display: none !important;
+    }
+  }
+
+  .quote-modal__step--active {
+    display: flex;
+  }
+
+  .quote-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quote-modal__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--quote-text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .quote-modal__required {
+    color: var(--quote-error-bg);
+  }
+
+  .quote-modal__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--quote-input-border);
+    border-radius: 4px;
+    background: var(--quote-input-bg);
+    color: var(--quote-text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--quote-text);
+    }
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &[aria-invalid="true"] {
+      border-color: var(--quote-error-bg);
+    }
+  }
+
+  .quote-modal__phone-wrapper {
+    display: flex;
+    gap: 8px;
+  }
+
+  .quote-modal__phone-code {
+    padding: 12px 16px;
+    border: 1px solid var(--quote-input-border);
+    border-radius: 4px;
+    background: var(--quote-input-bg);
+    color: var(--quote-text);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    min-width: 120px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231E5649' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+
+    &:focus {
+      outline: none;
+      border-color: var(--quote-text);
+    }
+  }
+
+  .quote-modal__input--phone {
+    flex: 1;
+  }
+
+  .quote-modal__error {
+    background: var(--quote-error-bg);
+    color: var(--quote-error-text);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .quote-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #E0D9C7;
+  }
+
+  .quote-modal__button {
+    padding: 14px 32px !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    width: auto !important;
+    margin: 0 !important;
+
+    &--primary {
+      background: #1E5649 !important;
+      background-color: #1E5649 !important;
+      color: #FFFFFF !important;
+      --button-background-color: #1E5649 !important;
+      --button-color: #FFFFFF !important;
+
+      &:hover {
+        background: #1E5649 !important;
+        background-color: #1E5649 !important;
+        color: #FFFFFF !important;
+        opacity: 0.9 !important;
+        transform: translateY(-1px);
+        --button-background-color: #1E5649 !important;
+        --button-color: #FFFFFF !important;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    &--secondary {
+      background: #FFFFFF !important;
+      background-color: #FFFFFF !important;
+      color: #1E5649 !important;
+      border: 1px solid #D3D3D3 !important;
+      --button-background-color: #FFFFFF !important;
+      --button-color: #1E5649 !important;
+
+      &:hover {
+        background: #1E5649 !important;
+        background-color: #1E5649 !important;
+        color: #FFFFFF !important;
+        border-color: #1E5649 !important;
+        --button-background-color: #1E5649 !important;
+        --button-color: #FFFFFF !important;
+      }
+    }
+  }
+
+  .quote-modal__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+
+    &--inline {
+      flex-direction: row !important;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      @media screen and (max-width: 749px) {
+        flex-direction: column !important;
+        gap: 12px;
+      }
+    }
+  }
+
+  .quote-modal__radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .quote-modal__radio-group--inline .quote-modal__radio-option {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .quote-modal__radio-group--inline .quote-modal__radio-label {
+    width: 100%;
+    min-width: 100px;
+  }
+
+  .quote-modal__radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  .quote-modal__radio-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #D3D3D3;
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: left;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #D3D3D3;
+      border-radius: 50%;
+      background: #FFFFFF;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+  }
+
+  .quote-modal__radio:checked + .quote-modal__radio-label {
+    background: #BEDA8D;
+    border-color: #1E5649;
+    color: #1E5649;
+    font-weight: 600;
+
+    &::before {
+      border-color: #1E5649;
+      background: #1E5649;
+      box-shadow: inset 0 0 0 2px #BEDA8D;
+    }
+  }
+
+  .quote-modal__radio-option:hover .quote-modal__radio-label {
+    border-color: #1E5649;
+  }
+
+  .quote-modal__checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 8px;
+
+    @media screen and (max-width: 749px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .quote-modal__checkbox-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .quote-modal__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  .quote-modal__checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: 1px solid #D3D3D3;
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #D3D3D3;
+      border-radius: 4px;
+      background: #FFFFFF;
+      transition: all 0.2s ease;
+    }
+  }
+
+  .quote-modal__checkbox:checked + .quote-modal__checkbox-label {
+    background: #BEDA8D;
+    border-color: #1E5649;
+    color: #1E5649;
+    font-weight: 600;
+
+    &::before {
+      border-color: #1E5649;
+      background: #1E5649;
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+
+  .quote-modal__checkbox-option:hover .quote-modal__checkbox-label {
+    border-color: #1E5649;
+  }
+
+  .quote-modal__budget-input-wrapper {
+    position: relative;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+
+    &[hidden] {
+      display: none !important;
+    }
+  }
+
+  .quote-modal__budget-icon {
+    position: absolute;
+    left: 16px;
+    color: #1E5649;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .quote-modal__input--budget {
+    padding-left: 40px;
+  }
+
+  .quote-modal__textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+
+  .quote-modal__recaptcha-wrapper {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .quote-modal__recaptcha-wrapper .g-recaptcha {
+    transform: scale(0.9);
+    transform-origin: 0 0;
+
+    @media screen and (max-width: 749px) {
+      transform: scale(0.85);
+    }
+  }
+
+  .quote-modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: opacity 0.3s ease;
+  }
+
+  .quote-modal__backdrop[hidden] {
+    display: none;
+  }
+
+  .quote-modal .quote-modal__content[open] {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    margin: 0;
+    animation: quoteModalFadeIn 0.3s ease forwards;
+  }
+
+  .quote-modal .quote-modal__content.dialog-closing {
+    animation: quoteModalFadeOut 0.3s ease forwards;
+  }
+
+  @keyframes quoteModalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes quoteModalFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @media screen and (max-width: 749px) {
+    .quote-modal .quote-modal__content[open] {
+      top: 0;
+      left: 0;
+      transform: none;
+    }
+  }
+
+  .quote-modal__recaptcha-notice {
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.4;
+  }
+
+  .quote-modal__recaptcha-notice a {
+    color: #1E5649;
+    text-decoration: underline;
+  }
+
+  .quote-modal__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+{% endstylesheet %} {% endcomment %}
+
+<script
+  src="{{ 'dialog.js' | asset_url }}"
+  type="module"
+></script>
+<script
+  src="{{ 'quote-form.js' | asset_url }}"
+  type="module"
+></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var quoteModal = document.getElementById('quote-modal');
+    if (!quoteModal) return;
+    var dialog = quoteModal.querySelector('dialog');
+    var backdrop = quoteModal.querySelector('.quote-modal__backdrop');
+    if (!dialog) return;
+
+    dialog.showModal = function() {
+      HTMLDialogElement.prototype.show.call(this);
+      if (backdrop) backdrop.hidden = false;
+    };
+
+    var observer = new MutationObserver(function() {
+      if (dialog.classList.contains('dialog-closing') && backdrop) {
+        backdrop.style.opacity = '0';
+      }
+    });
+    observer.observe(dialog, { attributes: true, attributeFilter: ['class'] });
+
+    dialog.addEventListener('close', function() {
+      if (backdrop) {
+        backdrop.hidden = true;
+        backdrop.style.opacity = '';
+      }
+    });
+
+    // After Shopify CAPTCHA + contact form POST, the page reloads with ?contact_posted=true
+    if (window.location.search.indexOf('contact_posted=true') !== -1) {
+      var successModal = document.getElementById('quote-success-banner');
+      if (successModal) {
+        successModal.hidden = false;
+        setTimeout(function() { successModal.classList.add('quote-success-modal--visible'); }, 50);
+      }
+      if (window.history && window.history.replaceState) {
+        var cleanUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState(null, '', cleanUrl);
+      }
+    }
+  });
+</script>
+
+<div id="quote-success-banner" class="quote-success-modal" hidden role="status" aria-live="polite">
+  <div class="quote-success-modal__backdrop" onclick="this.parentElement.hidden=true;"></div>
+  <div class="quote-success-modal__content">
+    <button type="button" class="quote-success-modal__close" aria-label="Close" onclick="this.closest('.quote-success-modal').hidden=true;">&times;</button>
+    <h3 class="quote-success-modal__title">Quote Submitted!</h3>
+    <p class="quote-success-modal__text">Thank you! Your quote request has been submitted successfully. We'll get back to you soon.</p>
+  </div>
+</div>
+
+<dialog-component
+  id="quote-modal"
+  class="quote-modal"
+>
+  <div class="quote-modal__backdrop" hidden></div>
+  <dialog
+    ref="dialog"
+    on:click="/closeDialogOnClickOutside"
+    on:keydown="/closeDialogOnEscapePress"
+    class="quote-modal__content dialog-modal"
+    scroll-lock
+  >
+    <button
+      ref="closeButton"
+      on:click="/closeDialog"
+      class="button button-unstyled quote-modal__close"
+      aria-label="Close"
+    >
+      {{- 'icon-close.svg' | inline_asset_content -}}
+    </button>
+
+    <div class="quote-modal__wrapper">
+      <h2 class="quote-modal__title">GET QUOTE</h2>
+
+      <div class="quote-modal__progress">
+        <div class="quote-modal__progress-step" data-progress-step="1">
+          <span class="quote-modal__progress-step-number">1</span>
+          <span class="quote-modal__progress-step-label">Your Details</span>
+        </div>
+        <div class="quote-modal__progress-step" data-progress-step="2">
+          <span class="quote-modal__progress-step-number">2</span>
+          <span class="quote-modal__progress-step-label">Event</span>
+        </div>
+        <div class="quote-modal__progress-step" data-progress-step="3">
+          <span class="quote-modal__progress-step-number">3</span>
+          <span class="quote-modal__progress-step-label">Request Quote</span>
+        </div>
+      </div>
+
+      <quote-form-component>
+      {%- form 'contact', id: 'quote-form', class: 'quote-modal__form', ref: 'form', data-shopify-captcha: 'true' -%}
+        <div class="quote-modal__step" data-step="1" ref="step1">
+          <div class="quote-modal__field">
+            <label for="quote-name" class="quote-modal__label">
+              Name
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-name"
+              name="name"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="nameInput"
+            >
+            <div class="quote-modal__error" ref="nameError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-company" class="quote-modal__label">
+              Company
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-company"
+              name="company"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="companyInput"
+            >
+            <div class="quote-modal__error" ref="companyError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-phone" class="quote-modal__label">
+              Phone number
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__phone-wrapper">
+              <select
+                id="quote-phone-code"
+                name="phone_code"
+                class="quote-modal__phone-code"
+                ref="phoneCodeSelect"
+              >
+                <option value="+61" data-flag="🇦🇺">🇦🇺 +61</option>
+                <option value="+1" data-flag="🇺🇸">🇺🇸 +1</option>
+                <option value="+44" data-flag="🇬🇧">🇬🇧 +44</option>
+                <option value="+64" data-flag="🇳🇿">🇳🇿 +64</option>
+              </select>
+              <input
+                type="tel"
+                id="quote-phone"
+                name="phone"
+                class="quote-modal__input quote-modal__input--phone"
+                required
+                aria-required="true"
+                ref="phoneInput"
+              >
+            </div>
+            <div class="quote-modal__error" ref="phoneError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-email" class="quote-modal__label">
+              Email Address
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="email"
+              id="quote-email"
+              name="email"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="emailInput"
+            >
+            <div class="quote-modal__error" ref="emailError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-address" class="quote-modal__label">
+              Street address
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-address"
+              name="address"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="addressInput"
+            >
+            <div class="quote-modal__error" ref="addressError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-suburb" class="quote-modal__label">
+              Suburb
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-suburb"
+              name="suburb"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="suburbInput"
+            >
+            <div class="quote-modal__error" ref="suburbError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-postcode" class="quote-modal__label">
+              Postcode
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="text"
+              id="quote-postcode"
+              name="postcode"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="postcodeInput"
+            >
+            <div class="quote-modal__error" ref="postcodeError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-attendees" class="quote-modal__label">
+              How many people are attending?
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="number"
+              id="quote-attendees"
+              name="attendees"
+              class="quote-modal__input"
+              min="1"
+              required
+              aria-required="true"
+              ref="attendeesInput"
+            >
+            <div class="quote-modal__error" ref="attendeesError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-event-date" class="quote-modal__label">
+              Event Date
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="date"
+              id="quote-event-date"
+              name="event_date"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="eventDateInput"
+            >
+            <div class="quote-modal__error" ref="eventDateError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-time" class="quote-modal__label">
+              Event Time
+              <span class="quote-modal__required">*</span>
+            </label>
+            <input
+              type="time"
+              id="quote-time"
+              name="time"
+              class="quote-modal__input"
+              required
+              aria-required="true"
+              ref="timeInput"
+            >
+            <div class="quote-modal__error" ref="timeError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__actions">
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--primary"
+              on:click="/nextStep"
+              ref="nextButton"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        <div class="quote-modal__step" data-step="2" ref="step2" hidden>
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Budget
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input
+                  type="radio"
+                  name="budget_type"
+                  value="per_person"
+                  class="quote-modal__radio"
+                  required
+                  aria-required="true"
+                  ref="budgetPerPerson"
+                >
+                <span class="quote-modal__radio-label">Per Person</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input
+                  type="radio"
+                  name="budget_type"
+                  value="total_budget"
+                  class="quote-modal__radio"
+                  required
+                  aria-required="true"
+                  ref="budgetTotal"
+                >
+                <span class="quote-modal__radio-label">Total Budget</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input
+                  type="radio"
+                  name="budget_type"
+                  value="unsure"
+                  class="quote-modal__radio"
+                  required
+                  aria-required="true"
+                  ref="budgetUnsure"
+                >
+                <span class="quote-modal__radio-label">Unsure</span>
+              </label>
+            </div>
+            <div class="quote-modal__budget-input-wrapper" ref="budgetInputWrapper" hidden>
+              <span class="quote-modal__budget-icon">$</span>
+              <input
+                type="text"
+                name="event_budget"
+                class="quote-modal__input quote-modal__input--budget"
+                placeholder="Event Budget"
+                ref="eventBudgetInput"
+              >
+            </div>
+            <div class="quote-modal__error" ref="budgetError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Type of event (select all that are applicable)
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__checkbox-grid">
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="breakfast" class="quote-modal__checkbox" ref="eventTypeBreakfast">
+                <span class="quote-modal__checkbox-label">Breakfast</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="morning_tea" class="quote-modal__checkbox" ref="eventTypeMorningTea">
+                <span class="quote-modal__checkbox-label">Morning Tea</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="lunch" class="quote-modal__checkbox" ref="eventTypeLunch">
+                <span class="quote-modal__checkbox-label">Lunch</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="afternoon_tea" class="quote-modal__checkbox" ref="eventTypeAfternoonTea">
+                <span class="quote-modal__checkbox-label">Afternoon Tea</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="dinner" class="quote-modal__checkbox" ref="eventTypeDinner">
+                <span class="quote-modal__checkbox-label">Dinner</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="event_type" value="other" class="quote-modal__checkbox" ref="eventTypeOther">
+                <span class="quote-modal__checkbox-label">Other</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="eventTypeError" hidden>
+              <span>Please select at least one option</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Food style (select all that are applicable)
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__checkbox-grid">
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="platters" class="quote-modal__checkbox" ref="foodStylePlatters">
+                <span class="quote-modal__checkbox-label">Platters</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="individually_packed" class="quote-modal__checkbox" ref="foodStyleIndividuallyPacked">
+                <span class="quote-modal__checkbox-label">Individually Packed</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="grazing" class="quote-modal__checkbox" ref="foodStyleGrazing">
+                <span class="quote-modal__checkbox-label">Grazing</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="finger_food" class="quote-modal__checkbox" ref="foodStyleFingerFood">
+                <span class="quote-modal__checkbox-label">Finger Food</span>
+              </label>
+              <label class="quote-modal__checkbox-option">
+                <input type="checkbox" name="food_style" value="other" class="quote-modal__checkbox" ref="foodStyleOther">
+                <span class="quote-modal__checkbox-label">Other</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="foodStyleError" hidden>
+              <span>Please select at least one option</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Cutlery and plates required?
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="cutlery_plates" value="yes" class="quote-modal__radio" required aria-required="true" ref="cutleryYes">
+                <span class="quote-modal__radio-label">Yes</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="cutlery_plates" value="no" class="quote-modal__radio" required aria-required="true" ref="cutleryNo">
+                <span class="quote-modal__radio-label">No</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="cutleryError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Type of event
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="event_category" value="company" class="quote-modal__radio" required aria-required="true" ref="eventCategoryCompany">
+                <span class="quote-modal__radio-label">Company</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="event_category" value="private" class="quote-modal__radio" required aria-required="true" ref="eventCategoryPrivate">
+                <span class="quote-modal__radio-label">Private</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="eventCategoryError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__field">
+            <label class="quote-modal__label">
+              Drinks required?
+              <span class="quote-modal__required">*</span>
+            </label>
+            <div class="quote-modal__radio-group quote-modal__radio-group--inline">
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="drinks_required" value="yes" class="quote-modal__radio" required aria-required="true" ref="drinksYes">
+                <span class="quote-modal__radio-label">Yes</span>
+              </label>
+              <label class="quote-modal__radio-option">
+                <input type="radio" name="drinks_required" value="no" class="quote-modal__radio" required aria-required="true" ref="drinksNo">
+                <span class="quote-modal__radio-label">No</span>
+              </label>
+            </div>
+            <div class="quote-modal__error" ref="drinksError" hidden>
+              <span>This field is required</span>
+            </div>
+          </div>
+
+          <div class="quote-modal__actions">
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--secondary"
+              on:click="/previousStep"
+              ref="previousButton"
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--primary"
+              on:click="/nextStep"
+              ref="nextButtonStep2"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        <div class="quote-modal__step" data-step="3" ref="step3" hidden>
+          <div class="quote-modal__field">
+            <label for="quote-dietary" class="quote-modal__label">
+              Do you have any dietary requirements?
+            </label>
+            <textarea
+              id="quote-dietary"
+              name="dietary_requirements"
+              class="quote-modal__input quote-modal__textarea"
+              rows="4"
+              placeholder="Do you have any dietary requirements?"
+              ref="dietaryInput"
+            ></textarea>
+          </div>
+
+          <div class="quote-modal__field">
+            <label for="quote-other-details" class="quote-modal__label">
+              Any other details?
+            </label>
+            <textarea
+              id="quote-other-details"
+              name="other_details"
+              class="quote-modal__input quote-modal__textarea"
+              rows="4"
+              placeholder="Any other details?"
+              ref="otherDetailsInput"
+            ></textarea>
+          </div>
+
+          <div class="quote-modal__submit-message" ref="submitMessage" hidden role="status" aria-live="polite"></div>
+
+          <p class="quote-modal__recaptcha-notice">
+            {{ 'shopify.online_store.spam_detection.disclaimer_html' | t }}
+          </p>
+
+          <input type="hidden" name="contact[name]" value="">
+          <input type="hidden" name="contact[email]" value="">
+          <input type="hidden" name="contact[phone]" value="">
+          <textarea name="contact[body]" hidden></textarea>
+
+          <div class="quote-modal__actions">
+            <button
+              type="button"
+              class="quote-modal__button quote-modal__button--secondary"
+              on:click="/previousStep"
+              ref="previousButtonStep3"
+            >
+              Previous
+            </button>
+            <button
+              type="submit"
+              class="quote-modal__button quote-modal__button--primary"
+              ref="submitButton"
+            >
+              Submit Form
+            </button>
+          </div>
+        </div>
+      {%- endform -%}
+      </quote-form-component>
+    </div>
+  </dialog>
+</dialog-component>
+
+{% stylesheet %}
+  .quote-modal {
+    --quote-bg: #FFFFFF;
+    --quote-text: #1E5649;
+    --quote-border: #E0D9C7;
+    --quote-error-bg: #DC3545;
+    --quote-error-text: #FFFFFF;
+    --quote-input-bg: #FFFFFF;
+    --quote-input-border: #1E5649;
+  }
+
+  .quote-modal__submit-message {
+    margin: 0 0 12px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .quote-modal__submit-message--success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .quote-modal__submit-message--error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .quote-modal__content {
+    padding: 0;
+    border: none;
+    background: var(--quote-bg);
+    max-width: 600px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow: visible;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+    @media screen and (max-width: 749px) {
+      width: 100vw;
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+  }
+
+  .quote-modal__content[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quote-modal__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--quote-text);
+    transition: transform 0.15s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .quote-modal__wrapper {
+    padding: 40px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 749px) {
+      padding: 30px 20px;
+    }
+  }
+
+  .quote-modal__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--quote-text);
+    text-align: center;
+    margin: 0 0 30px 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: inherit;
+
+    @media screen and (max-width: 749px) {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .quote-modal__progress {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E0D9C7;
+
+    @media screen and (max-width: 749px) {
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+  }
+
+  .quote-modal__progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: #E0D9C7;
+      z-index: 0;
+    }
+
+    &:last-child::after {
+      display: none;
+    }
+  }
+
+  .quote-modal__progress-step--active {
+    .quote-modal__progress-step-label {
+      color: #1E5649;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .quote-modal__progress-step-number {
+      background: #1E5649;
+      color: #FFFFFF;
+    }
+  }
+
+  .quote-modal__progress-step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #E0D9C7;
+    color: #1E5649;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-modal__progress-step-label {
+    font-size: 14px;
+    color: #999;
+    text-align: center;
+    white-space: nowrap;
+
+    @media screen and (max-width: 749px) {
+      font-size: 12px;
+    }
+  }
+
+  .quote-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .quote-modal__step {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    &[hidden] {
+      display: none !important;
+    }
+  }
+
+  .quote-modal__step--active {
+    display: flex;
+  }
+
+  .quote-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quote-modal__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--quote-text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .quote-modal__required {
+    color: var(--quote-error-bg);
+  }
+
+  .quote-modal__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--quote-input-border);
+    border-radius: 4px;
+    background: var(--quote-input-bg);
+    color: var(--quote-text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--quote-text);
+    }
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &[aria-invalid="true"] {
+      border-color: var(--quote-error-bg);
+    }
+  }
+
+  .quote-modal__phone-wrapper {
+    display: flex;
+    gap: 8px;
+  }
+
+  .quote-modal__phone-code {
+    padding: 12px 16px;
+    border: 1px solid var(--quote-input-border);
+    border-radius: 4px;
+    background: var(--quote-input-bg);
+    color: var(--quote-text);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    min-width: 120px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231E5649' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+
+    &:focus {
+      outline: none;
+      border-color: var(--quote-text);
+    }
+  }
+
+  .quote-modal__input--phone {
+    flex: 1;
+  }
+
+  .quote-modal__error {
+    background: var(--quote-error-bg);
+    color: var(--quote-error-text);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .quote-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #E0D9C7;
+  }
+
+  .quote-modal__button {
+    padding: 14px 32px !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    width: auto !important;
+    margin: 0 !important;
+
+    &--primary {
+      background: #1E5649 !important;
+      background-color: #1E5649 !important;
+      color: #FFFFFF !important;
+      --button-background-color: #1E5649 !important;
+      --button-color: #FFFFFF !important;
+
+      &:hover {
+        background: #1E5649 !important;
+        background-color: #1E5649 !important;
+        color: #FFFFFF !important;
+        opacity: 0.9 !important;
+        transform: translateY(-1px);
+        --button-background-color: #1E5649 !important;
+        --button-color: #FFFFFF !important;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    &--secondary {
+      background: #FFFFFF !important;
+      background-color: #FFFFFF !important;
+      color: #1E5649 !important;
+      border: 1px solid #D3D3D3 !important;
+      --button-background-color: #FFFFFF !important;
+      --button-color: #1E5649 !important;
+
+      &:hover {
+        background: #1E5649 !important;
+        background-color: #1E5649 !important;
+        color: #FFFFFF !important;
+        border-color: #1E5649 !important;
+        --button-background-color: #1E5649 !important;
+        --button-color: #FFFFFF !important;
+      }
+    }
+  }
+
+  .quote-modal__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+
+    &--inline {
+      flex-direction: row !important;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      @media screen and (max-width: 749px) {
+        flex-direction: column !important;
+        gap: 12px;
+      }
+    }
+  }
+
+  .quote-modal__radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .quote-modal__radio-group--inline .quote-modal__radio-option {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .quote-modal__radio-group--inline .quote-modal__radio-label {
+    width: 100%;
+    min-width: 100px;
+  }
+
+  .quote-modal__radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  .quote-modal__radio-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #D3D3D3;
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: left;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #D3D3D3;
+      border-radius: 50%;
+      background: #FFFFFF;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+  }
+
+  .quote-modal__radio:checked + .quote-modal__radio-label {
+    background: #BEDA8D;
+    border-color: #1E5649;
+    color: #1E5649;
+    font-weight: 600;
+
+    &::before {
+      border-color: #1E5649;
+      background: #1E5649;
+      box-shadow: inset 0 0 0 2px #BEDA8D;
+    }
+  }
+
+  .quote-modal__radio-option:hover .quote-modal__radio-label {
+    border-color: #1E5649;
+  }
+
+  .quote-modal__checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 8px;
+
+    @media screen and (max-width: 749px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .quote-modal__checkbox-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .quote-modal__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  .quote-modal__checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: 1px solid #D3D3D3;
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #D3D3D3;
+      border-radius: 4px;
+      background: #FFFFFF;
+      transition: all 0.2s ease;
+    }
+  }
+
+  .quote-modal__checkbox:checked + .quote-modal__checkbox-label {
+    background: #BEDA8D;
+    border-color: #1E5649;
+    color: #1E5649;
+    font-weight: 600;
+
+    &::before {
+      border-color: #1E5649;
+      background: #1E5649;
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+
+  .quote-modal__checkbox-option:hover .quote-modal__checkbox-label {
+    border-color: #1E5649;
+  }
+
+  .quote-modal__budget-input-wrapper {
+    position: relative;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+
+    &[hidden] {
+      display: none !important;
+    }
+  }
+
+  .quote-modal__budget-icon {
+    position: absolute;
+    left: 16px;
+    color: #1E5649;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .quote-modal__input--budget {
+    padding-left: 40px;
+  }
+
+  .quote-modal__textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+
+  .quote-modal__recaptcha-wrapper {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .quote-modal__recaptcha-wrapper .g-recaptcha {
+    transform: scale(0.9);
+    transform-origin: 0 0;
+
+    @media screen and (max-width: 749px) {
+      transform: scale(0.85);
+    }
+  }
+
+  .quote-modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: opacity 0.3s ease;
+  }
+
+  .quote-modal__backdrop[hidden] {
+    display: none;
+  }
+
+  .quote-modal .quote-modal__content[open] {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    margin: 0;
+    animation: quoteModalFadeIn 0.3s ease forwards;
+  }
+
+  .quote-modal .quote-modal__content.dialog-closing {
+    animation: quoteModalFadeOut 0.3s ease forwards;
+  }
+
+  @keyframes quoteModalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes quoteModalFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @media screen and (max-width: 749px) {
+    .quote-modal .quote-modal__content[open] {
+      top: 0;
+      left: 0;
+      transform: none;
+    }
+  }
+
+  .quote-modal__recaptcha-notice {
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.4;
+  }
+
+  .quote-modal__recaptcha-notice a {
+    color: #1E5649;
+    text-decoration: underline;
+  }
+
+  .quote-modal__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .quote-success-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .quote-success-modal[hidden] {
+    display: none !important;
+  }
+
+  .quote-success-modal:not([hidden]) {
+    display: flex;
+  }
+
+  .quote-success-modal--visible {
+    opacity: 1;
+  }
+
+  .quote-success-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .quote-success-modal__content {
+    position: relative;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px 32px 32px;
+    max-width: 420px;
+    width: 90vw;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+  }
+
+  .quote-success-modal--visible .quote-success-modal__content {
+    transform: scale(1);
+  }
+
+  .quote-success-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-size: 24px;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s ease;
+  }
+
+  .quote-success-modal__close:hover {
+    color: #1E5649;
+  }
+
+  .quote-success-modal__title {
+    color: #1E5649;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .quote-success-modal__text {
+    color: #4a4a4a;
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0;
+  }
+{% endstylesheet %}

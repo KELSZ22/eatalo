@@ -1,0 +1,1041 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_jVaWmY": {
+      "type": "hero",
+      "disabled": true,
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "media_type_2": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "space-between",
+        "vertical_alignment": "flex-end",
+        "align_baseline": true,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "flex-end",
+        "gap": 24,
+        "section_width": "page-width",
+        "section_height": "medium",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-6",
+        "toggle_overlay": true,
+        "overlay_color": "#12121266",
+        "overlay_style": "solid",
+        "gradient_direction": "to bottom",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 100,
+        "padding-block-end": 72
+      }
+    },
+    "hero_Cam4Ja": {
+      "type": "hero",
+      "blocks": {
+        "text_JkTe7X": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Office Catering Sydney CBD</p>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h1",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_dhPM6j": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Fresh, house-made Italian catering delivered to offices, meetings and corporate events across Sydney CBD. Breakfast, lunch and corporate catering available daily.</p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 32,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "dual_buttons_rTpf4B": {
+          "type": "dual-buttons",
+          "name": "Dual Buttons",
+          "settings": {
+            "left_button_text": "Order Catering Online",
+            "left_button_link": "shopify://collections/all",
+            "left_button_open_new_tab": false,
+            "left_button_color": "#1e5649",
+            "right_button_text": "Request Quote",
+            "right_button_link": "#openQuoteModal",
+            "right_button_open_new_tab": false,
+            "right_button_color": "#beda8d",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_JkTe7X",
+        "text_dhPM6j",
+        "dual_buttons_rTpf4B"
+      ],
+      "custom_css": [
+        "@media screen and (max-width: 768px) {h1 {font-size: 35px !important; }}"
+      ],
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "image_1": "shopify://shop_images/EATALO_BAnner_copy2.webp",
+        "media_type_2": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "full-screen",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-5",
+        "toggle_overlay": true,
+        "overlay_color": "#182b112b",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "blurred_reflection": true,
+        "reflection_opacity": 75,
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "home_banner_t8AFta": {
+      "type": "home-banner",
+      "name": "Section 2",
+      "settings": {
+        "width": "full_width",
+        "text_alignment": "left",
+        "hero_image": "shopify://shop_images/Mortadella.png",
+        "heading": "Italian Office Catering in Sydney CBD",
+        "text": "EATALO provides Italian office catering in Sydney CBD for meetings, team lunches and corporate events. From breakfast catering and morning tea to pasta trays, salads and sandwiches, we deliver restaurant-quality food directly to your workplace.",
+        "button_text": "Order Catering Online",
+        "button_link": "shopify://collections/all",
+        "button2_text": "Request a Quote",
+        "button2_link": "#openQuoteModal"
+      }
+    },
+    "eatalo_cta_banner_kitchen_Jgp34y": {
+      "type": "eatalo-cta-banner-kitchen",
+      "name": "Eatalo CTA Banner",
+      "settings": {
+        "heading": "Corporate Catering for Meetings & Office Events",
+        "text": "Designed for busy teams and business events, our corporate catering menu covers everything from breakfast meetings to office lunches and large group catering. Reliable delivery, fresh ingredients and options to suit every team."
+      }
+    },
+    "food_categories_VPK6N8": {
+      "type": "food-categories",
+      "blocks": {
+        "category_rkLt4F": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/breakfast_catering_Sydney_CBD_pastries.webp",
+            "title": "Office Breakfast Catering ",
+            "button_text": "View Breakfast Catering",
+            "button_link": "https://eatalosydney.myshopify.com/collections/breakfast-menu"
+          }
+        },
+        "category_jA3WJP": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/CanapeWatermelon2.webp",
+            "title": "Morning & Afternoon Tea Catering",
+            "button_text": "View Tea Catering",
+            "button_link": "https://eatalosydney.myshopify.com/collections/morning-tea"
+          }
+        },
+        "category_HH8MjF": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/PenneBoscaiola.webp",
+            "title": "Office Lunch & Dinner Catering",
+            "button_text": "Explore Lunch Catering",
+            "button_link": "shopify://collections/lunch-dinner-catering-office-sydney"
+          }
+        },
+        "category_nR83KR": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/Hire_chef_and_waiters_image.png",
+            "title": "Hire A Chef",
+            "button_text": "Find out more",
+            "button_link": "https://eatalosydney.myshopify.com/pages/hire-a-chef"
+          }
+        }
+      },
+      "block_order": [
+        "category_rkLt4F",
+        "category_jA3WJP",
+        "category_HH8MjF",
+        "category_nR83KR"
+      ],
+      "name": "Section 3 - 4 column Image",
+      "settings": {}
+    },
+    "our_pick_6k4gcF": {
+      "type": "our-pick",
+      "blocks": {
+        "product_card_8WWpx7": {
+          "type": "product_card",
+          "settings": {
+            "product_image": "shopify://shop_images/assets4.jpg",
+            "product_title": "Sensational Salad",
+            "price_range": "$ 00.00 - $ 00.00",
+            "tag_1": "Vegan",
+            "tag_2": "Vegetarian",
+            "tag_3": "Gluten-Free",
+            "tag_4": "Gluten Free Option",
+            "tag_5": "Nuts-Free",
+            "tag_6": "Dairy-Free"
+          }
+        },
+        "product_card_LfaRR3": {
+          "type": "product_card",
+          "settings": {
+            "product_image": "shopify://shop_images/assets4.jpg",
+            "product_title": "Sensational Salad",
+            "price_range": "$ 00.00 - $ 00.00",
+            "tag_1": "Vegan",
+            "tag_2": "Vegetarian",
+            "tag_3": "Gluten-Free",
+            "tag_4": "Gluten Free Option",
+            "tag_5": "Nuts-Free",
+            "tag_6": "Dairy-Free"
+          }
+        },
+        "product_card_8w6yqn": {
+          "type": "product_card",
+          "settings": {
+            "product_image": "shopify://shop_images/eatalo-assets2.avif",
+            "product_title": "Sensational Salad",
+            "price_range": "$ 00.00 - $ 00.00",
+            "tag_1": "Vegan",
+            "tag_2": "Vegetarian",
+            "tag_3": "Gluten-Free",
+            "tag_4": "Gluten Free Option",
+            "tag_5": "Nuts-Free",
+            "tag_6": "Dairy-Free"
+          }
+        },
+        "product_card_k6kNzD": {
+          "type": "product_card",
+          "settings": {
+            "product_image": "shopify://shop_images/eatalo-assets2.avif",
+            "product_title": "Sensational Salad",
+            "price_range": "$ 00.00 - $ 00.00",
+            "tag_1": "Vegan",
+            "tag_2": "Vegetarian",
+            "tag_3": "Gluten-Free",
+            "tag_4": "Gluten Free Option",
+            "tag_5": "Nuts-Free",
+            "tag_6": "Dairy-Free"
+          }
+        },
+        "product_card_KnLeNy": {
+          "type": "product_card",
+          "settings": {
+            "product_image": "shopify://shop_images/assets3.webp",
+            "product_title": "Sensational Salad",
+            "price_range": "$ 00.00 - $ 00.00",
+            "tag_1": "Vegan",
+            "tag_2": "Vegetarian",
+            "tag_3": "Gluten-Free",
+            "tag_4": "Gluten Free Option",
+            "tag_5": "Nuts-Free",
+            "tag_6": "Dairy-Free"
+          }
+        }
+      },
+      "block_order": [
+        "product_card_8WWpx7",
+        "product_card_LfaRR3",
+        "product_card_8w6yqn",
+        "product_card_k6kNzD",
+        "product_card_KnLeNy"
+      ],
+      "disabled": true,
+      "name": "Favourite Pick",
+      "settings": {
+        "section_title": "Our Favourite Pick"
+      }
+    },
+    "why_choose_us_hewYnK": {
+      "type": "why-choose-us",
+      "blocks": {
+        "why_choose_feature_6LtpMf": {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_image": "shopify://shop_images/1.svg",
+            "icon_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z\"></path></svg>",
+            "text": "Reliable, On-Time Delivery"
+          }
+        },
+        "why_choose_feature_tVjYYm": {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_image": "shopify://shop_images/EATALO_FreshFood.svg",
+            "icon_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\"></path></svg>",
+            "text": "Fresh, High-Quality Food"
+          }
+        },
+        "why_choose_feature_GK9PBF": {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_image": "shopify://shop_images/EATALO_OnlineOrder.svg",
+            "icon_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z\"></path></svg>",
+            "text": "Easy Online Ordering"
+          }
+        },
+        "why_choose_feature_wm9aGL": {
+          "type": "why_choose_feature",
+          "settings": {
+            "icon_image": "shopify://shop_images/EATALO_DietaryOptions.svg",
+            "icon_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\"></path></svg>",
+            "text": "Dietary Options for Every Team"
+          }
+        }
+      },
+      "block_order": [
+        "why_choose_feature_6LtpMf",
+        "why_choose_feature_tVjYYm",
+        "why_choose_feature_GK9PBF",
+        "why_choose_feature_wm9aGL"
+      ],
+      "name": "Section 4 - Why Choose Us",
+      "settings": {
+        "width": "full_width",
+        "background_color": "#dfe7c1",
+        "heading": "Why Choose Us For Your Next Catering Event?",
+        "title_alignment": "center",
+        "logo_alignment": "center"
+      }
+    },
+    "custom_checker_abWBRk": {
+      "type": "custom-checker",
+      "name": "Delivery Checker",
+      "settings": {
+        "title": "Delivered Across Sydney CBD",
+        "primary_color": "#1f493a",
+        "background_color": "#cde6c5"
+      }
+    },
+    "product_list_B7pHTV": {
+      "type": "product-list",
+      "blocks": {
+        "best_seller_FwTmpb": {
+          "type": "best-seller",
+          "name": "Best Seller Carousel",
+          "settings": {
+            "title": "Popular Menu Items",
+            "show_title": true,
+            "title_size": 32,
+            "title_color": "#1e5649",
+            "background_color": "#ffffff",
+            "max_products": 20,
+            "container_width": 1400,
+            "padding_top": 50,
+            "padding_bottom": 50,
+            "show_view_all": false
+          },
+          "blocks": {}
+        },
+        "static-header": {
+          "type": "_product-list-content",
+          "name": "t:names.header",
+          "static": true,
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": false,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": true,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_list_text_mt9Tr9": {
+              "type": "_product-list-text",
+              "name": "t:names.collection_title",
+              "settings": {
+                "text": "<h2>Most Popular Office Catering Items</h2>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h2",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 24,
+                "padding-inline-start": 32,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_pBbKRk": {
+              "type": "button",
+              "name": "t:names.button",
+              "disabled": true,
+              "settings": {
+                "label": "View all",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "link",
+                "width": "custom",
+                "custom_width": 14,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_list_text_mt9Tr9",
+            "button_pBbKRk"
+          ]
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "product_card_gap": 4,
+            "inherit_color_scheme": true,
+            "show_tags": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 5,
+            "padding-inline-end": 7
+          },
+          "blocks": {
+            "product_card_gallery_MRjzgf": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "adapt",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_title_V4tyhD": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "price_MRJg3h": {
+              "type": "price",
+              "name": "t:names.product_price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "h6",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "color": "var(--color-foreground)",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_card_gallery_MRjzgf",
+            "product_title_V4tyhD",
+            "price_MRJg3h"
+          ]
+        }
+      },
+      "block_order": [
+        "best_seller_FwTmpb"
+      ],
+      "custom_css": [
+        "h2 {color: #1e5649; font-weight: 500; font-size: 42px; margin-left: 0px;}",
+        "@media screen and (max-width: 768px) {h2 {font-size: 30px; text-align: center; margin-left: -20px; }}"
+      ],
+      "name": "t:names.products_grid",
+      "settings": {
+        "product_source": "best_selling",
+        "collection": "lunch-dinner-catering-office-sydney",
+        "layout_type": "carousel",
+        "carousel_on_mobile": false,
+        "max_products": 10,
+        "columns": 4,
+        "mobile_columns": "2",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
+        "rows_gap": 24,
+        "icons_style": "arrow",
+        "icons_shape": "circle",
+        "carousel_auto_scroll": true,
+        "carousel_auto_scroll_speed": 5,
+        "section_width": "full-width",
+        "horizontal_alignment": "flex-start",
+        "gap": 0,
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "contact_hours_location_jWj7V4": {
+      "type": "contact-hours-location",
+      "disabled": true,
+      "name": "Contact Info Section",
+      "settings": {
+        "contact_heading": "CONTACT",
+        "phone_number": "02 9241 2127",
+        "email": "info@eatalo.com.au",
+        "address_line1": "Corner Phillip Street and, 2/8-18 Bent St, Sydney NSW 2000",
+        "address_line2": "8-18 Bent Street, Sydney",
+        "hours_heading": "OPEN HOURS",
+        "monday_hours": "MON: 5:30am - 15:00pm",
+        "tuesday_hours": "TUES: 5:30am - 15:00pm",
+        "wednesday_hours": "WED: 5:30am - 15:00pm",
+        "thursday_hours": "THURS: 5:30am - 15:00pm",
+        "friday_hours": "FRI: 5:30am - 15:00pm",
+        "saturday_hours": "SAT: CLOSED",
+        "sunday_hours": "SUN: CLOSED",
+        "google_maps_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.965954444955!2d151.20891631128762!3d-33.86476827311649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12ae6a1e105bbb%3A0xea40f170e7dd8e0a!2sEATALO%20cafe%20(previously%20Bertoni)!5e0!3m2!1sen!2sph!4v1760514208073!5m2!1sen!2sph"
+      }
+    },
+    "testimonials_hAUCD7": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_dRLEEy": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Thank you so much to Chef Thomas and his team. We had an office lunch and everyone hasn’t stopped raving about how amazing the food was especially the turkey, beef, honey carrots and tiramisu were the favorites. The menu catered to all of our staff from gluten free, vegetarian and Halal. Honestly outstanding. We can’t thank you enough.",
+            "author_name": "Alexandra Lee"
+          }
+        },
+        "testimonial_nJwJQR": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Great inner-city spot and a lovely Italian café! The food is always delicious, and it’s become my go-to place for lunch when I’m working from the office. There’s a great selection of fresh salads, the pasta is full of flavour, and the chicken is on another level.",
+            "author_name": "Mattia"
+          }
+        },
+        "testimonial_8qDarY": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "We recently had catering provided for three separate events—Wednesday and two on Thursday—and I just had to share how fantastic everything was! Each group was absolutely thrilled with the food. There wasn’t a single complaint—just lots of compliments!\nWe even got to sample some of the leftovers (the chicken, meatballs, and especially the arancini), and wow… they were incredible! The flavours were spot on and everything was beautifully presented.\nThank you so much for always taking care of us. You consistently deliver top-quality service and delicious food. Looking forward to the next time!",
+            "author_name": "Beth Deakin"
+          }
+        },
+        "testimonial_FJBzwb": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "I found this cafe at the end of a post Sydney Marathon recovery run on the Tuesday after the event. I think it may have been the owner/manager who seated and served me. He was extremely friendly and welcoming and the whole cafe had a lovely warm vibe. It’s obviously a favourite spot for local city workers with both an outdoor take away section or roomy indoor seating area. My omelette was just perfect as was my cappuccino. Heading back to Canberra but so pleased I found this cafe close to where I often stay for running events and I will definitely return.",
+            "author_name": "Jennifer Kellett"
+          }
+        },
+        "testimonial_WdN87e": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "I stumbled upon this hidden gem and I'm so glad I did! The interior is charming, with a great selection of seating options. The eggplant pasta was to die for and I also loved that they offer plenty of vegetarian options.  The team, especially Kathy always makes you feel right at home with their warm and welcoming service. It's the perfect spot to relax or catch up with a friend. Consistently good and definitely worth a visit, delightful experience all around!",
+            "author_name": "Maria & Merc Psillakis"
+          }
+        },
+        "testimonial_g4rT8b": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "EATALO truly brings the taste of Italy to the Sydney CBD. The servings are generous, the quality is consistently excellent and the service is always warm and welcoming. You can taste the authenticity in every dish—crafted by a genuine Italian chef who clearly cares about flavour and tradition.\n\nEATALO delivers exactly what it promises. There’s a real family feel and plenty of menu choices for any time of day. It’s my go-to for morning coffee, pastries, breakfast, lunch and everything in between. I’m a regular, and they have never once left me disappointed.\n\nI have also used EATALO for catering and the response was incredible - my guests were asking for their details and many of them have now become regular customers too. That says everything.\n\nIf you’re looking for great food, warm hospitality and true Italian flavour, try EATALO. Once you experience it, it will become your go-to as well. Highly recommend.",
+            "author_name": "Samanta Vella"
+          }
+        },
+        "testimonial_Gpq3UL": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Honest opinion, Tomas makes the best pasta i have tried in a long time, and overall food has his special touch which makes it delicious and enjoyable.\nPrice is very affordable also.",
+            "author_name": "Jose Suarez"
+          }
+        },
+        "testimonial_chiDYm": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "EATALO Cafe, what a special place it is. Its interior is so cosy and charming, it feels like you are eating at home. It brings me back to a cafe/restaurant back home in Italy, even though it is right in the heart of the CBD.\n\nThere are plenty of seating options inside and out, the perfect spot to dine in or even to relax with a cup of coffee with friends. LOVE THEIR COFFEE and their selection of sweet biscuits and pastries.\n\nThe front of house team/staff are very friendly and welcoming, especially meeting Kathy, who always greets you with a smile.\n\nEatalo has a wide selection of pasta salad on offer and a variety of full on, authentic Italian dishes to choose from their menu, which is lead by their Italian chef, one who clearly cares about and understands the flavours and traditions of Italy, which is delightful to see.\n\nIf you are looking for great food, warm hospitality, true Italian flavour and generous servings with great value for your money, give this little gem, \"EATALO\" a GO !\nHighly recommend.",
+            "author_name": "Trish"
+          }
+        },
+        "testimonial_cT4iGL": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Beautiful little spot with delicious pastas and salads, as well as a variety of refreshing smoothies. A little on the pricey side but for what you are getting I'd say its fair. Would definitely return here!",
+            "author_name": "Annabelle Lydeamore"
+          }
+        },
+        "testimonial_i4xnU4": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "The Mog Champ sends his regards.\n\nEatalo or I still call them Bertoni is a nice cafe on the corner of the street and they are usually my go to place for quick coffee runs. I've also had lunch from there too and it's nicely prepared!\n\nGood service, clean and dim atmosphere - never dined in before so I can't say anything about that aspect but I'm sure that they satisfy their customers!",
+            "author_name": "The Mog Champ"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_dRLEEy",
+        "testimonial_nJwJQR",
+        "testimonial_8qDarY",
+        "testimonial_FJBzwb",
+        "testimonial_WdN87e",
+        "testimonial_g4rT8b",
+        "testimonial_Gpq3UL",
+        "testimonial_chiDYm",
+        "testimonial_cT4iGL",
+        "testimonial_i4xnU4"
+      ],
+      "name": "Section 6 - What People Love About Eatalo",
+      "settings": {
+        "heading": "Why Sydney CBD Offices Choose EATALO",
+        "show_navigation": true,
+        "show_dots": true,
+        "autoplay": true,
+        "autoplay_speed": 5
+      }
+    },
+    "brand_logo_carousel_yFhMWj": {
+      "type": "brand-logo-carousel",
+      "blocks": {
+        "brand_logo_Bn8DEq": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/1.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_K6deAz": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/2.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_YAPdaF": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/3.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_gfGVx7": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/4.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_VRA9xj": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/5.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_fcG4QJ": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/6.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_WH6BaC": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/7.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_gQbWRP": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/8.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_KWUqem": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/9.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_iiL4pL": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/10.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        },
+        "brand_logo_mcC4fd": {
+          "type": "brand_logo",
+          "settings": {
+            "logo": "shopify://shop_images/11.png",
+            "brand_name": "",
+            "logo_link": "",
+            "logo_link_new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "brand_logo_Bn8DEq",
+        "brand_logo_K6deAz",
+        "brand_logo_YAPdaF",
+        "brand_logo_gfGVx7",
+        "brand_logo_VRA9xj",
+        "brand_logo_fcG4QJ",
+        "brand_logo_WH6BaC",
+        "brand_logo_gQbWRP",
+        "brand_logo_KWUqem",
+        "brand_logo_iiL4pL",
+        "brand_logo_mcC4fd"
+      ],
+      "name": "Brand Logo Carousel",
+      "settings": {
+        "heading": "Our Partners",
+        "heading_alignment": "center",
+        "heading_size": 32,
+        "heading_size_mobile": 30,
+        "heading_weight": 500,
+        "heading_color": "#2d5f5d",
+        "heading_spacing": 40,
+        "heading_spacing_mobile": 24,
+        "scroll_speed": 30,
+        "logo_width": 300,
+        "logo_height": 200,
+        "logo_width_mobile": 200,
+        "logo_height_mobile": 150,
+        "logo_gap": 10,
+        "logo_gap_mobile": 10,
+        "logo_padding": 20,
+        "logo_padding_mobile": 0,
+        "logo_background": "rgba(0,0,0,0)",
+        "logo_border_radius": 0,
+        "logo_hover_scale": 1.1,
+        "logo_filter": "none",
+        "background_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_sides": 20,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 32,
+        "padding_sides_mobile": 16
+      }
+    },
+    "faq_section_Bd7c4Y": {
+      "type": "faq-section",
+      "blocks": {
+        "faq_item_anUczR": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How far in advance do I need to place an order?",
+            "answer": "<p>We recommend placing orders at least 24 hours in advance.For large or customised orders, 48 hours’ notice is preferred.For events catering for 200+ people, we recommend 3–5 days’ notice to ensure availability and the best service.</p>"
+          }
+        },
+        "faq_item_PN496m": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you cater for corporate events and recurring orders?",
+            "answer": "<p>Yes. We specialise in:</p><ul><li>Office catering</li><li>Meetings and workshops</li><li>Recurring weekly orders</li></ul><p>For ongoing catering, please contact us to discuss tailored solutions.</p>"
+          }
+        },
+        "faq_item_iW3hYF": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is there a minimum order amount?",
+            "answer": "<p>No, there is <strong>no minimum order requirement</strong>.</p>"
+          }
+        },
+        "faq_item_GmB3eA": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What payment methods do you accept?",
+            "answer": "<p>We accept all major payment methods through our secure checkout, including Visa, MasterCard and American Express.</p><p>If you have an account with us, you may also choose to:</p><ul><li>Pay via online invoice, or</li><li>Have orders billed to your account (payment due within 7 business days)</li></ul><p>All payments are processed securely.</p>"
+          }
+        },
+        "faq_item_qTkXXy": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you cater for dietary requirements?",
+            "answer": "<p>Yes. We offer a wide range of options, including:</p><ul><li>Vegetarian</li><li>Vegan</li><li>Gluten-free</li><li>Dairy-free</li><li>Nut-free</li><li>Halal</li></ul><p>Please note that while we take great care, our kitchen is not a fully allergen-free environment.</p>"
+          }
+        },
+        "faq_item_gXQBR3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can you cater for last-minute orders?",
+            "answer": "<p>Sometimes — depending on availability.<br/>Please contact us directly and we’ll let you know as soon as possible.</p>"
+          }
+        },
+        "faq_item_6U4QeU": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I customise my catering order?",
+            "answer": "<p>Absolutely. You can:</p><ul><li>Mix and match menu items</li><li>Adjust quantities</li><li>Request substitutions (subject to availability)</li></ul><p>For fully customised menus, please contact us directly.</p>"
+          }
+        },
+        "faq_item_i4JxcF": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How many people does one platter serve?",
+            "answer": "<p>Recommended serving sizes are listed with each menu item.<br/>If you’re unsure, our team is happy to help you choose the right quantities.</p>"
+          }
+        },
+        "faq_item_GqDCMj": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you deliver, or can I pick up?",
+            "answer": "<p>We offer <strong>both delivery and pickup</strong>.<br/>Available delivery windows and pickup times can be selected during checkout.</p>"
+          }
+        },
+        "faq_item_aLVJdR": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I speak to someone before placing a large order?",
+            "answer": "<p>Of course. For large or event orders, we recommend contacting us so we can assist you personally.</p>"
+          }
+        },
+        "faq_item_H9r66Y": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What areas do you deliver to?",
+            "answer": "<p>We currently deliver throughout the Sydney CBD and surrounding suburbs.<br/>If your location falls outside our standard delivery area, please get in touch and we’ll do our best to accommodate.</p>"
+          }
+        },
+        "faq_item_4FCrXt": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer eco-friendly packaging?",
+            "answer": "<p>Yes. We aim to use recyclable and sustainable packaging wherever possible.</p>"
+          }
+        },
+        "faq_item_rhUQtw": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How is the food packaged?",
+            "answer": "<p>All catering is packed in professional, food-safe packaging, clearly labelled and designed for easy sharing in office and event settings.</p>"
+          }
+        },
+        "faq_item_Ut4EXp": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What happens if my delivery is late?",
+            "answer": "<p>We work to strict delivery schedules.<br/> If an issue arises, our team will contact you immediately to keep you informed.</p>"
+          }
+        },
+        "faq_item_L4brNL": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I cancel or change my order?",
+            "answer": "<p>Yes — changes or cancellations are possible with sufficient notice:</p><ul><li><strong>Standard orders:</strong> Up to 24 hours’ notice</li><li><strong>Large orders:</strong> Minimum 48 hours’ notice</li><li><strong>Large group orders (100–200 people):</strong> At least 5 business days’ notice</li></ul><p>Requests outside these timeframes may not be possible due to preparation and sourcing requirements.</p>"
+          }
+        },
+        "faq_item_NGNdRG": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you provide invoices for corporate clients?",
+            "answer": "<p>Yes. Invoices and receipts are available upon request.</p>"
+          }
+        },
+        "faq_item_mPjHhm": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you provide invoices for corporate clients?",
+            "answer": "<p>Yes. Invoices and receipts are available upon request.</p>"
+          }
+        },
+        "faq_item_PiGprF": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I order catering for early mornings?",
+            "answer": "<p>Yes. Early morning delivery slots are available, subject to availability.</p>"
+          }
+        },
+        "faq_item_rEVp3i": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you cater for private events as well?",
+            "answer": "<p>Yes, we cater for private parties, birthdays and celebrations.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_anUczR",
+        "faq_item_PN496m",
+        "faq_item_iW3hYF",
+        "faq_item_GmB3eA",
+        "faq_item_qTkXXy",
+        "faq_item_gXQBR3",
+        "faq_item_6U4QeU",
+        "faq_item_i4JxcF",
+        "faq_item_GqDCMj",
+        "faq_item_aLVJdR",
+        "faq_item_H9r66Y",
+        "faq_item_4FCrXt",
+        "faq_item_rhUQtw",
+        "faq_item_Ut4EXp",
+        "faq_item_L4brNL",
+        "faq_item_NGNdRG",
+        "faq_item_mPjHhm",
+        "faq_item_PiGprF",
+        "faq_item_rEVp3i"
+      ],
+      "name": "FAQ Section",
+      "settings": {
+        "width": "page_width",
+        "title": "Frequently asked questions"
+      }
+    }
+  },
+  "order": [
+    "hero_jVaWmY",
+    "hero_Cam4Ja",
+    "home_banner_t8AFta",
+    "eatalo_cta_banner_kitchen_Jgp34y",
+    "food_categories_VPK6N8",
+    "our_pick_6k4gcF",
+    "why_choose_us_hewYnK",
+    "custom_checker_abWBRk",
+    "product_list_B7pHTV",
+    "contact_hours_location_jWj7V4",
+    "testimonials_hAUCD7",
+    "brand_logo_carousel_yFhMWj",
+    "faq_section_Bd7c4Y"
+  ]
+}

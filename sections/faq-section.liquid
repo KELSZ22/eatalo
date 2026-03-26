@@ -1,0 +1,293 @@
+<style>
+  .faq-wrapper {
+    width: 100%;
+    padding: 60px 20px;
+    background-color: #f0efef;
+  }
+
+  .faq-wrapper.page-width {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .faq-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-size: 42px;
+    color: #1e5649;
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .faq-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    background-color: #e5e5e5;
+    border-radius: 10px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: none;
+  }
+
+  .faq-item:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #333333;
+    list-style: none;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question::marker {
+    display: none;
+  }
+
+  .faq-question-text {
+    flex: 1;
+    margin-right: 15px;
+  }
+
+  .faq-icon-wrapper {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+  }
+
+  .faq-icon-wrapper svg {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+
+  .faq-item details[open] .faq-icon-wrapper svg {
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #555555;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .faq-container {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .faq-title {
+      font-size: 30px;
+      margin-bottom: 30px;
+    }
+
+    .faq-wrapper {
+      padding: 40px 15px;
+    }
+
+    .faq-item {
+      padding: 15px 20px;
+    }
+
+    .faq-question {
+      font-size: 14px;
+    }
+  }
+</style>
+
+<div class="faq-wrapper {% if section.settings.width == 'page_width' %}page-width{% endif %}">
+  <h2 class="faq-title">{{ section.settings.title | default: 'Frequently asked questions' }}</h2>
+  
+  <div class="faq-container">
+    {% for block in section.blocks %}
+      <accordion-custom>
+        <details class="faq-item" {{ block.shopify_attributes }}>
+          <summary class="faq-question">
+            <span class="faq-question-text">{{ block.settings.question }}</span>
+            <span class="faq-icon-wrapper">
+              {{- 'icon-plus.svg' | inline_asset_content -}}
+            </span>
+          </summary>
+          <div class="faq-answer details-content">
+            {{ block.settings.answer }}
+          </div>
+        </details>
+      </accordion-custom>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  (function() {
+    const faqContainer = document.querySelector('.faq-container');
+    if (!faqContainer) return;
+
+    const faqItems = faqContainer.querySelectorAll('details.faq-item');
+
+    faqItems.forEach(function(item) {
+      item.addEventListener('toggle', function() {
+        if (this.open) {
+          // Close all other FAQ items
+          faqItems.forEach(function(otherItem) {
+            if (otherItem !== this && otherItem.open) {
+              otherItem.open = false;
+            }
+          }.bind(this));
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Section Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full Width"
+        },
+        {
+          "value": "page_width",
+          "label": "Page Width"
+        }
+      ],
+      "default": "page_width"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Frequently asked questions"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is Kompa?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>This is the answer to your frequently asked question.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Section",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is Kompa?",
+            "answer": "<p>Kompa is a platform that helps you manage your business efficiently.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How do I get started?",
+            "answer": "<p>You can get started by signing up for an account and following our onboarding process.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What are the pricing plans?",
+            "answer": "<p>We offer various pricing plans to suit different business needs. Please check our pricing page for details.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I cancel my subscription?",
+            "answer": "<p>Yes, you can cancel your subscription at any time from your account settings.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is there customer support?",
+            "answer": "<p>Yes, we offer 24/7 customer support via email and live chat.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What payment methods do you accept?",
+            "answer": "<p>We accept all major credit cards, PayPal, and bank transfers.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How secure is my data?",
+            "answer": "<p>We use industry-standard encryption and security measures to protect your data.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer a free trial?",
+            "answer": "<p>Yes, we offer a 14-day free trial with full access to all features.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I integrate with other tools?",
+            "answer": "<p>Yes, we offer integrations with popular business tools and APIs for custom integrations.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What happens if I exceed my plan limits?",
+            "answer": "<p>We'll notify you when you're approaching your limits, and you can upgrade your plan at any time.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

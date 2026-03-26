@@ -1,0 +1,120 @@
+{%- doc -%}
+  Renders the search action button.
+
+  @param {string} [style] - The style of the search action.
+  @param {string} [class] - Additional classes for the search action.
+
+  @example
+  {% render 'search', style: 'default', class: 'custom-class' %}
+{%- enddoc -%}
+
+{% unless style == 'none' %}
+  <search-button class="search-action{% if class != blank %} {{ class | strip }}{% endif %}">
+    <button
+      on:click="#search-modal/showDialog"
+      class="button button-unstyled search-modal__button header-actions__action search-input-container"
+      aria-label="{{ 'accessibility.open_search_modal' | t }}"
+    >
+      <span
+        aria-hidden="true"
+        class="svg-wrapper search-icon"
+      >
+        {{ 'icon-search.svg' | inline_asset_content }}
+      </span>
+      <span class="search-button__text search-input-button">Search</span>
+    </button>
+  </search-button>
+{% endunless %}
+
+{% stylesheet %}
+  .search-action {
+    --search-border-radius: var(--style-border-radius-inputs);
+    --search-border-width: var(--style-border-width-inputs);
+
+    display: flex;
+  }
+
+  .search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    padding: 0;
+    background: none;
+    border: none;
+  }
+
+  .search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-input-button {
+    border: 2px solid var(--color-primary);
+    border-radius: 12px;
+    padding: var(--padding-xs) var(--padding-sm);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 130px;
+    width: 130px;
+    transition: border-color var(--animation-speed) var(--animation-easing),
+      transform var(--animation-speed) var(--animation-easing),
+      box-shadow var(--animation-speed) var(--animation-easing),
+      border-width var(--animation-speed) var(--animation-easing);
+  }
+
+  .search-input-container:hover .search-input-button {
+    border-color: var(--color-primary);
+    background-color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-width: 3px;
+  }
+
+  .search-input-container:focus .search-input-button {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+  }
+
+  .search-button__text {
+    font-family: var(--header-text-font-family, var(--font-paragraph--family));
+    font-size: var(--header-text-font-size, var(--font-size--sm));
+    font-weight: 600;
+    color: currentColor;
+  }
+
+  @media screen and (max-width: 749px) {
+    .search-button__text {
+      display: none;
+    }
+
+    .search-input-container {
+      gap: 0;
+    }
+
+    .search-input-button {
+      display: none;
+    }
+  }
+
+  .header__column--center .search-action {
+    width: auto;
+    flex-grow: 1;
+  }
+
+  :is(.header__column--left, .header__column--center) .search-action {
+    @media screen and (min-width: 750px) {
+      margin-inline: calc(var(--padding-lg) * -1);
+    }
+  }
+
+  .header__column--right .search-action {
+    @media screen and (min-width: 750px) {
+      margin-inline: calc(var(--gap-md) * -1) calc(var(--gap-xs) * -1);
+    }
+  }
+{% endstylesheet %}

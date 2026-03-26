@@ -1,0 +1,88 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_direction": "column",
+        "gap": 0,
+        "color_scheme": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "about_us_first_section_PVTNCL": {
+      "type": "about-us-first-section",
+      "name": "Buongiorno Section",
+      "settings": {
+        "image": "shopify://shop_images/Image_1.png",
+        "heading": "Your Buongiorno in Sydney CBD",
+        "description": "<p><strong>At EATALO, coffee isn’t just part of the menu — it’s part of who we are. Our signature EATALO Blend is a smooth, full-bodied coffee, roasted to capture the heart of Italy in every sip, right here in Sydney CBD.</strong></p><p>Whether it’s your morning espresso, a creamy cappuccino or a quick long black on the go, we’re here to greet you with a smile and a loud “Buongiorno!”. From takeaway to dine-in, our coffee pairs perfectly with breakfast, lunch and everything in between.</p><p>From café mornings to office catering, every cup reflects our commitment to quality, consistency and genuine Italian hospitality. At EATALO, every coffee is made to brighten your day — one cup, one smile at a time.</p>"
+      }
+    },
+    "about_us_second_section_4Mqf3R": {
+      "type": "about-us-second-section",
+      "name": "Ciao Bella Section",
+      "settings": {
+        "heading": "Our Italian Food & Catering Concept",
+        "description": "<p><strong>At EATALO, we bring the warmth of an Italian kitchen straight to the heart of Sydney CBD. Think freshly made dishes with a contemporary twist, crafted with the same care and passion that Nonna would put into every meal.</strong></p><p>It’s food that feels familiar yet exciting, wholesome, authentic and full of flavour. More than just a place to eat, EATALO is a space to gather, share and savour simple moments made special.</p><p>From café dining to office catering and corporate events, our Italian food is designed to be enjoyed anywhere, bringing a true restaurant experience directly to your table or workplace.</p><p>Your daily dose of joy.</p>",
+        "image": "shopify://shop_images/Image_2.png"
+      }
+    },
+    "about_us_third_section_VcFKhB": {
+      "type": "about-us-third-section",
+      "name": "Chef Section",
+      "settings": {
+        "image": "shopify://shop_images/chef1.png",
+        "heading": "Our Head Chef & Italian Heritage",
+        "description": "<p><strong>Raised in Umbria, Italy, John Thomas grew up in the kitchen, inspired by his Nonna’s love for cooking. From an early age, he learned that food is more than flavour — it’s tradition, family and a way to share joy.</strong></p><p>He later refined his craft working with one of Italy’s most renowned catering companies, Preludio, delivering high-end catering for events, weddings and large celebrations.</p><p>Now based in Sydney, Chef John brings this experience to EATALO, creating dishes that honour his roots while adding a modern touch — from café dining to office catering and corporate events.</p>"
+      }
+    },
+    "about_us_fourth_section_m3yciF": {
+      "type": "about-us-fourth-section",
+      "name": "Catering Section",
+      "settings": {
+        "image": "shopify://shop_images/RusticPlatter2.webp",
+        "heading": "EATALO Catering Sydney CBD and Beyond.",
+        "description": "<p>EATALO is a trusted provider of office catering in Sydney CBD, delivering fresh Italian food for meetings, team lunches and corporate events. Our catering menu includes breakfast options, lunch platters, pasta trays and tailored solutions for workplaces.</p><p>Designed for convenience, quality and presentation, our catering brings a restaurant-level experience directly to your office, with reliable delivery across Sydney CBD, Barangaroo and surrounding business areas.</p>"
+      }
+    },
+    "contact_hours_location_meG6B7": {
+      "type": "contact-hours-location",
+      "disabled": true,
+      "name": "Contact Info Section",
+      "settings": {
+        "contact_heading": "CONTACT",
+        "phone_number": "02 9241 2127",
+        "email": "info@eatalo.com.au",
+        "address_line1": "Eatalo Cafe, Shop 2,",
+        "address_line2": "8-18 Bent Street, Sydney",
+        "hours_heading": "OPEN HOURS",
+        "monday_hours": "MON: 5:30am - 15:00pm",
+        "tuesday_hours": "TUES: 5:30am - 15:00pm",
+        "wednesday_hours": "WED: 5:30am - 15:00pm",
+        "thursday_hours": "THURS: 5:30am - 15:00pm",
+        "friday_hours": "FRI: 5:30am - 15:00pm",
+        "saturday_hours": "SAT: CLOSED",
+        "sunday_hours": "SUN: CLOSED",
+        "google_maps_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.965954444955!2d151.20891631128762!3d-33.86476827311649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12ae6a1e105bbb%3A0xea40f170e7dd8e0a!2sEATALO%20cafe%20(previously%20Bertoni)!5e0!3m2!1sen!2sph!4v1760514208073!5m2!1sen!2sph"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "about_us_first_section_PVTNCL",
+    "about_us_second_section_4Mqf3R",
+    "about_us_third_section_VcFKhB",
+    "about_us_fourth_section_m3yciF",
+    "contact_hours_location_meG6B7"
+  ]
+}

@@ -1,0 +1,143 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer_m9NzUG": {
+      "type": "footer",
+      "blocks": {
+        "footer_cafe_info_AKzVMc": {
+          "type": "footer-cafe-info",
+          "name": "Footer Cafe Info",
+          "settings": {
+            "logo": "shopify://shop_images/eatalo-footer.png",
+            "logo_link": "",
+            "logo_width": 300,
+            "logo_width_mobile": 120,
+            "cafe_name": "",
+            "address_line_1": "Corner Phillip Street and 2/8-18 Bent St,",
+            "address_line_2": "Sydney, NSW, 2000",
+            "show_google_map": true,
+            "google_maps_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.833518172829!2d151.20892167643999!3d-33.86476381885114!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12ae6a1e105bbb%3A0xea40f170e7dd8e0a!2sEATALO%20cafe%20(previously%20Bertoni)!5e1!3m2!1sen!2sph!4v1768571357416!5m2!1sen!2sph\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+            "map_width": 500,
+            "map_width_mobile": 300,
+            "map_height": 250,
+            "map_height_mobile": 200,
+            "cafe_name_size": 18,
+            "address_size": 18,
+            "cafe_name_size_mobile": 16,
+            "address_size_mobile": 12,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "footer_custom_menu_BHQAyx": {
+          "type": "footer-custom-menu",
+          "name": "Custom Menu Links",
+          "settings": {
+            "heading": "Quick Links",
+            "link_1_text": "About Us",
+            "link_1_url": "shopify://pages/about-eatalo",
+            "link_2_text": "Menus",
+            "link_2_url": "https://eatalosydney.myshopify.com/pages/menus",
+            "link_3_text": "Contact Us",
+            "link_3_url": "shopify://pages/contact-us",
+            "link_4_text": "Catering",
+            "link_4_url": "shopify://collections/all",
+            "link_font_size": 21,
+            "link_font_size_mobile": 14,
+            "padding-block-start": 0,
+            "padding-block-end": 40,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "footer_contact_info_wYb9Ca": {
+          "type": "footer-contact-info",
+          "name": "Footer Contact Info",
+          "settings": {
+            "heading": "Contact",
+            "phone": "02 9241 2127",
+            "email": "info@eatalo.com.au",
+            "heading_size": 21,
+            "text_size": 16,
+            "heading_size_mobile": 14,
+            "text_size_mobile": 12,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "footer_open_hours_Ribqz8": {
+          "type": "footer-open-hours",
+          "name": "Footer Open Hours",
+          "settings": {
+            "heading": "Open Hours",
+            "hours": "Monday - Friday: 5:30 AM - 3:00 PM",
+            "heading_size": 21,
+            "text_size": 16,
+            "heading_size_mobile": 14,
+            "text_size_mobile": 12,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "footer_bottom_bar_cQGwn3": {
+          "type": "footer-bottom-bar",
+          "name": "Footer Bottom Bar",
+          "settings": {
+            "terms_text": "Terms & Conditions",
+            "terms_url": "shopify://pages/terms-condition",
+            "website_by_text": "Website by Net Nudge",
+            "website_by_url": "https://netnudge.com.au/",
+            "text_size": 11,
+            "text_size_mobile": 13,
+            "padding-block-start": 20,
+            "padding-block-end": 20,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "footer_cafe_info_AKzVMc",
+        "footer_custom_menu_BHQAyx",
+        "footer_contact_info_wYb9Ca",
+        "footer_open_hours_Ribqz8",
+        "footer_bottom_bar_cQGwn3"
+      ],
+      "custom_css": [
+        "@media screen and (max-width: 425px) {.footer-content {align-items: center; margin: 0; justify-content: left; text-align: left; } .footer-bottom-bar__content {align-items: flex-start; } .footer-bottom-bar__corner-image {height: 70px; width: 220px; }}"
+      ],
+      "name": "t:names.footer",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 20,
+        "color_scheme": "scheme-af22f115-66f0-409d-83eb-020d16fcc1c8",
+        "padding-block-start": 30,
+        "padding-block-end": 30
+      }
+    }
+  },
+  "order": [
+    "footer_m9NzUG"
+  ]
+}

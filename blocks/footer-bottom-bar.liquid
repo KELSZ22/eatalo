@@ -1,0 +1,268 @@
+{% liquid
+  assign block_settings = block.settings
+  assign terms_text = block_settings.terms_text | default: 'Terms & Conditions'
+  assign terms_url = block_settings.terms_url | default: ''
+  assign website_by_text = block_settings.website_by_text | default: 'Website by Net Nudge'
+  assign website_by_url = block_settings.website_by_url | default: ''
+%}
+
+<div
+  class="
+    footer-bottom-bar
+    spacing-style
+  "
+  style="
+    --text-size: {{ block_settings.text_size }}px;
+    --text-size-mobile: {{ block_settings.text_size_mobile }}px;
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="footer-bottom-bar__content">
+    <div class="footer-bottom-bar__left">
+      {% if terms_text != blank and terms_url != blank %}
+        <a href="{{ terms_url }}" class="footer-bottom-bar__link">
+          {{ terms_text }}
+        </a>
+      {% elsif terms_text != blank %}
+        <span class="footer-bottom-bar__link">{{ terms_text }}</span>
+      {% endif %}
+      {% if website_by_text != blank and website_by_url != blank %}
+        <a href="{{ website_by_url }}" class="footer-bottom-bar__link" target="_blank" rel="noopener noreferrer">
+          {{ website_by_text }}
+        </a>
+      {% elsif website_by_text != blank %}
+        <span class="footer-bottom-bar__link">{{ website_by_text }}</span>
+      {% endif %}
+    </div>
+    <div class="footer-bottom-bar__right">
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul class="footer-bottom-bar__payment-icons" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li class="footer-bottom-bar__payment-icon">
+              {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <img 
+        src="https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667" 
+        alt="" 
+        srcset="https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=240 240w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=352 352w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=832 832w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=1200 1200w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=1600 1600w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=1920 1920w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=2560 2560w, https://cdn.shopify.com/s/files/1/0957/5799/2238/files/v2.png?v=1769527667&amp;width=3840 3840w" 
+        class="footer-bottom-bar__corner-image"
+        sizes="200px"
+      >
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .footer-bottom-bar {
+    width: 100%;
+    text-align: left;
+  }
+
+  .footer-bottom-bar__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .footer-bottom-bar__left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .footer-bottom-bar__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .footer-bottom-bar__corner-image {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    max-width: 200px;
+    max-height: 60px;
+    object-fit: contain;
+    vertical-align: middle;
+  }
+
+  .footer-bottom-bar__link {
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-size: var(--text-size);
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-bottom-bar__link:hover {
+    opacity: 0.7;
+  }
+
+  .footer-bottom-bar__payment-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-bottom-bar__payment-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-bottom-bar__payment-icon .icon {
+    width: auto;
+    height: 24px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .footer-bottom-bar__content {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .footer-bottom-bar__left {
+      flex-direction: row;
+      gap: 16px;
+      align-items: flex-start;
+    }
+  }
+
+  @media screen and (max-width: 750px) {
+    .footer-bottom-bar__link {
+      font-size: var(--text-size-mobile);
+    }
+
+    .footer-bottom-bar__payment-icon .icon {
+      height: 20px;
+    }
+
+    .footer-bottom-bar__corner-image {
+      max-width: 150px;
+      max-height: 50px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer Bottom Bar",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "terms_text",
+      "label": "Terms & Conditions Text",
+      "default": "Terms & Conditions"
+    },
+    {
+      "type": "url",
+      "id": "terms_url",
+      "label": "Terms & Conditions URL"
+    },
+    {
+      "type": "text",
+      "id": "website_by_text",
+      "label": "Website By Text",
+      "default": "Website by Net Nudge"
+    },
+    {
+      "type": "url",
+      "id": "website_by_url",
+      "label": "Website By URL"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size (Desktop)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Text Size (Mobile)",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Bottom Bar",
+      "category": "Footer",
+      "settings": {
+        "terms_text": "Terms & Conditions",
+        "website_by_text": "Website by Net Nudge",
+        "text_size": 12,
+        "text_size_mobile": 11
+      }
+    }
+  ]
+}
+{% endschema %}

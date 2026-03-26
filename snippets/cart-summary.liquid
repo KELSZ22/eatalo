@@ -1,0 +1,441 @@
+{%- doc -%}
+  Renders the cart summary totals.
+
+  @param {string} [accelerated_checkout_buttons_layout] - { 'vertical' } Forced layout of the additional checkout buttons, instead of relying on platform's layout.
+{%- enddoc -%}
+
+<div class="cart__summary-totals">
+  <div class="cart__original-total-container cart-primary-typography">
+    {%- if cart.cart_level_discount_applications.size > 0 -%}
+      <span class="cart__summary-item cart__original-total">
+        <span class="cart__original-total-label">{{ 'content.cart_subtotal' | t }}</span>
+        <span class="cart__original-total-value cart-secondary-typography">
+          {{- cart.original_total_price | money -}}
+        </span>
+      </span>
+      <div class="cart__summary-discounts">
+        <ul
+          class="discounts list-unstyled"
+          role="list"
+          aria-label="{{ 'content.discounts' | t }}"
+        >
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <li class="cart__summary-item cart__discount">
+              <span class="cart__discount-label">
+                {{- 'icon-discount.svg' | inline_asset_content -}}
+                {{ discount.title | escape }}
+              </span>
+              <span class="cart__discount-value cart-secondary-typography"
+                >-{{ discount.total_allocated_amount | money -}}
+              </span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {% if settings.show_cart_note %}
+    <div class="cart-actions">
+      {% render 'cart-note' %}
+    </div>
+  {% endif %}
+
+  {%- liquid
+    if settings.currency_code_enabled_cart_total
+      assign total_price = cart.total_price | money_with_currency
+    else
+      assign total_price = cart.total_price | money
+    endif
+  -%}
+
+  <div class="cart__total-container">
+    <span
+      class="cart__summary-item cart__total"
+      role="status"
+    >
+      <span class="cart__total-label cart-primary-typography">{{ 'content.cart_total' | t }}</span>
+      <text-component
+        ref="cartTotal"
+        value="{{ total_price | strip_html }}"
+        class="cart__total-value cart-secondary-typography"
+        data-cart-subtotal
+      >
+        {{ total_price }}
+      </text-component>
+    </span>
+  </div>
+</div>
+
+<div class="cart__ctas">
+  <div class="cart__terms-checkbox-wrapper">
+    <label class="cart__terms-checkbox-label">
+      <input
+        type="checkbox"
+        id="cart-terms-checkbox"
+        class="cart__terms-checkbox"
+      >
+      <span class="cart__terms-text">
+        I agree to the 
+        <a 
+          href="https://eatalosydney.myshopify.com/pages/terms-condition"
+          class="cart__terms-link"
+        >
+          terms and conditions
+        </a>
+      </span>
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    id="checkout"
+    class="cart__checkout-button button"
+    name="checkout"
+    form="cart-form"
+  >
+    {{ 'content.checkout' | t }}
+  </button>
+
+  <button
+    type="button"
+    class="cart__keep-shopping-button button"
+    on:click="cart-drawer-component/close"
+    aria-label="Keep shopping"
+  >
+    Still Hungry? Keep shopping
+  </button>
+</div>
+
+{% stylesheet %}
+  .cart-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    border-block: 1px solid var(--color-border);
+    padding-block: var(--padding-sm);
+    margin-block-start: var(--margin-3xs);
+  }
+
+  .cart-actions__divider {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .cart__summary-totals:not(:has(.cart-actions)) {
+    margin-block-start: var(--margin-3xs);
+    border-block-start: 1px solid var(--color-border);
+    padding-block-start: var(--margin-xl);
+  }
+
+  .cart__installments {
+    color: var(--color-foreground);
+  }
+
+  .cart__total-label,
+  .cart__total-value {
+    color: #1E5649 !important;
+  }
+
+  .cart__checkout-button {
+    background-color: #1E5649 !important;
+    color: #ffffff !important;
+    border: 2px solid #1E5649 !important;
+    border-radius: 999px;
+    width: 100%;
+    padding: var(--padding-md) var(--padding-lg);
+    font-weight: 500;
+    cursor: pointer !important;
+    position: relative;
+    z-index: 10;
+    opacity: 1;
+  }
+
+  .cart__checkout-button:hover {
+    background-color: #1E5649 !important;
+    opacity: 0.9;
+  }
+
+  .cart__checkout-button--disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
+
+  .cart__keep-shopping-button {
+    background-color: #c8de84 !important;
+    color: #1E5649 !important;
+    border: 2px solid #1E5649 !important;
+    border-radius: 999px;
+    width: 100%;
+    padding: var(--padding-md) var(--padding-lg);
+    font-weight: 500;
+    margin-top: var(--gap-sm);
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+  }
+
+  .cart__keep-shopping-button:hover {
+    opacity: 0.8;
+  }
+
+  .cart__terms-checkbox-wrapper {
+    margin-bottom: var(--gap-md);
+    padding: var(--padding-sm) 0;
+  }
+
+  .cart__terms-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-xs);
+    cursor: pointer;
+    font-size: var(--font-size--sm);
+    line-height: 1.5;
+    color: #1E5649;
+  }
+
+  .cart__terms-checkbox {
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    cursor: pointer;
+    accent-color: #1E5649;
+    flex-shrink: 0;
+  }
+
+  .cart__terms-text {
+    user-select: none;
+  }
+
+  .cart__terms-link {
+    color: #1E5649;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .cart__terms-link:hover {
+    opacity: 0.8;
+  }
+
+  .cart__ctas {
+    position: relative;
+    z-index: 10;
+  }
+
+  p#cart-cutoff-message {
+        text-align: left !important;
+    margin-bottom: -10px !important;
+  }
+
+  p#cart-min-order-message {
+    margin-left: -10px !important;
+  }
+{% endstylesheet %}
+
+<script>
+(function () {
+  const AU_TZ = "Australia/Sydney";
+  const DELIVERY_CUTOFF_HOUR = 14;
+  const CHECKOUT_SELECTOR = '#checkout, [name="checkout"], .cart__checkout-button';
+
+  function getAustraliaNowParts() {
+    const parts = new Intl.DateTimeFormat("en-AU", {
+      timeZone: AU_TZ,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).formatToParts(new Date());
+
+    const map = {};
+    parts.forEach((p) => {
+      if (p.type !== "literal") map[p.type] = p.value;
+    });
+
+    return {
+      year: Number(map.year),
+      month: Number(map.month),
+      day: Number(map.day),
+      hour: Number(map.hour),
+      minute: Number(map.minute)
+    };
+  }
+
+  function isAfterDeliveryCutoffAU() {
+    const now = getAustraliaNowParts();
+    return now.hour >= DELIVERY_CUTOFF_HOUR;
+  }
+
+  function getActiveDeliveryType() {
+    const active = document.querySelector(".cart-drawer__delivery-option--active");
+    return active ? (active.dataset.deliveryType || "").toLowerCase() : "";
+  }
+
+  function getVisibleDateTimeInputs() {
+    const drawer = document.querySelector("cart-drawer-component");
+    if (!drawer) return { date: null, time: null };
+
+    const sections = Array.from(drawer.querySelectorAll(".cart-drawer__datetime-selection"));
+    const visible = sections.find((el) => el.offsetParent !== null) || sections[0];
+    if (!visible) return { date: null, time: null };
+
+    return {
+      date: visible.querySelector(".cart-drawer__date-select"),
+      time: visible.querySelector(".cart-drawer__time-select")
+    };
+  }
+
+  function isDateTimeSelected() {
+    const { date, time } = getVisibleDateTimeInputs();
+    return Boolean(date && date.value && time && time.value);
+  }
+
+  function getCartTotal() {
+    const el = document.querySelector("[data-cart-subtotal]");
+    if (!el) return 0;
+    const raw = el.getAttribute("value") || el.textContent || "";
+    const numeric = parseFloat(raw.replace(/[^0-9.]/g, ""));
+    return Number.isNaN(numeric) ? 0 : numeric;
+  }
+
+  function setMessage(id, text, anchor) {
+    let node = document.getElementById(id);
+
+    if (!text) {
+      if (node) node.remove();
+      return;
+    }
+
+    if (!node) {
+      node = document.createElement("p");
+      node.id = id;
+      node.style.cssText = "color:#c0392b;font-size:.85em;margin-top:8px;text-align:left;";
+      if (anchor) anchor.insertAdjacentElement("afterend", node);
+    }
+
+    node.textContent = text;
+  }
+
+  function ensureMessageOrder(anchor) {
+    const cutoff = document.getElementById("cart-cutoff-message");
+    const minOrder = document.getElementById("cart-min-order-message");
+
+    if (cutoff && minOrder) {
+      minOrder.insertAdjacentElement("beforebegin", cutoff);
+    } else if (cutoff && anchor) {
+      anchor.insertAdjacentElement("afterend", cutoff);
+    }
+  }
+
+  function computeCheckoutEligibility() {
+    const type = getActiveDeliveryType();
+    const hasDateTime = isDateTimeSelected();
+    const isDelivery = type === "delivery";
+    const isPickup = type === "pickup";
+    const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
+    const minOrderBlocked = isDelivery && getCartTotal() < 100;
+
+    const valid =
+      (isPickup && hasDateTime) ||
+      (isDelivery && hasDateTime && !deliveryCutoffBlocked && !minOrderBlocked);
+
+    return { valid, deliveryCutoffBlocked, minOrderBlocked };
+  }
+
+  function applyCheckoutState() {
+    const checkout = document.querySelector(CHECKOUT_SELECTOR);
+    if (!checkout) return;
+
+    const state = computeCheckoutEligibility();
+
+    setMessage(
+      "cart-cutoff-message",
+      state.deliveryCutoffBlocked
+        ? "⏰ Next-day delivery is available for orders placed before 2:00 PM."
+        : null,
+      checkout
+    );
+
+    setMessage(
+      "cart-min-order-message",
+      state.minOrderBlocked
+        ? "📦 Orders below $100 AUD are not eligible for delivery."
+        : null,
+      checkout
+    );
+
+    ensureMessageOrder(checkout);
+
+    checkout.classList.toggle("cart__checkout-button--disabled", !state.valid);
+    checkout.toggleAttribute("disabled", !state.valid);
+    checkout.setAttribute("aria-disabled", state.valid ? "false" : "true");
+    checkout.style.pointerEvents = state.valid ? "auto" : "none";
+    checkout.style.cursor = state.valid ? "pointer" : "not-allowed";
+    checkout.style.opacity = state.valid ? "1" : "0.5";
+  }
+
+  function bindOnce() {
+    if (window.__cartSummaryBound) return;
+    window.__cartSummaryBound = true;
+
+    document.addEventListener("click", function (e) {
+      if (e.target.closest(".cart-drawer__delivery-option")) {
+        setTimeout(applyCheckoutState, 0);
+      }
+    });
+
+    document.addEventListener("change", function (e) {
+      if (
+        e.target &&
+        (e.target.classList.contains("cart-drawer__date-select") ||
+         e.target.classList.contains("cart-drawer__time-select"))
+      ) {
+        applyCheckoutState();
+      }
+    });
+
+    document.addEventListener("cart:updated", function () {
+      setTimeout(applyCheckoutState, 0);
+    });
+
+    document.addEventListener("click", function (e) {
+      const checkout = e.target.closest(CHECKOUT_SELECTOR);
+      if (!checkout) return;
+
+      const state = computeCheckoutEligibility();
+      if (!state.valid) {
+        e.preventDefault();
+        e.stopPropagation();
+        applyCheckoutState();
+      }
+    }, true);
+
+    const cartForm = document.getElementById("cart-form");
+    if (cartForm) {
+      cartForm.addEventListener("submit", function (e) {
+        const state = computeCheckoutEligibility();
+        if (!state.valid) {
+          e.preventDefault();
+          e.stopPropagation();
+          applyCheckoutState();
+        }
+      }, true);
+    }
+  }
+
+  function init() {
+    bindOnce();
+    applyCheckoutState();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+  document.addEventListener("click", function (e) {
+    if (e.target.closest('button[on\\:click="/open"]')) {
+      setTimeout(init, 50);
+    }
+  });
+})();
+</script>

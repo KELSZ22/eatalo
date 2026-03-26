@@ -1,0 +1,473 @@
+<style>
+  .testimonials-section {
+    background-color: #ffffff;
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testimonials-container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonials-heading {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-size: 42px;
+    color: #2d5f5d;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+  }
+
+  .testimonials-stars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 40px 0;
+  }
+
+  .testimonials-stars svg {
+    width: clamp(20px, 3vw, 28px);
+    height: clamp(20px, 3vw, 28px);
+    fill: #ffc107;
+    stroke: #ffc107;
+    stroke-width: 0.5;
+  }
+
+  .testimonials-slider {
+    position: relative;
+    padding: 0 80px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+  }
+
+  .testimonial-item {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+    width: 100%;
+  }
+
+  .testimonial-item.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .testimonial-text {
+    font-family: 'archivo', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 3.5vw, 18px);
+    color: #2d5f5d;
+    line-height: 1.4;
+    margin: 0 0 20px 0;
+    quotes: '"' '"' ''' ''';
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .testimonial-text::before {
+    content: open-quote;
+  }
+
+  .testimonial-text::after {
+    content: close-quote;
+  }
+
+  .testimonial-author {
+    font-family: 'archivo', sans-serif;
+    font-weight: 400;
+    font-size: clamp(14px, 2vw, 18px);
+    color: #2d5f5d;
+    margin: 0;
+  }
+
+  .testimonial-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+  }
+
+  .testimonial-nav:hover {
+    opacity: 0.7;
+  }
+
+  .testimonial-nav.prev {
+    left: 0;
+  }
+
+  .testimonial-nav.next {
+    right: 0;
+  }
+
+  .testimonial-nav svg {
+    width: clamp(25px, 4vw, 40px);
+    height: clamp(25px, 4vw, 40px);
+    stroke: #2d5f5d;
+    stroke-width: 2;
+  }
+
+  .testimonial-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .testimonial-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.3s ease;
+  }
+
+  .testimonial-dot.active {
+    background-color: #2d5f5d;
+  }
+
+  /* Tablet Styles */
+  @media screen and (max-width: 1024px) {
+    .testimonials-section {
+      min-height: 350px;
+      padding: 50px 20px;
+    }
+
+    .testimonials-heading {
+      margin-bottom: 30px;
+    }
+
+    .testimonials-slider {
+      padding: 0 60px;
+      min-height: 180px;
+    }
+
+    .testimonial-text {
+      margin-bottom: 18px;
+    }
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .testimonials-section {
+      min-height: 300px;
+      padding: 40px 15px;
+    }
+
+    .testimonials-heading {
+      margin-bottom: 25px;
+    }
+
+    .testimonials-slider {
+      padding: 0 50px;
+      min-height: 160px;
+    }
+
+    .testimonial-text {
+      margin-bottom: 15px;
+    }
+
+    .testimonial-dots {
+      margin-top: 25px;
+      gap: 10px;
+    }
+
+    .testimonial-dot {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  /* Small Mobile Styles */
+  @media screen and (max-width: 480px) {
+    .testimonials-section {
+      min-height: 280px;
+      padding: 35px 12px;
+    }
+
+    .testimonials-slider {
+      padding: 0 40px;
+      min-height: 140px;
+    }
+
+    .testimonial-nav {
+      padding: 8px;
+    }
+
+    .testimonial-dots {
+      margin-top: 20px;
+      gap: 8px;
+    }
+
+    .testimonial-dot {
+      width: 9px;
+      height: 9px;
+    }
+  }
+
+  /* Large Desktop Styles */
+  @media screen and (min-width: 1600px) {
+    .testimonials-section {
+      min-height: 500px;
+      padding: 80px 40px;
+    }
+
+    .testimonials-heading {
+      margin-bottom: 50px;
+      font-size: 40px;
+    }
+
+    .testimonials-slider {
+      min-height: 250px;
+    }
+
+    .testimonial-text {
+      margin-bottom: 25px;
+    }
+  }
+  @media screen and (max-width: 425px){
+  .testimonials-heading{
+    font-size: 30px;
+  }
+  .testimonial-text{
+    font-size: 14px;
+  }
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<section class="testimonials-section">
+  <div class="testimonials-container">
+    <h2 class="testimonials-heading">{{ section.settings.heading }}</h2>
+    
+    <div class="testimonials-stars">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+    </div>
+    
+    <div class="testimonials-slider">
+      {% if section.settings.show_navigation and section.blocks.size > 1 %}
+        <button class="testimonial-nav prev" aria-label="Previous testimonial">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {% endif %}
+
+      {% for block in section.blocks %}
+        <div class="testimonial-item {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <p class="testimonial-text">{{ block.settings.testimonial_text }}</p>
+          <p class="testimonial-author">{{ block.settings.author_name }}</p>
+        </div>
+      {% endfor %}
+
+      {% if section.settings.show_navigation and section.blocks.size > 1 %}
+        <button class="testimonial-nav next" aria-label="Next testimonial">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {% endif %}
+    </div>
+
+    {% if section.settings.show_dots and section.blocks.size > 1 %}
+      <div class="testimonial-dots">
+        {% for block in section.blocks %}
+          <button class="testimonial-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Go to testimonial {{ forloop.index }}"></button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const testimonialSection = document.querySelector('.testimonials-section');
+    if (!testimonialSection) return;
+
+    const items = testimonialSection.querySelectorAll('.testimonial-item');
+    const dots = testimonialSection.querySelectorAll('.testimonial-dot');
+    const prevBtn = testimonialSection.querySelector('.testimonial-nav.prev');
+    const nextBtn = testimonialSection.querySelector('.testimonial-nav.next');
+    let currentIndex = 0;
+    let autoplayInterval;
+
+    function showTestimonial(index) {
+      items.forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+      currentIndex = index;
+    }
+
+    function nextTestimonial() {
+      const nextIndex = (currentIndex + 1) % items.length;
+      showTestimonial(nextIndex);
+    }
+
+    function prevTestimonial() {
+      const prevIndex = (currentIndex - 1 + items.length) % items.length;
+      showTestimonial(prevIndex);
+    }
+
+    function resetAutoplay() {
+      if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+        startAutoplay();
+      }
+    }
+
+    function startAutoplay() {
+      {% if section.settings.autoplay %}
+        autoplayInterval = setInterval(nextTestimonial, {{ section.settings.autoplay_speed | times: 1000 }});
+      {% endif %}
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        nextTestimonial();
+        resetAutoplay();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        prevTestimonial();
+        resetAutoplay();
+      });
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', function() {
+        showTestimonial(index);
+        resetAutoplay();
+      });
+    });
+
+    // Start autoplay
+    startAutoplay();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Testimonials"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show Dot Navigation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-play Testimonials",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Auto-play Speed",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "testimonial_text",
+          "label": "Testimonial Text",
+          "default": "Great Food served by an authentic italian chef! Family feel and plenty of menu choices will leave you asking for more..."
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "label": "Author Name",
+          "default": "Good Food Magazine"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Great Food served by an authentic italian chef! Family feel and plenty of menu choices will leave you asking for more...",
+            "author_name": "Good Food Magazine"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

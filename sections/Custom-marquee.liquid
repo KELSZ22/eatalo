@@ -1,0 +1,286 @@
+{% assign section_id = 'trusted-by-' | append: section.id %}
+
+<section id="{{ section_id }}">
+  <div class="tb-inner">
+    <h2 class="tb-heading">{{ section.settings.heading }}</h2>
+  </div>
+  <div class="tb-marquee-wrapper">
+    <div class="tb-marquee-track">
+      {% for block in section.blocks %}
+        <div class="tb-logo-item" {{ block.shopify_attributes }}>
+          {% if block.settings.logo != blank %}
+            {{ block.settings.logo | image_url: width: 200 | image_tag: class: 'tb-logo-img', alt: block.settings.alt_text, loading: 'lazy' }}
+          {% else %}
+            <div class="tb-logo-placeholder">{{ block.settings.alt_text | default: 'Logo' }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+      {% for block in section.blocks %}
+        <div class="tb-logo-item tb-clone" aria-hidden="true">
+          {% if block.settings.logo != blank %}
+            {{ block.settings.logo | image_url: width: 200 | image_tag: class: 'tb-logo-img', alt: '', loading: 'lazy' }}
+          {% else %}
+            <div class="tb-logo-placeholder">{{ block.settings.alt_text | default: 'Logo' }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    background-color: {{ section.settings.background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  #{{ section_id }} .tb-inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ section.settings.padding_horizontal }}px;
+  }
+
+  #{{ section_id }} .tb-heading {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 400;
+    color: {{ section.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 {{ section.settings.heading_margin_bottom }}px;
+    line-height: 1.2;
+  }
+
+  #{{ section_id }} .tb-marquee-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #{{ section_id }} .tb-marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: tb-scroll {{ section.settings.scroll_speed }}s linear infinite;
+  }
+
+  {% if section.settings.pause_on_hover %}
+  #{{ section_id }} .tb-marquee-wrapper:hover .tb-marquee-track {
+    animation-play-state: paused;
+  }
+  {% endif %}
+
+  #{{ section_id }} .tb-logo-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 {{ section.settings.logo_gap }}px;
+    flex-shrink: 0;
+  }
+
+  #{{ section_id }} .tb-logo-img {
+    height: 122px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    display: block;
+    transition: filter 0.3s ease;
+  }
+
+  #{{ section_id }} .tb-logo-img:hover {
+    filter: grayscale(0%) opacity(100%);
+  }
+
+  #{{ section_id }} .tb-logo-placeholder {
+    height: {{ section.settings.logo_height }}px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #aaa;
+    white-space: nowrap;
+    font-family: sans-serif;
+  }
+
+  @keyframes tb-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @media screen and (max-width: 768px) {
+    #{{ section_id }} .tb-inner {
+      padding: 0 20px;
+    }
+
+    #{{ section_id }} .tb-heading {
+      font-size: {{ section.settings.heading_size | minus: 8 }}px;
+    }
+
+    #{{ section_id }} .tb-logo-img {
+      height: {{ section.settings.logo_height | times: 0.8 | round }}px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Trusted By Logos",
+  "tag": "section",
+  "class": "trusted-by-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Trusted By..."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Font Size",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#1a5c3a"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "label": "Heading Margin Bottom",
+      "min": 10,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding Horizontal",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max Width",
+      "min": 600,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo Height",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "label": "Logo Gap / Spacing",
+      "min": 10,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "logo_opacity",
+      "label": "Logo Opacity (%)",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll Speed (seconds)",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on Hover",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Brand Name / Alt Text",
+          "default": "Brand Name"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trusted By Logos",
+      "blocks": [
+        { "type": "logo", "settings": { "alt_text": "Brand One" } },
+        { "type": "logo", "settings": { "alt_text": "Brand Two" } },
+        { "type": "logo", "settings": { "alt_text": "Brand Three" } },
+        { "type": "logo", "settings": { "alt_text": "Brand Four" } },
+        { "type": "logo", "settings": { "alt_text": "Brand Five" } },
+        { "type": "logo", "settings": { "alt_text": "Brand Six" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

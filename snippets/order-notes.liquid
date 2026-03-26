@@ -1,0 +1,136 @@
+{% comment %} <div class="order-notes-wrapper">
+  <p class="order-notes-label">Order Notes</p>
+  <textarea
+    id="order-note-input"
+    class="order-notes-textarea"
+    placeholder=""
+  ></textarea>
+</div>
+
+<style>
+  .order-notes-wrapper {
+    margin: 20px 0;
+    background-color: #c8de84;
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .order-notes-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2d4a2d;
+    margin: 0 0 10px 0;
+  }
+
+  .order-notes-textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 12px;
+    background: #f0f5e0;
+    border: 1.5px solid #b8cc78;
+    border-radius: 8px;
+    color: #2d4a2d;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .order-notes-textarea:focus {
+    border-color: #1E5649;
+  }
+</style>
+
+<script>
+  (function () {
+    const noteInput = document.getElementById('order-note-input');
+    if (!noteInput) return;
+
+    const STORAGE_KEY = 'eatalo_order_note';
+    const saved = sessionStorage.getItem(STORAGE_KEY);
+    if (saved) noteInput.value = saved;
+
+    async function saveNoteToCart(note) {
+      try {
+        await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            attributes: { 'Order Note': note }
+          })
+        });
+      } catch (err) {
+        console.warn('Failed to save order note:', err);
+      }
+    }
+
+    let debounceTimer;
+    noteInput.addEventListener('input', function () {
+      sessionStorage.setItem(STORAGE_KEY, this.value);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        saveNoteToCart(this.value.trim());
+      }, 600);
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        if (noteInput.value.trim()) saveNoteToCart(noteInput.value.trim());
+      });
+    } else {
+      if (noteInput.value.trim()) saveNoteToCart(noteInput.value.trim());
+    }
+  })();
+</script> {% endcomment %}
+
+{%- assign order_note_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
+
+<div class="order-notes-wrapper">
+  <label class="order-notes-label" for="order-note-{{ section.id }}">Order Notes</label>
+  <textarea
+    id="order-note-{{ section.id }}"
+    class="order-notes-textarea"
+    name="properties[Order Note]"
+    form="{{ order_note_form_id }}"
+    placeholder=""
+  ></textarea>
+</div>
+
+<style>
+  .order-notes-wrapper {
+    margin: 20px 0;
+    background-color: #c8de84;
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .order-notes-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2d4a2d;
+    margin: 0 0 10px 0;
+    display: block;
+  }
+
+  .order-notes-textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 12px;
+    background: #f0f5e0;
+    border: 1.5px solid #b8cc78;
+    border-radius: 8px;
+    color: #2d4a2d;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .order-notes-textarea:focus {
+    border-color: #1E5649;
+  }
+</style>

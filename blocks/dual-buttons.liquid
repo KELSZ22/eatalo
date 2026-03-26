@@ -1,0 +1,274 @@
+{% liquid
+  assign block_settings = block.settings
+  assign left_button_text = block_settings.left_button_text | default: 'Online Catering'
+  assign left_button_link = block_settings.left_button_link
+  assign right_button_text = block_settings.right_button_text | default: 'Request Quote'
+  assign right_button_link = block_settings.right_button_link
+  assign left_button_color = block_settings.left_button_color | default: '#ED4D31'
+  assign right_button_color = block_settings.right_button_color | default: '#BEDA8D'
+  
+  # Check if links are JavaScript functions
+  assign left_is_js = false
+  assign right_is_js = false
+  
+  if left_button_link contains 'openQuoteModal' or left_button_link contains 'javascript:'
+    assign left_is_js = true
+  endif
+  
+  if right_button_link contains 'openQuoteModal' or right_button_link contains 'javascript:'
+    assign right_is_js = true
+  endif
+%}
+
+<div
+  class="dual-buttons-block spacing-style"
+  style="
+    --left-button-color: {{ left_button_color }};
+    --right-button-color: {{ right_button_color }};
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="dual-buttons-block__container">
+    {% if left_button_link != blank %}
+      {% if left_is_js %}
+        <button
+          type="button"
+          class="dual-buttons-block__button dual-buttons-block__button--left"
+          onclick="{% if left_button_link contains 'openQuoteModal' %}window.openQuoteModal();{% else %}{{ left_button_link | remove_first: 'javascript:' }}{% endif %}"
+        >
+          {{ left_button_text }}
+        </button>
+      {% else %}
+        <a
+          href="{{ left_button_link }}"
+          class="dual-buttons-block__button dual-buttons-block__button--left"
+          {% if block_settings.left_button_open_new_tab %}
+            target="_blank"
+            rel="noopener noreferrer"
+          {% endif %}
+        >
+          {{ left_button_text }}
+        </a>
+      {% endif %}
+    {% else %}
+      <span class="dual-buttons-block__button dual-buttons-block__button--left" role="button" aria-disabled="true">
+        {{ left_button_text }}
+      </span>
+    {% endif %}
+
+    {% if right_button_link != blank %}
+      {% if right_is_js %}
+        <button
+          type="button"
+          class="dual-buttons-block__button dual-buttons-block__button--right"
+          onclick="{% if right_button_link contains 'openQuoteModal' %}window.openQuoteModal();{% else %}{{ right_button_link | remove_first: 'javascript:' }}{% endif %}"
+        >
+          {{ right_button_text }}
+        </button>
+      {% else %}
+        <a
+          href="{{ right_button_link }}"
+          class="dual-buttons-block__button dual-buttons-block__button--right"
+          {% if block_settings.right_button_open_new_tab %}
+            target="_blank"
+            rel="noopener noreferrer"
+          {% endif %}
+        >
+          {{ right_button_text }}
+        </a>
+      {% endif %}
+    {% else %}
+      <span class="dual-buttons-block__button dual-buttons-block__button--right" role="button" aria-disabled="true">
+        {{ right_button_text }}
+      </span>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .dual-buttons-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .dual-buttons-block__container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dual-buttons-block__button {
+    display: inline-flex;
+    padding: 19.368px 12.105px;
+    justify-content: center;
+    align-items: center;
+    gap: 12.105px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: var(--font-body-family);
+    font-weight: 500;
+    font-size: 18px;
+    transition: opacity 0.3s ease;
+    border: none;
+    cursor: pointer;
+    height: 59px;
+    min-width: 150px;
+    white-space: nowrap;
+  }
+
+  .dual-buttons-block__button--left {
+    background-color: var(--left-button-color);
+    color: #ffffff;
+  }
+
+  .dual-buttons-block__button--right {
+    background-color: var(--right-button-color);
+    color: #1F554A;
+  }
+
+  .dual-buttons-block__button:hover {
+    opacity: 0.9;
+  }
+
+  .dual-buttons-block__button[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media screen and (max-width: 750px) {
+    .dual-buttons-block__container {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .dual-buttons-block__button {
+      width: 100%;
+      max-width: 349px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Dual Buttons",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left Button"
+    },
+    {
+      "type": "text",
+      "id": "left_button_text",
+      "label": "Left Button Text",
+      "default": "Online Catering"
+    },
+    {
+      "type": "url",
+      "id": "left_button_link",
+      "label": "Left Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "left_button_open_new_tab",
+      "label": "Open in New Tab",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "left_button_color",
+      "label": "Left Button Color",
+      "default": "#ED4D31"
+    },
+    {
+      "type": "header",
+      "content": "Right Button"
+    },
+    {
+      "type": "text",
+      "id": "right_button_text",
+      "label": "Right Button Text",
+      "default": "Request Quote"
+    },
+    {
+      "type": "url",
+      "id": "right_button_link",
+      "label": "Right Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "right_button_open_new_tab",
+      "label": "Open in New Tab",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "right_button_color",
+      "label": "Right Button Color",
+      "default": "#BEDA8D"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dual Buttons",
+      "category": "Basic",
+      "settings": {
+        "left_button_text": "Online Catering",
+        "right_button_text": "Request Quote",
+        "left_button_color": "#ED4D31",
+        "right_button_color": "#BEDA8D"
+      }
+    }
+  ]
+}
+{% endschema %}
+
