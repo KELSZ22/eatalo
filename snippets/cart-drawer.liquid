@@ -195,6 +195,19 @@
     return Boolean(date && getEffectiveDateValue(date) && time && time.value);
   }
 
+  function hasValidSelectedDateTime() {
+    const { date, time } = getDrawerInputs();
+    const effectiveDate = getEffectiveDateValue(date);
+    const selectedTime = time ? time.value : "";
+    if (!date || !effectiveDate || !selectedTime) return false;
+
+    const parsedDate = parseISO(effectiveDate);
+    if (!parsedDate || isWeekendDate(parsedDate)) return false;
+
+    const minISO = getEarliestOrderDateISO();
+    return effectiveDate >= minISO;
+  }
+
   function getCartTotal() {
     const candidates = [
       document.querySelector("[data-cart-subtotal]"),
@@ -509,7 +522,7 @@
     const type = getActiveDeliveryType();
     const isDelivery = type === "delivery";
     const isPickup = type === "pickup";
-    const hasDateTime = isDateTimeSelected();
+    const hasDateTime = hasValidSelectedDateTime();
 
     const minOrderBlocked = isDelivery && getCartTotal() < 100;
     const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
