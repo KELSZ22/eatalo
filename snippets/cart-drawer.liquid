@@ -195,11 +195,6 @@
     return Boolean(date && getEffectiveDateValue(date) && time && time.value);
   }
 
-  function isTermsAccepted() {
-    const cb = document.getElementById("cart-terms-checkbox");
-    return Boolean(cb && cb.checked);
-  }
-
   function getCartTotal() {
     const candidates = [
       document.querySelector("[data-cart-subtotal]"),
@@ -499,9 +494,6 @@
     const drawer = getDrawer();
     if (!drawer) return;
 
-    const active = drawer.querySelector(".cart-drawer__delivery-option--active");
-    if (active) return;
-
     const pickup = drawer.querySelector('.cart-drawer__delivery-option[data-delivery-type="pickup"]');
     if (!pickup) return;
 
@@ -521,13 +513,12 @@
 
     const minOrderBlocked = isDelivery && getCartTotal() < 100;
     const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
-    const termsOk = isTermsAccepted();
 
     let valid = false;
-    if (isPickup) valid = hasDateTime && termsOk;
-    if (isDelivery) valid = hasDateTime && !minOrderBlocked && termsOk;
+    if (isPickup) valid = hasDateTime;
+    if (isDelivery) valid = hasDateTime && !minOrderBlocked;
 
-    return { valid, minOrderBlocked, deliveryCutoffBlocked };
+    return { valid, minOrderBlocked, deliveryCutoffBlocked, hasDateTime };
   }
 
   function setCheckoutState(enabled) {
@@ -559,7 +550,7 @@
     const type = getActiveDeliveryType();
 
     const showMinOrder = type === "delivery" && state.minOrderBlocked;
-    const showCutoff = type === "delivery" && state.deliveryCutoffBlocked;
+    const showCutoff = type === "delivery" && state.deliveryCutoffBlocked && !state.hasDateTime;
 
     setEligibilityMessageState("cart-min-order-message", showMinOrder);
     setEligibilityMessageState("cart-cutoff-message", showCutoff);
