@@ -223,12 +223,12 @@
     z-index: 10;
   }
 
-  p#cart-cutoff-message {
+  p#cart-page-cutoff-message {
         text-align: left !important;
     margin-bottom: -10px !important;
   }
 
-  p#cart-min-order-message {
+  p#cart-page-min-order-message {
     margin-left: -10px !important;
   }
 {% endstylesheet %}
@@ -266,7 +266,7 @@
 
   function isAfterDeliveryCutoffAU() {
     const now = getAustraliaNowParts();
-    return now.hour >= DELIVERY_CUTOFF_HOUR;
+    return now.hour > DELIVERY_CUTOFF_HOUR || (now.hour === DELIVERY_CUTOFF_HOUR && now.minute >= 30);
   }
 
   function getActiveDeliveryType() {
@@ -282,15 +282,32 @@
     const visible = sections.find((el) => el.offsetParent !== null) || sections[0];
     if (!visible) return { date: null, time: null };
 
+    const boundDate =
+      visible.querySelector('.cart-drawer__date-select[data-custom-calendar-ready="true"]') ||
+      visible.querySelector('.cart-drawer__date-select[type="date"]') ||
+      visible.querySelector(".cart-drawer__date-select");
+
     return {
-      date: visible.querySelector(".cart-drawer__date-select"),
+      date: boundDate,
       time: visible.querySelector(".cart-drawer__time-select")
     };
   }
 
+  function getEffectiveDateValue(dateInput) {
+    if (!dateInput) return "";
+    if (dateInput.dataset && dateInput.dataset.isoValue) return dateInput.dataset.isoValue;
+    return dateInput.value || "";
+  }
+
   function isDateTimeSelected() {
     const { date, time } = getVisibleDateTimeInputs();
-    return Boolean(date && date.value && time && time.value);
+    const dateVal = getEffectiveDateValue(date);
+    return Boolean(date && dateVal && time && time.value);
+  }
+
+  function isTermsAccepted() {
+    const cb = document.getElementById("cart-terms-checkbox");
+    return Boolean(cb && cb.checked);
   }
 
   function getCartTotal() {
@@ -320,8 +337,8 @@
   }
 
   function ensureMessageOrder(anchor) {
-    const cutoff = document.getElementById("cart-cutoff-message");
-    const minOrder = document.getElementById("cart-min-order-message");
+    const cutoff = document.getElementById("cart-page-cutoff-message");
+    const minOrder = document.getElementById("cart-page-min-order-message");
 
     if (cutoff && minOrder) {
       minOrder.insertAdjacentElement("beforebegin", cutoff);
@@ -337,10 +354,11 @@
     const isPickup = type === "pickup";
     const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
     const minOrderBlocked = isDelivery && getCartTotal() < 100;
+    const termsOk = isTermsAccepted();
 
-    const valid =
-      (isPickup && hasDateTime) ||
-      (isDelivery && hasDateTime && !deliveryCutoffBlocked && !minOrderBlocked);
+    let valid = false;
+    if (isPickup) valid = hasDateTime && termsOk;
+    if (isDelivery) valid = hasDateTime && !minOrderBlocked && termsOk;
 
     return { valid, deliveryCutoffBlocked, minOrderBlocked };
   }
@@ -351,16 +369,10 @@
 
     const state = computeCheckoutEligibility();
 
-    setMessage(
-      "cart-cutoff-message",
-      state.deliveryCutoffBlocked
-        ? "⏰ Next-day delivery is available for orders placed before 2:00 PM."
-        : null,
-      checkout
-    );
+    setMessage("cart-page-cutoff-message", null, checkout);
 
     setMessage(
-      "cart-min-order-message",
+      "cart-page-min-order-message",
       state.minOrderBlocked
         ? "📦 Orders below $100 AUD are not eligible for delivery."
         : null,
@@ -391,14 +403,15 @@
       if (
         e.target &&
         (e.target.classList.contains("cart-drawer__date-select") ||
-         e.target.classList.contains("cart-drawer__time-select"))
+         e.target.classList.contains("cart-drawer__time-select") ||
+         e.target.id === "cart-terms-checkbox")
       ) {
         applyCheckoutState();
       }
     });
 
-    document.addEventListener("cart:updated", function () {
-      setTimeout(applyCheckoutState, 0);
+    document.addEventListener("cart:update", function () {
+      setTimeout(applyCheckoutState, 200);
     });
 
     document.addEventListener("click", function (e) {
@@ -428,6 +441,7 @@
 
   function init() {
     bindOnce();
+    window.__syncCartSummaryCheckoutState = applyCheckoutState;
     applyCheckoutState();
   }
 

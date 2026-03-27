@@ -8,6 +8,9 @@
   @param {string} [settings.drawer_color_scheme] - The color scheme for the drawer.
 {%- enddoc -%}
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js" defer></script>
+
 <script
   src="{{ 'cart-drawer.js' | asset_url }}"
   type="module"
@@ -129,6 +132,24 @@
     return toISO(d);
   }
 
+  function getEarliestOrderDateISO() {
+    const now = getAustraliaNowParts();
+    const d = new Date(now.year, now.month - 1, now.day);
+
+    if (getActiveDeliveryType() === "delivery") {
+      d.setDate(d.getDate() + 1);
+      if (isAfterDeliveryCutoffAU()) {
+        d.setDate(d.getDate() + 1);
+      }
+    }
+
+    while (isWeekendDate(d)) {
+      d.setDate(d.getDate() + 1);
+    }
+
+    return toISO(d);
+  }
+
   function getDrawer() {
     return document.querySelector("cart-drawer-component");
   }
@@ -152,8 +173,12 @@
     const drawer = getDrawer();
     if (!drawer) return { date: null, time: null, location: null };
     const root = getVisibleDatetimeRoot(drawer);
+    const boundDateInput =
+      root.querySelector('.cart-drawer__date-select[data-custom-calendar-ready="true"]') ||
+      root.querySelector('.cart-drawer__date-select[type="date"]') ||
+      root.querySelector(".cart-drawer__date-select");
     return {
-      date: root.querySelector(".cart-drawer__date-select"),
+      date: boundDateInput,
       time: root.querySelector(".cart-drawer__time-select"),
       location: drawer.querySelector(".cart-drawer__delivery-location-input")
     };
@@ -168,6 +193,11 @@
   function isDateTimeSelected() {
     const { date, time } = getDrawerInputs();
     return Boolean(date && getEffectiveDateValue(date) && time && time.value);
+  }
+
+  function isTermsAccepted() {
+    const cb = document.getElementById("cart-terms-checkbox");
+    return Boolean(cb && cb.checked);
   }
 
   function getCartTotal() {
@@ -249,6 +279,9 @@
   }
 
   function clearDateInput(dateInput) {
+    if (dateInput._flatpickr) {
+      dateInput._flatpickr.clear();
+    }
     dateInput.value = "";
     dateInput.defaultValue = "";
     dateInput.removeAttribute("value");
@@ -257,9 +290,13 @@
   }
 
   function enforceDateNotPast(dateInput) {
-    const todayAU = getTodayAustraliaISO();
-    const minBusinessISO = getNextBusinessDayISO(todayAU);
-    dateInput.setAttribute("min", minBusinessISO);
+    const minISO = getEarliestOrderDateISO();
+    dateInput.setAttribute("min", minISO);
+
+    if (dateInput._flatpickr) {
+      dateInput._flatpickr.set("minDate", minISO);
+      dateInput._flatpickr.redraw();
+    }
 
     const effective = getEffectiveDateValue(dateInput);
     if (!effective) return true;
@@ -270,17 +307,31 @@
       return false;
     }
 
-    if (effective < minBusinessISO) {
+    if (effective < minISO) {
       clearDateInput(dateInput);
       return false;
     }
 
     if (isWeekendDate(parsed)) {
-      const nextWeekdayISO = getNextWeekdayISO(parsed);
-      dateInput.value = nextWeekdayISO;
-      dateInput.dataset.isoValue = nextWeekdayISO;
-      dateInput.dataset.userSelected = "true";
+      clearDateInput(dateInput);
       return false;
+    }
+
+    if (getActiveDeliveryType() === "delivery") {
+      const now = getAustraliaNowParts();
+      const todayISO = formatDateISO(now.year, now.month, now.day);
+      if (effective === todayISO) {
+        clearDateInput(dateInput);
+        return false;
+      }
+      if (isAfterDeliveryCutoffAU()) {
+        const tmrw = new Date(now.year, now.month - 1, now.day + 1);
+        const tomorrowISO = toISO(tmrw);
+        if (effective === tomorrowISO) {
+          clearDateInput(dateInput);
+          return false;
+        }
+      }
     }
 
     dateInput.dataset.userSelected = "true";
@@ -307,22 +358,77 @@
     if (dateInput.dataset.customCalendarReady === "true") return;
     dateInput.dataset.customCalendarReady = "true";
 
-    dateInput.type = "date";
-    dateInput.readOnly = false;
     dateInput.removeAttribute("inputmode");
     dateInput.removeAttribute("autocomplete");
 
-    if (dateInput.dataset.userSelected !== "true") clearDateInput(dateInput);
+    if (typeof flatpickr === "undefined") {
+      dateInput.type = "date";
+      dateInput.readOnly = false;
+      dateInput.setAttribute("min", getEarliestOrderDateISO());
+      if (dateInput.dataset.userSelected !== "true") clearDateInput(dateInput);
+      return;
+    }
+
+    dateInput.type = "text";
+    dateInput.readOnly = true;
+    dateInput.placeholder = "Select Date";
+
+    var minISO = getEarliestOrderDateISO();
+    var dialog = dateInput.closest("dialog");
+
+    var fp = flatpickr(dateInput, {
+      dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "D, M j, Y",
+      minDate: minISO,
+      disableMobile: true,
+      static: true,
+      disable: [
+        function(date) {
+          var day = date.getDay();
+          if (day === 0 || day === 6) return true;
+          if (getActiveDeliveryType() === "delivery") {
+            var now = getAustraliaNowParts();
+            var todayTs = new Date(now.year, now.month - 1, now.day).getTime();
+            var checkTs = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+            if (checkTs === todayTs) return true;
+            if (isAfterDeliveryCutoffAU()) {
+              var tomorrowTs = new Date(now.year, now.month - 1, now.day + 1).getTime();
+              if (checkTs === tomorrowTs) return true;
+            }
+          }
+          return false;
+        }
+      ],
+      onChange: function(selectedDates, dateStr) {
+        dateInput.dataset.isoValue = dateStr || "";
+        dateInput.dataset.userSelected = dateStr ? "true" : "false";
+        updateCheckoutButton();
+      }
+    });
+
+    dateInput._flatpickr = fp;
+
+    if (fp.altInput) {
+      fp.altInput.classList.add("cart-drawer__date-select");
+      fp.altInput.placeholder = "Select Date";
+    }
+
+    if (dateInput.dataset.userSelected !== "true") {
+      fp.clear();
+      dateInput.dataset.isoValue = "";
+    }
   }
 
   function initDateInputs() {
     const drawer = getDrawer();
     if (!drawer) return;
 
-    const minBusinessISO = getNextBusinessDayISO(getTodayAustraliaISO());
+    const minISO = getEarliestOrderDateISO();
 
     drawer.querySelectorAll(".cart-drawer__date-select").forEach((dateSelect) => {
-      dateSelect.setAttribute("min", minBusinessISO);
+      if (dateSelect.classList.contains("flatpickr-alt")) return;
+      dateSelect.setAttribute("min", minISO);
       bindCustomDateInput(dateSelect);
       enforceDateNotPast(dateSelect);
     });
@@ -333,6 +439,7 @@
     if (!drawer) return;
 
     drawer.querySelectorAll(".cart-drawer__date-select").forEach((dateSelect) => {
+      if (dateSelect.classList.contains("flatpickr-alt")) return;
       if (dateSelect.dataset.userSelected !== "true") clearDateInput(dateSelect);
       enforceDateNotPast(dateSelect);
     });
@@ -407,20 +514,21 @@
   }
 
   function computeEligibility() {
-  const type = getActiveDeliveryType();
-  const isDelivery = type === "delivery";
-  const isPickup = type === "pickup";
-  const hasDateTime = isDateTimeSelected();
+    const type = getActiveDeliveryType();
+    const isDelivery = type === "delivery";
+    const isPickup = type === "pickup";
+    const hasDateTime = isDateTimeSelected();
 
-  const minOrderBlocked = isDelivery && getCartTotal() < 100;
-  const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
+    const minOrderBlocked = isDelivery && getCartTotal() < 100;
+    const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
+    const termsOk = isTermsAccepted();
 
-  let valid = false;
-  if (isPickup) valid = hasDateTime;
-  if (isDelivery) valid = hasDateTime && !minOrderBlocked && !deliveryCutoffBlocked;
+    let valid = false;
+    if (isPickup) valid = hasDateTime && termsOk;
+    if (isDelivery) valid = hasDateTime && !minOrderBlocked && termsOk;
 
-  return { valid, minOrderBlocked, deliveryCutoffBlocked };
-}
+    return { valid, minOrderBlocked, deliveryCutoffBlocked };
+  }
 
   function setCheckoutState(enabled) {
     const checkoutButton = document.getElementById("checkout");
@@ -444,20 +552,24 @@
   }
 
   function updateCheckoutButton() {
-  const checkoutButton = document.getElementById("checkout");
-  if (!checkoutButton) return;
+    const checkoutButton = document.getElementById("checkout");
+    if (!checkoutButton) return;
 
-  const state = computeEligibility();
-  const type = getActiveDeliveryType();
+    const state = computeEligibility();
+    const type = getActiveDeliveryType();
 
-  const showMinOrder = type === "delivery" && state.minOrderBlocked;
-  const showCutoff = type === "delivery" && state.deliveryCutoffBlocked;
+    const showMinOrder = type === "delivery" && state.minOrderBlocked;
+    const showCutoff = type === "delivery" && state.deliveryCutoffBlocked;
 
-  setEligibilityMessageState("cart-min-order-message", showMinOrder);
-  setEligibilityMessageState("cart-cutoff-message", showCutoff);
+    setEligibilityMessageState("cart-min-order-message", showMinOrder);
+    setEligibilityMessageState("cart-cutoff-message", showCutoff);
 
-  setCheckoutState(state.valid);
-}
+    setCheckoutState(state.valid);
+
+    if (typeof window.__syncCartSummaryCheckoutState === "function") {
+      window.__syncCartSummaryCheckoutState();
+    }
+  }
 
   function setCartAttributes(attributes) {
     return fetch("/cart/update.js", {
@@ -577,6 +689,7 @@
     });
 
     drawer.querySelectorAll(".cart-drawer__date-select").forEach((input) => {
+      if (input.classList.contains("flatpickr-alt")) return;
       clearDateInput(input);
     });
 
@@ -587,6 +700,63 @@
     ensureDefaultPickup();
     populateTimeDropdowns(true);
     initDateInputs();
+    updateCheckoutButton();
+  }
+
+  function saveDrawerState() {
+    var drawer = getDrawer();
+    if (!drawer) return null;
+    var type = getActiveDeliveryType();
+    if (!type) return null;
+    var inputs = getDrawerInputs();
+    return {
+      type: type,
+      dateISO: inputs.date ? (inputs.date.dataset.isoValue || "") : "",
+      dateUserSelected: inputs.date ? (inputs.date.dataset.userSelected || "") : "",
+      timeValue: inputs.time ? inputs.time.value : "",
+      locationValue: inputs.location ? inputs.location.value : ""
+    };
+  }
+
+  function restoreDrawerState(state) {
+    if (!state || !state.type) return;
+    var drawer = getDrawer();
+    if (!drawer) return;
+
+    drawer.querySelectorAll(".cart-drawer__delivery-option").forEach(function(btn) {
+      btn.classList.remove("cart-drawer__delivery-option--active");
+      if ((btn.dataset.deliveryType || "").toLowerCase() === state.type) {
+        btn.classList.add("cart-drawer__delivery-option--active");
+      }
+    });
+    showByDeliveryType(state.type);
+
+    initDateInputs();
+
+    if (state.dateUserSelected === "true" && state.dateISO) {
+      var inputs = getDrawerInputs();
+      if (inputs.date) {
+        inputs.date.dataset.isoValue = state.dateISO;
+        inputs.date.dataset.userSelected = "true";
+        if (inputs.date._flatpickr) {
+          inputs.date._flatpickr.setDate(state.dateISO, true);
+        } else {
+          inputs.date.value = state.dateISO;
+        }
+      }
+    }
+
+    populateTimeDropdowns(false);
+    if (state.timeValue) {
+      var tInputs = getDrawerInputs();
+      if (tInputs.time) tInputs.time.value = state.timeValue;
+    }
+
+    if (state.locationValue) {
+      var lInputs = getDrawerInputs();
+      if (lInputs.location) lInputs.location.value = state.locationValue;
+    }
+
     updateCheckoutButton();
   }
 
@@ -625,7 +795,7 @@
   document.addEventListener("change", function (e) {
     if (!e.target) return;
 
-    if (e.target.classList.contains("cart-drawer__date-select")) {
+    if (e.target.classList.contains("cart-drawer__date-select") && e.target.dataset.customCalendarReady === "true") {
       enforceDateNotPast(e.target);
       validateDateWeekday();
       updateCheckoutButton();
@@ -633,6 +803,10 @@
     }
 
     if (e.target.classList.contains("cart-drawer__time-select")) {
+      updateCheckoutButton();
+    }
+
+    if (e.target.id === "cart-terms-checkbox") {
       updateCheckoutButton();
     }
   });
@@ -663,10 +837,9 @@
     });
   }, true);
 
-  document.addEventListener("cart:updated", function () {
-    setTimeout(initCore, 100);
-    setTimeout(function () { populateTimeDropdowns(true); }, 220);
-    setTimeout(function () { initDateInputs(); clearInitialDateSelections(); }, 260);
+  document.addEventListener("cart:update", function () {
+    var saved = saveDrawerState();
+    setTimeout(function () { restoreDrawerState(saved); }, 150);
   });
 })();
 </script>
@@ -1001,7 +1174,7 @@
     border-bottom: var(--style-border-width) solid none;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 20;
 
     @media screen and (min-width: 750px) {
       padding: var(--cart-drawer-padding-desktop);
@@ -1139,7 +1312,7 @@
     width: 100%;
     border: 2px solid #1E5649;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
     background-color: #c8de84;
     transition: none;
     opacity: 1;
@@ -1154,6 +1327,11 @@
 
   .cart-drawer__date-wrapper {
     border-right: 2px solid #1E5649;
+  }
+
+  .cart-drawer__date-wrapper .flatpickr-wrapper {
+    width: 100%;
+    display: block;
   }
 
   .cart-drawer__input-label {
@@ -1263,7 +1441,7 @@
   .cart-drawer__eligibility-messages {
     width: 100%;
     display: grid;
-    gap: 12px;
+    gap: 0;
     margin: 0 0 var(--padding-md);
   }
 
@@ -1276,6 +1454,26 @@
     border-radius: 10px;
     border: 1px solid #e7e8e4;
     background: #FFFFFFC7;
+  }
+
+  .cart-drawer__eligibility-message--cutoff {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 0;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .cart-drawer__eligibility-message--min-order {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 0;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
   }
 
   .cart-drawer__eligibility-message[hidden] {
@@ -1296,6 +1494,15 @@
   .cart-drawer__eligibility-message--min-order .cart-drawer__eligibility-icon {
     color: #2a76c8;
     background: #dbe8f6;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .cart-drawer__eligibility-message--cutoff .cart-drawer__eligibility-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
   }
 
   .cart-drawer__eligibility-copy {
@@ -1317,6 +1524,28 @@
     font-size: 11px;
     line-height: 1.35;
     font-weight: 500;
+  }
+
+  .cart-drawer__eligibility-message--cutoff .cart-drawer__eligibility-title {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .cart-drawer__eligibility-message--cutoff .cart-drawer__eligibility-subtitle {
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .cart-drawer__eligibility-message--min-order .cart-drawer__eligibility-title {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .cart-drawer__eligibility-message--min-order .cart-drawer__eligibility-subtitle {
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.25;
   }
 
   .cart-drawer__delivery-fields {
@@ -1512,5 +1741,195 @@
 
   .cart-drawer__date-select:invalid {
     color: rgba(30, 86, 73, 0.55) !important;
+  }
+
+  .cart-drawer__date-select[type="hidden"] {
+    display: none !important;
+  }
+
+  .cart-drawer__date-select.flatpickr-alt {
+    cursor: pointer;
+  }
+
+  .flatpickr-wrapper .flatpickr-calendar {
+    font-family: inherit;
+    border-radius: 6px;
+    box-shadow: 0 3px 12px rgba(30, 86, 73, 0.2);
+    border: 1.5px solid #1E5649;
+    overflow: hidden;
+    z-index: 9999 !important;
+    position: absolute !important;
+    width: 196px !important;
+    min-width: 196px !important;
+    max-width: 196px !important;
+    background: #fff;
+    padding: 0;
+  }
+
+  .flatpickr-wrapper .flatpickr-months {
+    background-color: #1E5649;
+    height: 28px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .flatpickr-wrapper .flatpickr-months .flatpickr-month {
+    height: 28px;
+    overflow: visible;
+  }
+
+  .flatpickr-wrapper .flatpickr-months .flatpickr-month,
+  .flatpickr-wrapper .flatpickr-months .flatpickr-prev-month,
+  .flatpickr-wrapper .flatpickr-months .flatpickr-next-month {
+    color: #fff;
+    fill: #fff;
+  }
+
+  .flatpickr-wrapper .flatpickr-months .flatpickr-prev-month,
+  .flatpickr-wrapper .flatpickr-months .flatpickr-next-month {
+    height: 28px;
+    padding: 4px 6px;
+  }
+
+  .flatpickr-wrapper .flatpickr-months .flatpickr-prev-month svg,
+  .flatpickr-wrapper .flatpickr-months .flatpickr-next-month svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .flatpickr-wrapper .flatpickr-months .flatpickr-prev-month:hover svg,
+  .flatpickr-wrapper .flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #c8de84;
+  }
+
+  .flatpickr-wrapper .flatpickr-current-month {
+    padding-top: 5px;
+    font-size: 11px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    left: 0;
+    width: 100%;
+  }
+
+  .flatpickr-wrapper .flatpickr-current-month .flatpickr-monthDropdown-months {
+    color: #fff;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 0;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23fff'/%3E%3C/svg%3E") no-repeat right center;
+    padding-right: 12px;
+  }
+
+  .flatpickr-wrapper .flatpickr-current-month input.cur-year {
+    color: #fff;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 0;
+    margin: 0;
+    width: 4ch !important;
+  }
+
+  .flatpickr-wrapper .flatpickr-current-month .numInputWrapper {
+    width: 4ch !important;
+    min-width: 4ch !important;
+  }
+
+  .flatpickr-wrapper .flatpickr-current-month .numInputWrapper span {
+    display: none;
+  }
+
+  .flatpickr-wrapper .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .flatpickr-wrapper span.flatpickr-weekday {
+    color: #1E5649;
+    font-weight: 700;
+    font-size: 9px;
+  }
+
+  .flatpickr-wrapper .flatpickr-weekdays {
+    background: #fff;
+    height: 20px;
+    border-bottom: 1px solid rgba(30, 86, 73, 0.1);
+  }
+
+  .flatpickr-wrapper .flatpickr-weekdaycontainer {
+    width: 100%;
+  }
+
+  .flatpickr-wrapper .flatpickr-innerContainer,
+  .flatpickr-wrapper .flatpickr-rContainer {
+    background: #fff;
+    width: 100% !important;
+  }
+
+  .flatpickr-wrapper .flatpickr-days {
+    background: #fff;
+    width: 196px !important;
+    min-width: 196px !important;
+    max-width: 196px !important;
+  }
+
+  .flatpickr-wrapper .dayContainer {
+    width: 196px !important;
+    min-width: 196px !important;
+    max-width: 196px !important;
+    padding: 2px 4px;
+  }
+
+  .flatpickr-wrapper .flatpickr-day {
+    color: #1E5649;
+    border-radius: 3px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    max-width: 24px;
+    flex-basis: 24px;
+    margin: 0.5px;
+    font-size: 10px;
+    border: 0;
+  }
+
+  .flatpickr-wrapper .flatpickr-day:hover {
+    background: #1E5649;
+    border-color: #1E5649;
+    color: #fff;
+  }
+
+  .flatpickr-wrapper .flatpickr-day.selected,
+  .flatpickr-wrapper .flatpickr-day.selected:hover {
+    background: #1E5649;
+    border-color: #1E5649;
+    color: #fff;
+  }
+
+  .flatpickr-wrapper .flatpickr-day.today {
+    border: 1px solid rgba(30, 86, 73, 0.4);
+  }
+
+  .flatpickr-wrapper .flatpickr-day.today:hover {
+    background: #1E5649;
+    color: #fff;
+  }
+
+  .flatpickr-wrapper .flatpickr-day.flatpickr-disabled,
+  .flatpickr-wrapper .flatpickr-day.flatpickr-disabled:hover {
+    color: rgba(30, 86, 73, 0.2);
+    background: transparent;
+    border-color: transparent;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  .flatpickr-wrapper .flatpickr-day.prevMonthDay,
+  .flatpickr-wrapper .flatpickr-day.nextMonthDay {
+    color: rgba(30, 86, 73, 0.3);
   }
 {% endstylesheet %}
