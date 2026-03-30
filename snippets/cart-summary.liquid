@@ -235,145 +235,34 @@
 
 <script>
 (function () {
-  const AU_TZ = "Australia/Sydney";
-  const DELIVERY_CUTOFF_HOUR = 14;
-  const CHECKOUT_SELECTOR = '#checkout, [name="checkout"], .cart__checkout-button';
-
-  function getAustraliaNowParts() {
-    const parts = new Intl.DateTimeFormat("en-AU", {
-      timeZone: AU_TZ,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }).formatToParts(new Date());
-
-    const map = {};
-    parts.forEach((p) => {
-      if (p.type !== "literal") map[p.type] = p.value;
-    });
-
-    return {
-      year: Number(map.year),
-      month: Number(map.month),
-      day: Number(map.day),
-      hour: Number(map.hour),
-      minute: Number(map.minute)
-    };
-  }
-
-  function isAfterDeliveryCutoffAU() {
-    const now = getAustraliaNowParts();
-    return now.hour > DELIVERY_CUTOFF_HOUR || (now.hour === DELIVERY_CUTOFF_HOUR && now.minute >= 30);
-  }
-
-  function getActiveDeliveryType() {
-    const active = document.querySelector(".cart-drawer__delivery-option--active");
-    return active ? (active.dataset.deliveryType || "").toLowerCase() : "";
-  }
-
-  function getVisibleDateTimeInputs() {
-    const drawer = document.querySelector("cart-drawer-component");
-    if (!drawer) return { date: null, time: null };
-
-    const sections = Array.from(drawer.querySelectorAll(".cart-drawer__datetime-selection"));
-    const visible = sections.find((el) => el.offsetParent !== null) || sections[0];
-    if (!visible) return { date: null, time: null };
-
-    const boundDate =
-      visible.querySelector('.cart-drawer__date-select[data-custom-calendar-ready="true"]') ||
-      visible.querySelector('.cart-drawer__date-select[type="date"]') ||
-      visible.querySelector(".cart-drawer__date-select");
-
-    return {
-      date: boundDate,
-      time: visible.querySelector(".cart-drawer__time-select")
-    };
-  }
-
-  function getEffectiveDateValue(dateInput) {
-    if (!dateInput) return "";
-    if (dateInput.dataset && dateInput.dataset.isoValue) return dateInput.dataset.isoValue;
-    return dateInput.value || "";
-  }
-
-  function isDateTimeSelected() {
-    const { date, time } = getVisibleDateTimeInputs();
-    const dateVal = getEffectiveDateValue(date);
-    return Boolean(date && dateVal && time && time.value);
-  }
-
-  function getCartTotal() {
-    const el = document.querySelector("[data-cart-subtotal]");
-    if (!el) return 0;
-    const raw = el.getAttribute("value") || el.textContent || "";
-    const numeric = parseFloat(raw.replace(/[^0-9.]/g, ""));
-    return Number.isNaN(numeric) ? 0 : numeric;
-  }
-
   function setMessage(id, text, anchor) {
-    let node = document.getElementById(id);
-
+    var node = document.getElementById(id);
     if (!text) {
       if (node) node.remove();
       return;
     }
-
     if (!node) {
       node = document.createElement("p");
       node.id = id;
       node.style.cssText = "color:#c0392b;font-size:.85em;margin-top:8px;text-align:left;";
       if (anchor) anchor.insertAdjacentElement("afterend", node);
     }
-
     node.textContent = text;
   }
 
-  function ensureMessageOrder(anchor) {
-    const cutoff = document.getElementById("cart-page-cutoff-message");
-    const minOrder = document.getElementById("cart-page-min-order-message");
-
-    if (cutoff && minOrder) {
-      minOrder.insertAdjacentElement("beforebegin", cutoff);
-    } else if (cutoff && anchor) {
-      anchor.insertAdjacentElement("afterend", cutoff);
-    }
-  }
-
-  function computeCheckoutEligibility() {
-    const type = getActiveDeliveryType();
-    const hasDateTime = isDateTimeSelected();
-    const isDelivery = type === "delivery";
-    const isPickup = type === "pickup";
-    const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
-    const minOrderBlocked = isDelivery && getCartTotal() < 100;
-
-    let valid = false;
-    if (isPickup) valid = hasDateTime;
-    if (isDelivery) valid = hasDateTime && !minOrderBlocked;
-
-    return { valid, deliveryCutoffBlocked, minOrderBlocked };
-  }
-
-  function applyCheckoutState() {
-    const checkout = document.querySelector(CHECKOUT_SELECTOR);
+  function applyCheckoutState(state) {
+    var checkout = document.getElementById("checkout");
     if (!checkout) return;
-
-    const state = computeCheckoutEligibility();
+    if (!state || typeof state.valid !== "boolean") return;
 
     setMessage("cart-page-cutoff-message", null, checkout);
-
     setMessage(
       "cart-page-min-order-message",
       state.minOrderBlocked
-        ? "📦 Orders below $100 AUD are not eligible for delivery."
+        ? ""
         : null,
       checkout
     );
-
-    ensureMessageOrder(checkout);
 
     checkout.classList.toggle("cart__checkout-button--disabled", !state.valid);
     checkout.toggleAttribute("disabled", !state.valid);
@@ -383,67 +272,6 @@
     checkout.style.opacity = state.valid ? "1" : "0.5";
   }
 
-  function bindOnce() {
-    if (window.__cartSummaryBound) return;
-    window.__cartSummaryBound = true;
-
-    document.addEventListener("click", function (e) {
-      if (e.target.closest(".cart-drawer__delivery-option")) {
-        setTimeout(applyCheckoutState, 0);
-      }
-    });
-
-    document.addEventListener("change", function (e) {
-      if (
-        e.target &&
-        (e.target.classList.contains("cart-drawer__date-select") ||
-         e.target.classList.contains("cart-drawer__time-select") ||
-         e.target.id === "cart-terms-checkbox")
-      ) {
-        applyCheckoutState();
-      }
-    });
-
-    document.addEventListener("cart:update", function () {
-      setTimeout(applyCheckoutState, 200);
-    });
-
-    document.addEventListener("click", function (e) {
-      const checkout = e.target.closest(CHECKOUT_SELECTOR);
-      if (!checkout) return;
-
-      const state = computeCheckoutEligibility();
-      if (!state.valid) {
-        e.preventDefault();
-        e.stopPropagation();
-        applyCheckoutState();
-      }
-    }, true);
-
-    const cartForm = document.getElementById("cart-form");
-    if (cartForm) {
-      cartForm.addEventListener("submit", function (e) {
-        const state = computeCheckoutEligibility();
-        if (!state.valid) {
-          e.preventDefault();
-          e.stopPropagation();
-          applyCheckoutState();
-        }
-      }, true);
-    }
-  }
-
-  function init() {
-    bindOnce();
-    window.__syncCartSummaryCheckoutState = applyCheckoutState;
-    applyCheckoutState();
-  }
-
-  document.addEventListener("DOMContentLoaded", init);
-  document.addEventListener("click", function (e) {
-    if (e.target.closest('button[on\\:click="/open"]')) {
-      setTimeout(init, 50);
-    }
-  });
+  window.__syncCartSummaryCheckoutState = applyCheckoutState;
 })();
 </script>

@@ -86,9 +86,9 @@
   }
 
   function isAfterDeliveryCutoffAU() {
-  const now = getAustraliaNowParts();
-  return now.hour > 14 || (now.hour === 14 && now.minute >= 30);
-}
+    const now = getAustraliaNowParts();
+    return now.hour > DELIVERY_CUTOFF_HOUR || (now.hour === DELIVERY_CUTOFF_HOUR && now.minute >= DELIVERY_CUTOFF_MINUTE);
+  }
 
   function formatDateISO(year, month, day) {
     return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -136,11 +136,15 @@
     const now = getAustraliaNowParts();
     const d = new Date(now.year, now.month - 1, now.day);
 
-    if (getActiveDeliveryType() === "delivery") {
+    const activeType = getActiveDeliveryType();
+
+    if (activeType === "delivery") {
       d.setDate(d.getDate() + 1);
       if (isAfterDeliveryCutoffAU()) {
         d.setDate(d.getDate() + 1);
       }
+    } else if (activeType === "pickup" && isAfterDeliveryCutoffAU()) {
+      d.setDate(d.getDate() + 1);
     }
 
     while (isWeekendDate(d)) {
@@ -159,28 +163,11 @@
     return active ? (active.dataset.deliveryType || "").toLowerCase() : "";
   }
 
-  function getVisibleDatetimeRoot(drawer) {
-    const roots = Array.from(drawer.querySelectorAll(".cart-drawer__datetime-selection"));
-    return roots.find((el) => el.offsetParent !== null) || roots[0] || drawer;
-  }
-
-  function getVisibleMessageRoot(drawer) {
-    const roots = Array.from(drawer.querySelectorAll(".cart-drawer__eligibility-messages"));
-    return roots.find((el) => el.offsetParent !== null) || roots[0] || drawer;
-  }
-
   function getDrawerInputs() {
-    const drawer = getDrawer();
-    if (!drawer) return { date: null, time: null, location: null };
-    const root = getVisibleDatetimeRoot(drawer);
-    const boundDateInput =
-      root.querySelector('.cart-drawer__date-select[data-custom-calendar-ready="true"]') ||
-      root.querySelector('.cart-drawer__date-select[type="date"]') ||
-      root.querySelector(".cart-drawer__date-select");
     return {
-      date: boundDateInput,
-      time: root.querySelector(".cart-drawer__time-select"),
-      location: drawer.querySelector(".cart-drawer__delivery-location-input")
+      date: document.getElementById("cart-drawer-date") || document.getElementById("cart-drawer-date-empty"),
+      time: document.getElementById("cart-drawer-time") || document.getElementById("cart-drawer-time-empty"),
+      location: document.getElementById("cart-drawer-delivery-location") || document.getElementById("cart-drawer-delivery-location-empty")
     };
   }
 
@@ -239,10 +226,7 @@
   }
 
   function setEligibilityMessageState(messageId, visible) {
-    const drawer = getDrawer();
-    if (!drawer) return;
-    const root = getVisibleMessageRoot(drawer);
-    const node = root.querySelector(`#${messageId}`);
+    var node = document.getElementById(messageId);
     if (!node) return;
     node.hidden = !visible;
   }
@@ -429,28 +413,25 @@
   }
 
   function initDateInputs() {
-    const drawer = getDrawer();
-    if (!drawer) return;
-
-    const minISO = getEarliestOrderDateISO();
-
-    drawer.querySelectorAll(".cart-drawer__date-select").forEach((dateSelect) => {
-      if (dateSelect.classList.contains("flatpickr-alt")) return;
+    var minISO = getEarliestOrderDateISO();
+    var ids = ["cart-drawer-date", "cart-drawer-date-empty"];
+    for (var i = 0; i < ids.length; i++) {
+      var dateSelect = document.getElementById(ids[i]);
+      if (!dateSelect) continue;
       dateSelect.setAttribute("min", minISO);
       bindCustomDateInput(dateSelect);
       enforceDateNotPast(dateSelect);
-    });
+    }
   }
 
   function clearInitialDateSelections() {
-    const drawer = getDrawer();
-    if (!drawer) return;
-
-    drawer.querySelectorAll(".cart-drawer__date-select").forEach((dateSelect) => {
-      if (dateSelect.classList.contains("flatpickr-alt")) return;
+    var ids = ["cart-drawer-date", "cart-drawer-date-empty"];
+    for (var i = 0; i < ids.length; i++) {
+      var dateSelect = document.getElementById(ids[i]);
+      if (!dateSelect) continue;
       if (dateSelect.dataset.userSelected !== "true") clearDateInput(dateSelect);
       enforceDateNotPast(dateSelect);
-    });
+    }
   }
 
   function showByDeliveryType(type) {
@@ -571,7 +552,7 @@
     setCheckoutState(state.valid);
 
     if (typeof window.__syncCartSummaryCheckoutState === "function") {
-      window.__syncCartSummaryCheckoutState();
+      window.__syncCartSummaryCheckoutState(state);
     }
   }
 
@@ -692,9 +673,9 @@
       input.value = "";
     });
 
-    drawer.querySelectorAll(".cart-drawer__date-select").forEach((input) => {
-      if (input.classList.contains("flatpickr-alt")) return;
-      clearDateInput(input);
+    ["cart-drawer-date", "cart-drawer-date-empty"].forEach(function(id) {
+      var input = document.getElementById(id);
+      if (input) clearDateInput(input);
     });
 
     drawer.querySelectorAll(".cart-drawer__time-select").forEach((input) => {
@@ -799,7 +780,11 @@
   document.addEventListener("change", function (e) {
     if (!e.target) return;
 
-    if (e.target.classList.contains("cart-drawer__date-select") && e.target.dataset.customCalendarReady === "true") {
+    if (e.target.classList.contains("cart-drawer__date-select")) {
+      if (!e.target._flatpickr && e.target.value) {
+        e.target.dataset.isoValue = e.target.value;
+        e.target.dataset.userSelected = "true";
+      }
       enforceDateNotPast(e.target);
       validateDateWeekday();
       updateCheckoutButton();
