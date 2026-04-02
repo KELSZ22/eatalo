@@ -22,6 +22,8 @@
   const AU_TZ = "Australia/Sydney";
   const DELIVERY_CUTOFF_HOUR = 14;
   const DELIVERY_CUTOFF_MINUTE = 30;
+  const PICKUP_ORDER_WINDOW_START_HOUR = 6;
+  const PICKUP_ORDER_WINDOW_END_HOUR = 18;
   const TIME_OPTIONS = buildTimeOptions();
 
   function buildTimeOptions() {
@@ -90,6 +92,14 @@
     return now.hour > DELIVERY_CUTOFF_HOUR || (now.hour === DELIVERY_CUTOFF_HOUR && now.minute >= DELIVERY_CUTOFF_MINUTE);
   }
 
+  function isWithinPickupOrderingWindowAU() {
+    const now = getAustraliaNowParts();
+    if (now.hour < PICKUP_ORDER_WINDOW_START_HOUR) return false;
+    if (now.hour > PICKUP_ORDER_WINDOW_END_HOUR) return false;
+    if (now.hour === PICKUP_ORDER_WINDOW_END_HOUR && now.minute > 0) return false;
+    return true;
+  }
+
   function formatDateISO(year, month, day) {
     return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
   }
@@ -143,8 +153,6 @@
       if (isAfterDeliveryCutoffAU()) {
         d.setDate(d.getDate() + 1);
       }
-    } else if (activeType === "pickup" && isAfterDeliveryCutoffAU()) {
-      d.setDate(d.getDate() + 1);
     }
 
     while (isWeekendDate(d)) {
@@ -507,12 +515,13 @@
 
     const minOrderBlocked = isDelivery && getCartTotal() < 100;
     const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
+    const pickupOrderingWindowBlocked = isPickup && !isWithinPickupOrderingWindowAU();
 
     let valid = false;
-    if (isPickup) valid = hasDateTime;
+    if (isPickup) valid = hasDateTime && !pickupOrderingWindowBlocked;
     if (isDelivery) valid = hasDateTime && !minOrderBlocked;
 
-    return { valid, minOrderBlocked, deliveryCutoffBlocked, hasDateTime };
+    return { valid, minOrderBlocked, deliveryCutoffBlocked, hasDateTime, pickupOrderingWindowBlocked };
   }
 
   function setCheckoutState(enabled) {
@@ -545,9 +554,11 @@
 
     const showMinOrder = type === "delivery" && state.minOrderBlocked;
     const showCutoff = type === "delivery" && state.deliveryCutoffBlocked && !state.hasDateTime;
+    const showPickupHours = type === "pickup" && state.pickupOrderingWindowBlocked;
 
     setEligibilityMessageState("cart-min-order-message", showMinOrder);
     setEligibilityMessageState("cart-cutoff-message", showCutoff);
+    setEligibilityMessageState("cart-pickup-hours-message", showPickupHours);
 
     setCheckoutState(state.valid);
 
@@ -954,6 +965,23 @@
                   <span class="cart-drawer__eligibility-subtitle">Orders must be $100 AUD or more to be eligible</span>
                 </span>
               </div>
+
+              <div
+                id="cart-pickup-hours-message"
+                class="cart-drawer__eligibility-message cart-drawer__eligibility-message--pickup-hours"
+                hidden
+              >
+                <span class="cart-drawer__eligibility-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 7v5l3 3"></path>
+                  </svg>
+                </span>
+                <span class="cart-drawer__eligibility-copy">
+                  <span class="cart-drawer__eligibility-title">Pickup ordering hours</span>
+                  <span class="cart-drawer__eligibility-subtitle">You can place a pickup order between 6:00 AM and 6:00 PM (Australia/Sydney).</span>
+                </span>
+              </div>
             </div>
 
             <div class="cart-drawer__delivery-fields" style="display: none;">
@@ -1087,6 +1115,23 @@
                 <span class="cart-drawer__eligibility-copy">
                   <span class="cart-drawer__eligibility-title">Minimum order for delivery</span>
                   <span class="cart-drawer__eligibility-subtitle">Orders must be $100 AUD or more to be eligible</span>
+                </span>
+              </div>
+
+              <div
+                id="cart-pickup-hours-message"
+                class="cart-drawer__eligibility-message cart-drawer__eligibility-message--pickup-hours"
+                hidden
+              >
+                <span class="cart-drawer__eligibility-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 7v5l3 3"></path>
+                  </svg>
+                </span>
+                <span class="cart-drawer__eligibility-copy">
+                  <span class="cart-drawer__eligibility-title">Pickup ordering hours</span>
+                  <span class="cart-drawer__eligibility-subtitle">You can place a pickup order between 6:00 AM and 6:00 PM (Australia/Sydney).</span>
                 </span>
               </div>
             </div>
@@ -1463,6 +1508,22 @@
     background: transparent;
     box-shadow: none;
     border-radius: 0;
+  }
+
+  .cart-drawer__eligibility-message--pickup-hours {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 0;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .cart-drawer__eligibility-message--pickup-hours .cart-drawer__eligibility-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
   }
 
   .cart-drawer__eligibility-message[hidden] {

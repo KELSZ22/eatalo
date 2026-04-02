@@ -263,6 +263,13 @@
         : null,
       checkout
     );
+    setMessage(
+      "cart-page-pickup-hours-message",
+      state.pickupOrderingWindowBlocked
+        ? "Pickup orders can only be placed between 6:00 AM and 6:00 PM (Australia/Sydney)."
+        : null,
+      checkout
+    );
 
     checkout.classList.toggle("cart__checkout-button--disabled", !state.valid);
     checkout.toggleAttribute("disabled", !state.valid);
