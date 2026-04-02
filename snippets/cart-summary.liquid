@@ -74,6 +74,8 @@
         type="checkbox"
         id="cart-terms-checkbox"
         class="cart__terms-checkbox"
+        required
+        aria-required="true"
       >
       <span class="cart__terms-text">
         I agree to the 
@@ -270,6 +272,13 @@
         : null,
       checkout
     );
+    setMessage(
+      "cart-page-terms-message",
+      state.termsBlocked
+        ? "Please check the box to agree to the terms and conditions."
+        : null,
+      checkout
+    );
 
     checkout.classList.toggle("cart__checkout-button--disabled", !state.valid);
     checkout.toggleAttribute("disabled", !state.valid);
@@ -279,6 +288,44 @@
     checkout.style.opacity = state.valid ? "1" : "0.5";
   }
 
+  function isCartTermsChecked() {
+    var checkbox = document.getElementById("cart-terms-checkbox");
+    return Boolean(checkbox && checkbox.checked);
+  }
+
+  function enforceCartTermsOnSubmit(e) {
+    if (isCartTermsChecked()) {
+      setMessage("cart-page-terms-message", null, document.getElementById("checkout"));
+      return true;
+    }
+
+    var checkout = document.getElementById("checkout");
+    setMessage(
+      "cart-page-terms-message",
+      "Please check the box to agree to the terms and conditions.",
+      checkout
+    );
+
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+    return false;
+  }
+
   window.__syncCartSummaryCheckoutState = applyCheckoutState;
+
+  var cartForm = document.getElementById("cart-form");
+  if (cartForm) {
+    cartForm.addEventListener("submit", function (e) {
+      enforceCartTermsOnSubmit(e);
+    });
+  }
+
+  var cartTermsCheckbox = document.getElementById("cart-terms-checkbox");
+  if (cartTermsCheckbox) {
+    cartTermsCheckbox.addEventListener("change", function () {
+      if (cartTermsCheckbox.checked) {
+        setMessage("cart-page-terms-message", null, document.getElementById("checkout"));
+      }
+    });
+  }
 })();
 </script>

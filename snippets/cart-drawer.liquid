@@ -513,15 +513,22 @@
     const isPickup = type === "pickup";
     const hasDateTime = hasValidSelectedDateTime();
 
+    const termsCheckbox = document.getElementById("cart-terms-checkbox");
+    const termsChecked = Boolean(termsCheckbox && termsCheckbox.checked);
+    const termsBlocked = !termsChecked;
+
     const minOrderBlocked = isDelivery && getCartTotal() < 100;
     const deliveryCutoffBlocked = isDelivery && isAfterDeliveryCutoffAU();
-    const pickupOrderingWindowBlocked = isPickup && !isWithinPickupOrderingWindowAU();
+    // Pickup ordering hours are no longer restricted; weekends remain disabled via date validation.
+    const pickupOrderingWindowBlocked = false;
 
     let valid = false;
-    if (isPickup) valid = hasDateTime && !pickupOrderingWindowBlocked;
+    if (isPickup) valid = hasDateTime;
     if (isDelivery) valid = hasDateTime && !minOrderBlocked;
 
-    return { valid, minOrderBlocked, deliveryCutoffBlocked, hasDateTime, pickupOrderingWindowBlocked };
+    valid = valid && termsChecked;
+
+    return { valid, termsBlocked, minOrderBlocked, deliveryCutoffBlocked, hasDateTime, pickupOrderingWindowBlocked };
   }
 
   function setCheckoutState(enabled) {
@@ -554,7 +561,7 @@
 
     const showMinOrder = type === "delivery" && state.minOrderBlocked;
     const showCutoff = type === "delivery" && state.deliveryCutoffBlocked && !state.hasDateTime;
-    const showPickupHours = type === "pickup" && state.pickupOrderingWindowBlocked;
+    const showPickupHours = false;
 
     setEligibilityMessageState("cart-min-order-message", showMinOrder);
     setEligibilityMessageState("cart-cutoff-message", showCutoff);

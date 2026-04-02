@@ -118,6 +118,7 @@
         "text_dhPM6j",
         "dual_buttons_rTpf4B"
       ],
+      "disabled": true,
       "custom_css": [
         "@media screen and (max-width: 768px) {h1 {font-size: 35px !important; }}"
       ],
@@ -854,7 +855,7 @@
         "padding_bottom": 60,
         "padding_sides": 20,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 32,
+        "padding_bottom_mobile": 44,
         "padding_sides_mobile": 16
       }
     },
@@ -1025,10 +1026,10 @@
   },
   "order": [
     "hero_jVaWmY",
+    "food_categories_VPK6N8",
+    "eatalo_cta_banner_kitchen_Jgp34y",
     "hero_Cam4Ja",
     "home_banner_t8AFta",
-    "eatalo_cta_banner_kitchen_Jgp34y",
-    "food_categories_VPK6N8",
     "our_pick_6k4gcF",
     "why_choose_us_hewYnK",
     "custom_checker_abWBRk",
